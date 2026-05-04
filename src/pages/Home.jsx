@@ -177,7 +177,7 @@ const Home = () => {
                     <img src={`https://i.pravatar.cc/150?img=${item * 10}`} alt="Farmer" />
                   </div>
                   <div>
-                    <h5 className="font-bold">John Doe</h5>
+                    <h5 className="font-bold">Rangayaa</h5>
                     <p className="text-sm text-brand-green-400">Farm Owner, Punjab, India</p>
                   </div>
                 </div>
