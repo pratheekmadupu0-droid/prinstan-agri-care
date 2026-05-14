@@ -10,21 +10,21 @@ const Products = () => {
     { id: 1, name: t('products.items.p1Name'), category: 'Bios', image: '/product_1.jpeg', desc: t('products.items.p1Desc') },
     { id: 2, name: t('products.items.p2Name'), category: 'Fertilizers', image: '/product_2.jpeg', desc: t('products.items.p2Desc') },
     { id: 3, name: t('products.items.p3Name'), category: 'Pesticides', image: '/product_3.jpeg', desc: t('products.items.p3Desc') },
-    { id: 4, name: t('products.items.p4Name'), category: 'Equipment', image: 'https://images.unsplash.com/photo-1592982537447-6f2a6a0a5015?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', desc: t('products.items.p4Desc') },
-    { id: 5, name: t('products.items.p5Name'), category: 'Irrigation', image: 'https://images.unsplash.com/photo-1563514253386-4b2a3c748c08?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', desc: t('products.items.p5Desc') },
-    { id: 6, name: t('products.items.p6Name'), category: 'Seeds', image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', desc: t('products.items.p6Desc') },
+    { id: 4, name: t('products.items.p4Name'), category: 'Bios', image: 'https://images.unsplash.com/photo-1592982537447-6f2a6a0a5015?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', desc: t('products.items.p4Desc') },
+    { id: 5, name: t('products.items.p5Name'), category: 'Fertilizers', image: 'https://images.unsplash.com/photo-1563514253386-4b2a3c748c08?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', desc: t('products.items.p5Desc') },
+    { id: 6, name: t('products.items.p6Name'), category: 'Pesticides', image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', desc: t('products.items.p6Desc') },
     { id: 7, name: t('products.items.p7Name'), category: 'Fertilizers', image: 'https://images.unsplash.com/photo-1585314062340-f1a5a7c9328d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', desc: t('products.items.p7Desc') },
-    { id: 8, name: t('products.items.p8Name'), category: 'Equipment', image: 'https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', desc: t('products.items.p8Desc') },
+    { id: 8, name: t('products.items.p8Name'), category: 'Bios', image: 'https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', desc: t('products.items.p8Desc') },
     ...Array.from({ length: 56 }, (_, i) => ({
       id: i + 9,
       name: `Prinstan Product ${i + 1}`,
-      category: ['Bios', 'Fertilizers', 'Pesticides', 'Equipment', 'Irrigation'][i % 5],
+      category: ['Bios', 'Fertilizers', 'Pesticides'][i % 3],
       image: `/prinstan_products/Prinstan Single Page Mokups_pages-to-jpg-${String(i + 1).padStart(4, '0')}.jpg`,
       desc: `Prinstan Product Image ${i + 1}`
     }))
   ];
 
-  const categories = ['All', 'Bios', 'Fertilizers', 'Pesticides', 'Equipment', 'Irrigation'];
+  const categories = ['All', 'Bios', 'Fertilizers', 'Pesticides'];
 
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');

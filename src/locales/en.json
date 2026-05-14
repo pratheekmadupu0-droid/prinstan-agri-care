@@ -68,11 +68,9 @@
     "search": "Search products...",
     "categories": {
       "All": "All",
-      "Seeds": "Seeds",
+      "Bios": "Bios",
       "Fertilizers": "Fertilizers",
-      "Pesticides": "Pesticides",
-      "Equipment": "Farming Equipment",
-      "Irrigation": "Irrigation Systems"
+      "Pesticides": "Pesticides"
     },
     "inquiry": "Send Inquiry",
     "noProducts": "No products found",
