@@ -73,14 +73,17 @@ const Dealers = () => {
     
     setIsVerifying(true);
     try {
+      // Prepend + if not present to ensure E.164 format
+      const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber : `+${phoneNumber}`;
+      
       setupRecaptcha();
       const appVerifier = window.recaptchaVerifier;
-      const result = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
+      const result = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
       setConfirmationResult(result);
       setShowOtpInput(true);
     } catch (error) {
       console.error("OTP send failed:", error);
-      alert("Failed to send OTP. Make sure the phone number is correct (including country code).");
+      alert("Failed to send OTP. \n\n1. Ensure the number is correct (e.g. +91XXXXXXXXXX)\n2. Ensure your domain is authorized in Firebase Console.\n3. Ensure Phone Auth is enabled in Firebase Console.");
       if (window.recaptchaVerifier) {
         window.recaptchaVerifier.clear();
         window.recaptchaVerifier = null;
@@ -426,8 +429,9 @@ const Dealers = () => {
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 outline-none" 
-                        placeholder="+91 1234567890" 
+                        placeholder="e.g., +91 70752 09102" 
                       />
+                      <p className="mt-1 text-[10px] text-gray-500 italic">Include country code (e.g., +91 for India)</p>
                     </div>
                     <div id="recaptcha-container"></div>
                     <button 
