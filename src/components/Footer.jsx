@@ -71,7 +71,7 @@ const Footer = () => {
             <ul className="space-y-4 text-gray-400">
               <li className="flex items-start gap-3">
                 <FaMapMarkerAlt className="text-brand-green-500 mt-1 flex-shrink-0" />
-                <span>45 AgriTech Park, Phase 2, HITEC City, Hyderabad 500081, India</span>
+                <span>Prinstan agri care pvt ltd office, 3rd floor, sri rama nilayam,<br/>Vijayasri Colony, Chitraseema Nagar, Auto Nagar,<br/>Hyderabad, Vanasthalipuram, Telangana 500068</span>
               </li>
               <li className="flex items-center gap-3">
                 <FaPhoneAlt className="text-brand-green-500 flex-shrink-0" />
