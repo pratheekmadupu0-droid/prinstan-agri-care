@@ -123,6 +123,8 @@ const Dealers = () => {
     }
   };
 
+  const [isRegistering, setIsRegistering] = useState(false);
+
   const handleRegisterChange = (e) => {
     const { name, value } = e.target;
     if (['bios', 'fertilizers', 'pesticides'].includes(name)) {
@@ -137,8 +139,12 @@ const Dealers = () => {
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
-    if (!user) return;
+    if (!user) {
+      alert("Please login first.");
+      return;
+    }
 
+    setIsRegistering(true);
     try {
       const newDealer = {
         name: formData.name,
@@ -147,18 +153,23 @@ const Dealers = () => {
         stock: formData.stock,
         email: user.email,
         uid: user.uid,
-        // Assigning a random location near Hyderabad for demo
-        lat: 17.3850 + (Math.random() - 0.5) * 0.1,
-        lng: 78.4867 + (Math.random() - 0.5) * 0.1,
+        // Assigning a random location near Hyderabad
+        lat: 17.3850 + (Math.random() - 0.5) * 0.2,
+        lng: 78.4867 + (Math.random() - 0.5) * 0.2,
         createdAt: new Date().toISOString()
       };
 
+      console.log("Submitting dealer registration:", newDealer);
       await setDoc(doc(db, "dealers", user.uid), newDealer);
+      
+      alert("Registration Successful! You are now a part of the Prinstan Dealer Network.");
       setShowRegister(false);
       fetchDealers(); // Refresh list
     } catch (error) {
       console.error("Registration failed:", error);
-      alert("Failed to register. Please try again.");
+      alert(`Failed to register: ${error.message}`);
+    } finally {
+      setIsRegistering(false);
     }
   };
 
@@ -358,8 +369,12 @@ const Dealers = () => {
                   </div>
 
                   <div className="pt-6">
-                    <button type="submit" className="w-full bg-brand-green-600 text-white font-bold py-3 rounded-lg hover:bg-brand-green-700 transition-colors shadow-lg shadow-brand-green-500/30">
-                      Complete Registration
+                    <button 
+                      type="submit" 
+                      disabled={isRegistering}
+                      className={`w-full bg-brand-green-600 text-white font-bold py-3 rounded-lg hover:bg-brand-green-700 transition-colors shadow-lg shadow-brand-green-500/30 ${isRegistering ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      {isRegistering ? "Registering..." : "Complete Registration"}
                     </button>
                   </div>
                 </form>
