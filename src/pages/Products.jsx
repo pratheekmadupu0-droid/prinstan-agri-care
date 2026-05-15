@@ -1,20 +1,37 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaSearch, FaShoppingCart, FaWhatsapp } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
+import { ref, onValue } from 'firebase/database';
+import { db } from '../firebase';
 import SEO from '../components/SEO';
 import productsData from '../data/products.json';
 
 const Products = () => {
   const { t } = useTranslation();
 
-  const products = productsData;
-
-  const categories = ['All', 'Bios', 'Fertilizers', 'Pesticides'];
-
+  const [products, setProducts] = useState(productsData);
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const categories = ['All', 'Bios', 'Fertilizers', 'Pesticides'];
+
+  useEffect(() => {
+    const prodRef = ref(db, 'products');
+    const unsubscribe = onValue(prodRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const list = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+        setProducts(list);
+      } else {
+        setProducts(productsData);
+      }
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const filteredProducts = products.filter(product => {
     const matchesCategory = activeCategory === 'All' || product.category === activeCategory;
@@ -35,6 +52,7 @@ const Products = () => {
         keywords="Prinstan products, agri products, fertilizers, pesticides, crop care, Prinstan Agri Care"
         url="/products"
       />
+      
       {/* Clean Products Video Section */}
       <section className="relative w-full h-[60vh] md:h-screen overflow-hidden bg-black">
         <video 
