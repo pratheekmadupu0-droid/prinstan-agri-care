@@ -83,7 +83,14 @@ const Dealers = () => {
       setShowOtpInput(true);
     } catch (error) {
       console.error("OTP send failed:", error);
-      alert("Failed to send OTP. \n\n1. Ensure the number is correct (e.g. +91XXXXXXXXXX)\n2. Ensure your domain is authorized in Firebase Console.\n3. Ensure Phone Auth is enabled in Firebase Console.");
+      // Detailed error message for the user
+      let errorMsg = "Failed to send OTP.";
+      if (error.code === 'auth/invalid-phone-number') errorMsg = "Invalid phone number format.";
+      if (error.code === 'auth/quota-exceeded') errorMsg = "SMS quota exceeded for today.";
+      if (error.code === 'auth/captcha-check-failed') errorMsg = "ReCAPTCHA verification failed.";
+      if (error.code === 'auth/too-many-requests') errorMsg = "Too many attempts. Please try again later.";
+      
+      alert(`${errorMsg}\n\nError Code: ${error.code}\n\nPlease ensure Phone Auth is enabled and your domain is authorized in the Firebase Console.`);
       if (window.recaptchaVerifier) {
         window.recaptchaVerifier.clear();
         window.recaptchaVerifier = null;
