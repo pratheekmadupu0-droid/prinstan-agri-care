@@ -11,7 +11,7 @@
   },
   {
     "id": 2,
-    "name": "Large",
+    "name": "D1",
     "description": "Promotes healthy plant growth, enhances yield, and improves overall crop quality. Formulated to provide essential nutrients that increase plant resistance and immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -21,7 +21,7 @@
   },
   {
     "id": 3,
-    "name": "Deadline",
+    "name": "Hunter",
     "description": "Provides highly effective control against a wide range of pests including fall armyworm, green caterpillar, stem borer, pod borer, and root grubs. Protects crops from severe infestations and boosts overall plant immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -31,7 +31,7 @@
   },
   {
     "id": 4,
-    "name": "Mantra",
+    "name": "Single Dose",
     "description": "An organic growth promoter that improves plant health, stimulates vigorous cell division, and increases flower and fruit setting. Enhances overall crop yield and vitality.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -41,7 +41,7 @@
   },
   {
     "id": 5,
-    "name": "Super Cobra",
+    "name": "P Star",
     "description": "Promotes healthy plant growth, enhances yield, and improves overall crop quality. Formulated to provide essential nutrients that increase plant resistance and immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -51,7 +51,7 @@
   },
   {
     "id": 6,
-    "name": "Hunter",
+    "name": "Large",
     "description": "Provides highly effective control against a wide range of pests including fall armyworm, green caterpillar, stem borer, pod borer, and root grubs. Protects crops from severe infestations and boosts overall plant immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -61,7 +61,7 @@
   },
   {
     "id": 7,
-    "name": "Single Dose",
+    "name": "Deadline",
     "description": "An organic growth promoter that improves plant health, stimulates vigorous cell division, and increases flower and fruit setting. Enhances overall crop yield and vitality.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -71,7 +71,7 @@
   },
   {
     "id": 8,
-    "name": "New Claim",
+    "name": "Mantra",
     "description": "Promotes healthy plant growth, enhances yield, and improves overall crop quality. Formulated to provide essential nutrients that increase plant resistance and immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -81,7 +81,7 @@
   },
   {
     "id": 9,
-    "name": "All Out",
+    "name": "New Claim",
     "description": "Provides highly effective control against a wide range of pests including fall armyworm, green caterpillar, stem borer, pod borer, and root grubs. Protects crops from severe infestations and boosts overall plant immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -91,7 +91,7 @@
   },
   {
     "id": 10,
-    "name": "Cyfos",
+    "name": "All Out",
     "description": "An organic growth promoter that improves plant health, stimulates vigorous cell division, and increases flower and fruit setting. Enhances overall crop yield and vitality.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -101,7 +101,7 @@
   },
   {
     "id": 11,
-    "name": "RRR",
+    "name": "Cyfos",
     "description": "Promotes healthy plant growth, enhances yield, and improves overall crop quality. Formulated to provide essential nutrients that increase plant resistance and immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -111,7 +111,7 @@
   },
   {
     "id": 12,
-    "name": "B1",
+    "name": "rRr",
     "description": "Provides highly effective control against a wide range of pests including fall armyworm, green caterpillar, stem borer, pod borer, and root grubs. Protects crops from severe infestations and boosts overall plant immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -121,7 +121,7 @@
   },
   {
     "id": 13,
-    "name": "Topper",
+    "name": "Anu Star",
     "description": "An organic growth promoter that improves plant health, stimulates vigorous cell division, and increases flower and fruit setting. Enhances overall crop yield and vitality.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -131,7 +131,7 @@
   },
   {
     "id": 14,
-    "name": "Anu Star",
+    "name": "A1",
     "description": "Promotes healthy plant growth, enhances yield, and improves overall crop quality. Formulated to provide essential nutrients that increase plant resistance and immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -141,7 +141,7 @@
   },
   {
     "id": 15,
-    "name": "A-1",
+    "name": "Exodus",
     "description": "Provides highly effective control against a wide range of pests including fall armyworm, green caterpillar, stem borer, pod borer, and root grubs. Protects crops from severe infestations and boosts overall plant immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -151,7 +151,7 @@
   },
   {
     "id": 16,
-    "name": "Exodus",
+    "name": "Spider",
     "description": "An organic growth promoter that improves plant health, stimulates vigorous cell division, and increases flower and fruit setting. Enhances overall crop yield and vitality.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -161,7 +161,7 @@
   },
   {
     "id": 17,
-    "name": "Spider",
+    "name": "B2 Plus B1",
     "description": "Promotes healthy plant growth, enhances yield, and improves overall crop quality. Formulated to provide essential nutrients that increase plant resistance and immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -171,7 +171,7 @@
   },
   {
     "id": 18,
-    "name": "Ko Vaccine",
+    "name": "Balagam",
     "description": "Provides highly effective control against a wide range of pests including fall armyworm, green caterpillar, stem borer, pod borer, and root grubs. Protects crops from severe infestations and boosts overall plant immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -181,7 +181,7 @@
   },
   {
     "id": 19,
-    "name": "V Guard",
+    "name": "Topper",
     "description": "An organic growth promoter that improves plant health, stimulates vigorous cell division, and increases flower and fruit setting. Enhances overall crop yield and vitality.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -191,7 +191,7 @@
   },
   {
     "id": 20,
-    "name": "Growell",
+    "name": "A2",
     "description": "Promotes healthy plant growth, enhances yield, and improves overall crop quality. Formulated to provide essential nutrients that increase plant resistance and immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -201,7 +201,7 @@
   },
   {
     "id": 21,
-    "name": "Matrix",
+    "name": "A3",
     "description": "Provides highly effective control against a wide range of pests including fall armyworm, green caterpillar, stem borer, pod borer, and root grubs. Protects crops from severe infestations and boosts overall plant immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -211,7 +211,7 @@
   },
   {
     "id": 22,
-    "name": "VajraAyud",
+    "name": "Vajra Ayud",
     "description": "An organic growth promoter that improves plant health, stimulates vigorous cell division, and increases flower and fruit setting. Enhances overall crop yield and vitality.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -231,7 +231,7 @@
   },
   {
     "id": 24,
-    "name": "Zoom Flower",
+    "name": "Anti-Virus",
     "description": "Provides highly effective control against a wide range of pests including fall armyworm, green caterpillar, stem borer, pod borer, and root grubs. Protects crops from severe infestations and boosts overall plant immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -241,7 +241,7 @@
   },
   {
     "id": 25,
-    "name": "Booster Plus",
+    "name": "Ko-Vaccine",
     "description": "An organic growth promoter that improves plant health, stimulates vigorous cell division, and increases flower and fruit setting. Enhances overall crop yield and vitality.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -251,7 +251,7 @@
   },
   {
     "id": 26,
-    "name": "Rantac",
+    "name": "V-Guard",
     "description": "Promotes healthy plant growth, enhances yield, and improves overall crop quality. Formulated to provide essential nutrients that increase plant resistance and immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -261,7 +261,7 @@
   },
   {
     "id": 27,
-    "name": "Neo",
+    "name": "Groweell",
     "description": "Provides highly effective control against a wide range of pests including fall armyworm, green caterpillar, stem borer, pod borer, and root grubs. Protects crops from severe infestations and boosts overall plant immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -271,7 +271,7 @@
   },
   {
     "id": 28,
-    "name": "Humic Gold",
+    "name": "Matrix",
     "description": "An organic growth promoter that improves plant health, stimulates vigorous cell division, and increases flower and fruit setting. Enhances overall crop yield and vitality.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -281,7 +281,7 @@
   },
   {
     "id": 29,
-    "name": "Spark",
+    "name": "Amino",
     "description": "Promotes healthy plant growth, enhances yield, and improves overall crop quality. Formulated to provide essential nutrients that increase plant resistance and immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -291,7 +291,7 @@
   },
   {
     "id": 30,
-    "name": "Eco Black Gold",
+    "name": "Hi-Grow",
     "description": "Provides highly effective control against a wide range of pests including fall armyworm, green caterpillar, stem borer, pod borer, and root grubs. Protects crops from severe infestations and boosts overall plant immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -301,7 +301,7 @@
   },
   {
     "id": 31,
-    "name": "Double",
+    "name": "Brand Plus",
     "description": "An organic growth promoter that improves plant health, stimulates vigorous cell division, and increases flower and fruit setting. Enhances overall crop yield and vitality.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -311,7 +311,7 @@
   },
   {
     "id": 32,
-    "name": "Amino Plus",
+    "name": "Cozent",
     "description": "Promotes healthy plant growth, enhances yield, and improves overall crop quality. Formulated to provide essential nutrients that increase plant resistance and immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -321,7 +321,7 @@
   },
   {
     "id": 33,
-    "name": "High Grow",
+    "name": "Zoom Flower",
     "description": "Provides highly effective control against a wide range of pests including fall armyworm, green caterpillar, stem borer, pod borer, and root grubs. Protects crops from severe infestations and boosts overall plant immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -331,7 +331,7 @@
   },
   {
     "id": 34,
-    "name": "Brand Plus",
+    "name": "Booster Plus",
     "description": "An organic growth promoter that improves plant health, stimulates vigorous cell division, and increases flower and fruit setting. Enhances overall crop yield and vitality.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -341,7 +341,7 @@
   },
   {
     "id": 35,
-    "name": "Cozent",
+    "name": "Rantac Plus",
     "description": "Promotes healthy plant growth, enhances yield, and improves overall crop quality. Formulated to provide essential nutrients that increase plant resistance and immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -351,7 +351,7 @@
   },
   {
     "id": 36,
-    "name": "Black Magic",
+    "name": "Neo",
     "description": "Provides highly effective control against a wide range of pests including fall armyworm, green caterpillar, stem borer, pod borer, and root grubs. Protects crops from severe infestations and boosts overall plant immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -361,7 +361,7 @@
   },
   {
     "id": 37,
-    "name": "Total 9",
+    "name": "Humic Gold",
     "description": "An organic growth promoter that improves plant health, stimulates vigorous cell division, and increases flower and fruit setting. Enhances overall crop yield and vitality.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -371,7 +371,7 @@
   },
   {
     "id": 38,
-    "name": "Diamond",
+    "name": "Spark",
     "description": "Promotes healthy plant growth, enhances yield, and improves overall crop quality. Formulated to provide essential nutrients that increase plant resistance and immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -381,7 +381,7 @@
   },
   {
     "id": 39,
-    "name": "Nexon",
+    "name": "Eco",
     "description": "Provides highly effective control against a wide range of pests including fall armyworm, green caterpillar, stem borer, pod borer, and root grubs. Protects crops from severe infestations and boosts overall plant immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -391,7 +391,7 @@
   },
   {
     "id": 40,
-    "name": "Rooter",
+    "name": "Double",
     "description": "An organic growth promoter that improves plant health, stimulates vigorous cell division, and increases flower and fruit setting. Enhances overall crop yield and vitality.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -401,7 +401,7 @@
   },
   {
     "id": 41,
-    "name": "Rize",
+    "name": "Rooter",
     "description": "Promotes healthy plant growth, enhances yield, and improves overall crop quality. Formulated to provide essential nutrients that increase plant resistance and immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -411,7 +411,7 @@
   },
   {
     "id": 42,
-    "name": "M-Cott",
+    "name": "Rize",
     "description": "Provides highly effective control against a wide range of pests including fall armyworm, green caterpillar, stem borer, pod borer, and root grubs. Protects crops from severe infestations and boosts overall plant immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -421,7 +421,7 @@
   },
   {
     "id": 43,
-    "name": "G-Cott",
+    "name": "M-Coot",
     "description": "An organic growth promoter that improves plant health, stimulates vigorous cell division, and increases flower and fruit setting. Enhances overall crop yield and vitality.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -431,7 +431,7 @@
   },
   {
     "id": 44,
-    "name": "Cotton King",
+    "name": "G-Cot",
     "description": "Promotes healthy plant growth, enhances yield, and improves overall crop quality. Formulated to provide essential nutrients that increase plant resistance and immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -441,7 +441,7 @@
   },
   {
     "id": 45,
-    "name": "Kajana",
+    "name": "Black Maic",
     "description": "Provides highly effective control against a wide range of pests including fall armyworm, green caterpillar, stem borer, pod borer, and root grubs. Protects crops from severe infestations and boosts overall plant immunity.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -451,7 +451,7 @@
   },
   {
     "id": 46,
-    "name": "Patera",
+    "name": "Total9",
     "description": "An organic growth promoter that improves plant health, stimulates vigorous cell division, and increases flower and fruit setting. Enhances overall crop yield and vitality.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -461,7 +461,7 @@
   },
   {
     "id": 47,
-    "name": "Prinstan Product 47",
+    "name": "Diamond",
     "description": "This is a high-quality agricultural product by Prinstan Agri Care. Please refer to the package for detailed usage instructions.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -471,7 +471,7 @@
   },
   {
     "id": 48,
-    "name": "Prinstan Product 48",
+    "name": "Nexon",
     "description": "This is a high-quality agricultural product by Prinstan Agri Care. Please refer to the package for detailed usage instructions.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -481,7 +481,7 @@
   },
   {
     "id": 49,
-    "name": "Prinstan Product 49",
+    "name": "Cotton King Plus",
     "description": "This is a high-quality agricultural product by Prinstan Agri Care. Please refer to the package for detailed usage instructions.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -491,7 +491,7 @@
   },
   {
     "id": 50,
-    "name": "Prinstan Product 50",
+    "name": "Khajana",
     "description": "This is a high-quality agricultural product by Prinstan Agri Care. Please refer to the package for detailed usage instructions.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -501,7 +501,7 @@
   },
   {
     "id": 51,
-    "name": "Prinstan Product 51",
+    "name": "Patera",
     "description": "This is a high-quality agricultural product by Prinstan Agri Care. Please refer to the package for detailed usage instructions.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -511,7 +511,7 @@
   },
   {
     "id": 52,
-    "name": "Prinstan Product 52",
+    "name": "Prisol",
     "description": "This is a high-quality agricultural product by Prinstan Agri Care. Please refer to the package for detailed usage instructions.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -521,7 +521,7 @@
   },
   {
     "id": 53,
-    "name": "Prinstan Product 53",
+    "name": "Nutri Pro Max-F6",
     "description": "This is a high-quality agricultural product by Prinstan Agri Care. Please refer to the package for detailed usage instructions.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -531,7 +531,7 @@
   },
   {
     "id": 54,
-    "name": "Prinstan Product 54",
+    "name": "Nutri Pro Zn-33%",
     "description": "This is a high-quality agricultural product by Prinstan Agri Care. Please refer to the package for detailed usage instructions.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -541,7 +541,7 @@
   },
   {
     "id": 55,
-    "name": "Prinstan Product 55",
+    "name": "Vermi Composit",
     "description": "This is a high-quality agricultural product by Prinstan Agri Care. Please refer to the package for detailed usage instructions.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
@@ -551,7 +551,7 @@
   },
   {
     "id": 56,
-    "name": "Prinstan Product 56",
+    "name": "Nutri Pro Max-F4",
     "description": "This is a high-quality agricultural product by Prinstan Agri Care. Please refer to the package for detailed usage instructions.",
     "crop": "Cotton, Chilli, Vegetables & Other Field Crops",
     "dosage": "1 - 1.5 ml per Liter of water",
