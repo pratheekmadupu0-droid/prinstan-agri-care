@@ -6,28 +6,19 @@ import { useTranslation } from 'react-i18next';
 const Products = () => {
   const { t } = useTranslation();
 
-  const products = [
-    { id: 1, name: t('products.items.p1Name'), category: 'Bios', image: '/product_1.jpeg', desc: t('products.items.p1Desc') },
-    { id: 2, name: t('products.items.p2Name'), category: 'Fertilizers', image: '/product_2.jpeg', desc: t('products.items.p2Desc') },
-    { id: 3, name: t('products.items.p3Name'), category: 'Pesticides', image: '/product_3.jpeg', desc: t('products.items.p3Desc') },
-    { id: 4, name: t('products.items.p4Name'), category: 'Bios', image: 'https://images.unsplash.com/photo-1592982537447-6f2a6a0a5015?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', desc: t('products.items.p4Desc') },
-    { id: 5, name: t('products.items.p5Name'), category: 'Fertilizers', image: 'https://images.unsplash.com/photo-1563514253386-4b2a3c748c08?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', desc: t('products.items.p5Desc') },
-    { id: 6, name: t('products.items.p6Name'), category: 'Pesticides', image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', desc: t('products.items.p6Desc') },
-    { id: 7, name: t('products.items.p7Name'), category: 'Fertilizers', image: 'https://images.unsplash.com/photo-1585314062340-f1a5a7c9328d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', desc: t('products.items.p7Desc') },
-    { id: 8, name: t('products.items.p8Name'), category: 'Bios', image: 'https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', desc: t('products.items.p8Desc') },
-    ...Array.from({ length: 56 }, (_, i) => ({
-      id: i + 9,
-      name: `Prinstan Product ${i + 1}`,
-      category: ['Bios', 'Fertilizers', 'Pesticides'][i % 3],
-      image: `/prinstan_products/Prinstan Single Page Mokups_pages-to-jpg-${String(i + 1).padStart(4, '0')}.jpg`,
-      desc: `Prinstan Product Image ${i + 1}`
-    }))
-  ];
+  const products = Array.from({ length: 56 }, (_, i) => ({
+    id: i + 1,
+    name: `Prinstan Product ${i + 1}`,
+    category: ['Bios', 'Fertilizers', 'Pesticides'][i % 3],
+    image: `/prinstan_products/Prinstan Single Page Mokups_pages-to-jpg-${String(i + 1).padStart(4, '0')}.jpg`,
+    desc: `Prinstan Product Image ${i + 1}`
+  }));
 
   const categories = ['All', 'Bios', 'Fertilizers', 'Pesticides'];
 
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const filteredProducts = products.filter(product => {
     const matchesCategory = activeCategory === 'All' || product.category === activeCategory;
@@ -96,7 +87,8 @@ const Products = () => {
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.3 }}
                 key={product.id}
-                className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all group border border-gray-100"
+                className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all group border border-gray-100 cursor-pointer"
+                onClick={() => setSelectedProduct(product)}
               >
                 <div className="relative h-64 overflow-hidden">
                   <img
@@ -127,6 +119,55 @@ const Products = () => {
           </div>
         )}
       </div>
+
+      {/* Product Modal */}
+      <AnimatePresence>
+        {selectedProduct && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            onClick={() => setSelectedProduct(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-3xl overflow-hidden shadow-2xl max-w-3xl w-full flex flex-col md:flex-row relative"
+            >
+              <button
+                onClick={() => setSelectedProduct(null)}
+                className="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:bg-brand-green-600 hover:text-white transition-colors z-10"
+              >
+                ✕
+              </button>
+              
+              <div className="md:w-1/2 h-64 md:h-auto relative">
+                <img
+                  src={selectedProduct.image}
+                  alt={selectedProduct.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              
+              <div className="p-8 md:w-1/2 flex flex-col justify-center">
+                <div className="inline-block bg-brand-green-100 text-brand-green-800 px-3 py-1 rounded-full text-xs font-bold mb-4 w-max">
+                  {t(`products.categories.${selectedProduct.category}`)}
+                </div>
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">{selectedProduct.name}</h2>
+                <p className="text-gray-600 mb-8 leading-relaxed">
+                  {selectedProduct.desc}
+                </p>
+                <button className="w-full flex items-center justify-center gap-2 bg-brand-green-600 text-white hover:bg-brand-green-700 py-4 rounded-xl font-bold transition-all shadow-lg shadow-brand-green-500/30">
+                  <FaShoppingCart /> {t('products.inquiry')}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
