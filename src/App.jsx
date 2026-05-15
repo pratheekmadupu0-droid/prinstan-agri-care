@@ -7,7 +7,7 @@ import Chatbot from './components/Chatbot';
 import Home from './pages/Home';
 import About from './pages/About';
 import Products from './pages/Products';
-import Projects from './pages/Projects';
+import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
 import Dealers from './pages/Dealers';
 
@@ -30,7 +30,7 @@ function AnimatedRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/products" element={<Products />} />
-        <Route path="/projects" element={<Projects />} />
+        <Route path="/gallery" element={<Gallery />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/dealers" element={<Dealers />} />
       </Routes>
