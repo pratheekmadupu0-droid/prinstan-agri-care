@@ -167,50 +167,81 @@ const Dealers = () => {
         <p className="text-gray-300 max-w-xl mx-auto">Browse our trusted dealer network and connect for your requirements.</p>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 p-6">
-          <div className="flex justify-between items-center mb-8 flex-wrap gap-4">
-            <h2 className="text-2xl font-bold text-gray-800">Dealer Directory</h2>
-            <div className="flex gap-3">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12">
+        <div className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-gray-100 p-8 md:p-12">
+          <div className="flex justify-between items-center mb-12 flex-wrap gap-6">
+            <div>
+              <h2 className="text-3xl font-extrabold text-gray-900 flex items-center gap-3">
+                <FaStore className="text-brand-green-600" /> Dealer Directory
+              </h2>
+              <p className="text-gray-500 mt-2 font-medium">Currently showing {dealers.length} verified distribution partners</p>
+            </div>
+            
+            <div className="flex gap-4">
               {!user ? (
                 <>
-                  <button onClick={() => setShowLogin(true)} className="text-sm font-bold text-gray-600 hover:text-brand-green-600 px-4 py-2 transition-colors">Login</button>
-                  <button onClick={() => setShowRegister(true)} className="bg-brand-green-600 text-white text-sm font-bold px-6 py-2.5 rounded-full hover:bg-brand-green-700 transition-all">Join Network</button>
+                  <button onClick={() => setShowLogin(true)} className="text-sm font-bold text-gray-600 hover:text-brand-green-600 px-6 py-3 border border-gray-200 rounded-2xl transition-all hover:bg-gray-50">Login</button>
+                  <button onClick={() => setShowRegister(true)} className="bg-brand-green-600 text-white text-sm font-bold px-8 py-3 rounded-2xl hover:bg-brand-green-700 transition-all shadow-lg shadow-brand-green-500/30">Join Network</button>
                 </>
               ) : (
-                <div className="flex items-center gap-4">
-                  <button onClick={() => setShowRegister(true)} className="bg-brand-green-600 text-white text-sm font-bold px-6 py-2.5 rounded-full hover:bg-brand-green-700 transition-all">My Registration</button>
-                  <div className="hidden sm:block">
-                    <span className="text-sm font-bold text-gray-700">{user.displayName || user.email}</span>
+                <div className="flex items-center gap-4 bg-gray-50 p-2 rounded-2xl border border-gray-100">
+                  <button onClick={() => setShowRegister(true)} className="bg-brand-green-600 text-white text-xs font-bold px-5 py-2.5 rounded-xl hover:bg-brand-green-700 transition-all">My Registration</button>
+                  <div className="hidden sm:block px-2">
+                    <span className="text-xs font-bold text-gray-700">{user.displayName || user.email}</span>
                   </div>
-                  <button onClick={handleLogout} className="text-sm font-bold text-red-500 bg-red-50 px-4 py-2 rounded-lg">Logout</button>
+                  <button onClick={handleLogout} className="text-xs font-bold text-red-500 hover:bg-red-50 px-4 py-2.5 rounded-xl transition-colors">Logout</button>
                 </div>
               )}
             </div>
           </div>
 
           {isLoading ? (
-            <div className="py-20 text-center"><div className="animate-spin h-10 w-10 border-b-2 border-brand-green-600 mx-auto"></div></div>
+            <div className="py-32 text-center">
+              <div className="animate-spin h-12 w-12 border-4 border-brand-green-200 border-t-brand-green-600 rounded-full mx-auto"></div>
+              <p className="mt-4 text-gray-400 font-bold">Connecting to Dealer Network...</p>
+            </div>
           ) : dealers.length === 0 ? (
-            <div className="py-20 text-center text-gray-400">No dealers registered yet.</div>
+            <div className="py-32 text-center bg-gray-50 rounded-[2rem] border-2 border-dashed border-gray-200">
+              <FaStore className="text-6xl text-gray-200 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-gray-400">No dealers registered in this region yet.</h3>
+              <p className="text-gray-400 mt-2">Be the first to join our growing network!</p>
+            </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {dealers.map(dealer => (
                 <motion.div 
                   key={dealer.id}
-                  whileHover={{ y: -5 }}
+                  whileHover={{ y: -8 }}
                   onClick={() => setSelectedDealer(dealer)}
-                  className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md cursor-pointer transition-all"
+                  className="group bg-white border border-gray-100 rounded-[2rem] p-8 shadow-sm hover:shadow-2xl cursor-pointer transition-all relative overflow-hidden"
                 >
-                  <div className="bg-brand-green-50 w-12 h-12 rounded-xl flex items-center justify-center mb-4 text-brand-green-600 text-xl">
-                    <FaStore />
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">{dealer.name}</h3>
-                  <p className="text-gray-500 text-sm flex items-center gap-1 mb-4">
-                    <FaMapMarkerAlt className="text-brand-green-500" /> {dealer.area}
-                  </p>
-                  <div className="flex items-center gap-2 text-brand-green-600 font-bold text-sm">
-                    View Details & Contact →
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-brand-green-50 rounded-bl-[4rem] -mr-16 -mt-16 group-hover:scale-110 transition-transform"></div>
+                  
+                  <div className="relative z-10">
+                    <div className="flex justify-between items-start mb-6">
+                      <div className="bg-brand-green-600 w-14 h-14 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg shadow-brand-green-500/20">
+                        <FaStore />
+                      </div>
+                      <span className="text-[10px] font-bold bg-brand-green-100 text-brand-green-700 px-3 py-1 rounded-full uppercase tracking-widest">Verified</span>
+                    </div>
+
+                    <h3 className="text-xl font-black text-gray-900 mb-2 leading-tight group-hover:text-brand-green-600 transition-colors">{dealer.name}</h3>
+                    <p className="text-gray-500 text-sm flex items-center gap-2 mb-6 font-medium">
+                      <FaMapMarkerAlt className="text-brand-green-500" /> {dealer.area}
+                    </p>
+
+                    <div className="flex items-center justify-between pt-6 border-t border-gray-50">
+                      <div className="flex -space-x-2">
+                        {[1,2,3].map(i => (
+                          <div key={i} className="w-8 h-8 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-gray-400">
+                            {i === 1 ? 'B' : i === 2 ? 'F' : 'P'}
+                          </div>
+                        ))}
+                      </div>
+                      <div className="text-brand-green-600 font-bold text-sm flex items-center gap-2">
+                        View Details <FaInfoCircle />
+                      </div>
+                    </div>
                   </div>
                 </motion.div>
               ))}
