@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FaMapMarkerAlt, FaBoxOpen, 
-  FaTimes, FaGoogle, FaWhatsapp, FaStore
+  FaTimes, FaGoogle, FaWhatsapp, FaStore, FaInfoCircle
 } from 'react-icons/fa';
 import SEO from '../components/SEO';
 import { auth, googleProvider, db } from '../firebase';
@@ -282,22 +282,22 @@ const Dealers = () => {
                   </h4>
                   <div className="grid grid-cols-3 gap-2 text-center">
                     <div>
-                      <div className="text-xl font-bold text-brand-green-600 leading-none">{selectedDealer.stock.bios}</div>
+                      <div className="text-xl font-bold text-brand-green-600 leading-none">{selectedDealer.stock?.bios || 0}</div>
                       <div className="text-[10px] text-gray-500 mt-1 uppercase font-bold">Bios</div>
                     </div>
                     <div>
-                      <div className="text-xl font-bold text-brand-green-600 leading-none">{selectedDealer.stock.fertilizers}</div>
+                      <div className="text-xl font-bold text-brand-green-600 leading-none">{selectedDealer.stock?.fertilizers || 0}</div>
                       <div className="text-[10px] text-gray-500 mt-1 uppercase font-bold">Fert</div>
                     </div>
                     <div>
-                      <div className="text-xl font-bold text-brand-green-600 leading-none">{selectedDealer.stock.pesticides}</div>
+                      <div className="text-xl font-bold text-brand-green-600 leading-none">{selectedDealer.stock?.pesticides || 0}</div>
                       <div className="text-[10px] text-gray-500 mt-1 uppercase font-bold">Pest</div>
                     </div>
                   </div>
                 </div>
 
                 <a 
-                  href={`https://wa.me/${selectedDealer.phone.replace(/[^0-9]/g, '')}?text=Hello ${selectedDealer.name}, I am interested in Prinstan products.`}
+                  href={`https://wa.me/${(selectedDealer.phone || '').replace(/[^0-9]/g, '')}?text=Hello ${selectedDealer.name}, I am interested in Prinstan products.`}
                   target="_blank" rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 bg-[#25D366] text-white py-4 rounded-2xl font-bold shadow-lg shadow-green-500/30 hover:bg-[#128C7E] transition-all"
                 >
