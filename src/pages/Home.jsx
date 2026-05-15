@@ -47,19 +47,28 @@ const Home = () => {
         keywords="Prinstan, Prinstan Agri Care, Prinstan Agri Care Pvt Ltd, agriculture company India, fertilizers, crop care, agri products, farming innovation"
         url="/"
       />
-      {/* Hero Section */}
+      {/* Clean Intro Video Section */}
+      <section className="relative w-full h-[60vh] md:h-screen overflow-hidden bg-black">
+        <video 
+          autoPlay 
+          muted 
+          loop 
+          playsInline 
+          className="w-full h-full object-cover"
+        >
+          <source src="/intro.mp4" type="video/mp4" />
+        </video>
+      </section>
+
+      {/* Hero Section with Text and Background Image */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <video 
-            autoPlay 
-            muted 
-            loop 
-            playsInline 
-            className="w-full h-full object-cover opacity-60"
-          >
-            <source src="/intro.mp4" type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-brand-green-900/40"></div>
+        <div className="absolute inset-0">
+          <img 
+            src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" 
+            alt="Farming Background" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/50"></div>
         </div>
         
         <div className="relative z-10 text-center text-white px-4 max-w-5xl mx-auto">
