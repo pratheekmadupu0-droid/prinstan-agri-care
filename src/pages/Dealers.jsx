@@ -145,29 +145,43 @@ const Dealers = () => {
     }
 
     setIsRegistering(true);
+    console.log("Registration process started for:", user.email);
+
+    // Create a timeout to prevent infinite "Registering..." state
+    const timeoutId = setTimeout(() => {
+      if (isRegistering) {
+        setIsRegistering(false);
+        alert("Registration is taking too long. \n\nPossible reasons:\n1. Firestore Database is not 'Created'.\n2. Security Rules are blocking the write.\n3. Slow internet connection.");
+      }
+    }, 10000);
+
     try {
       const newDealer = {
-        name: formData.name,
-        area: formData.area,
-        phone: formData.phone,
+        name: formData.name || "Unnamed Dealer",
+        area: formData.area || "Unknown Area",
+        phone: formData.phone || "",
         stock: formData.stock,
         email: user.email,
         uid: user.uid,
-        // Assigning a random location near Hyderabad
         lat: 17.3850 + (Math.random() - 0.5) * 0.2,
         lng: 78.4867 + (Math.random() - 0.5) * 0.2,
         createdAt: new Date().toISOString()
       };
 
-      console.log("Submitting dealer registration:", newDealer);
-      await setDoc(doc(db, "dealers", user.uid), newDealer);
+      console.log("Attempting to save to Firestore...", newDealer);
       
-      alert("Registration Successful! You are now a part of the Prinstan Dealer Network.");
+      const dealerDocRef = doc(db, "dealers", user.uid);
+      await setDoc(dealerDocRef, newDealer);
+      
+      clearTimeout(timeoutId);
+      console.log("Firestore save successful!");
+      alert("Registration Successful! Your dealership has been added to the map.");
       setShowRegister(false);
-      fetchDealers(); // Refresh list
+      fetchDealers(); 
     } catch (error) {
-      console.error("Registration failed:", error);
-      alert(`Failed to register: ${error.message}`);
+      clearTimeout(timeoutId);
+      console.error("CRITICAL REGISTRATION ERROR:", error);
+      alert(`Registration failed error: ${error.message}\n\nPlease check your Firebase Console Rules.`);
     } finally {
       setIsRegistering(false);
     }
