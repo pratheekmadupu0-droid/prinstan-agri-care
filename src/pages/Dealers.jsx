@@ -179,7 +179,10 @@ const Dealers = () => {
                 </>
               ) : (
                 <div className="flex items-center gap-4">
-                  <span className="text-sm font-bold text-gray-700">{user.displayName || user.email}</span>
+                  <button onClick={() => setShowRegister(true)} className="bg-brand-green-600 text-white text-sm font-bold px-6 py-2.5 rounded-full hover:bg-brand-green-700 transition-all">My Registration</button>
+                  <div className="hidden sm:block">
+                    <span className="text-sm font-bold text-gray-700">{user.displayName || user.email}</span>
+                  </div>
                   <button onClick={handleLogout} className="text-sm font-bold text-red-500 bg-red-50 px-4 py-2 rounded-lg">Logout</button>
                 </div>
               )}
