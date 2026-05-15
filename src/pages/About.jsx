@@ -1,5 +1,6 @@
-import { motion } from 'framer-motion';
-import { FaEye, FaBullseye, FaHandshake, FaLeaf, FaGlobe } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaEye, FaBullseye, FaHandshake, FaLeaf, FaGlobe, FaTimes, FaLinkedin, FaEnvelope, FaInfoCircle } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import SEO from '../components/SEO';
 
@@ -10,12 +11,33 @@ const fadeIn = {
 
 const About = () => {
   const { t } = useTranslation();
+  const [selectedMember, setSelectedMember] = useState(null);
 
   const team = [
-    { name: 'Managing Director', role: t('about.roles.ceo'), image: '/md_image.jpeg' },
-    { name: 'GM', role: t('about.roles.gm'), image: '' },
-    { name: 'AGM', role: t('about.roles.agm'), image: '' },
-    { name: 'Branch Manager', role: t('about.roles.branchManager'), image: '' },
+    { 
+      name: 'Pratheek Madupu', 
+      role: 'Managing Director', 
+      image: '/md_image.jpeg',
+      bio: "Leading Prinstan Agri Care with a vision to revolutionize Indian agriculture through sustainable technology and premium crop solutions since 2017."
+    },
+    { 
+      name: 'General Manager', 
+      role: 'GM', 
+      image: '',
+      bio: "Overseeing day-to-day operations and ensuring the highest standards of quality across all Prinstan distribution channels."
+    },
+    { 
+      name: 'Asst. General Manager', 
+      role: 'AGM', 
+      image: '',
+      bio: "Supporting strategic growth and managing regional dealer networks to empower local farmers."
+    },
+    { 
+      name: 'Branch Manager', 
+      role: 'BM', 
+      image: '',
+      bio: "Dedicated to local outreach and ensuring farmers have immediate access to our latest innovations."
+    },
   ];
 
   const values = [
@@ -32,14 +54,14 @@ const About = () => {
       className="bg-gray-50 pb-20"
     >
       <SEO 
-        title="About Us | Prinstan Agri Care Pvt Ltd | Agriculture Company India"
-        description="Learn about Prinstan Agri Care Pvt Ltd, our mission to transform Indian agriculture, and our premium crop care and fertilizer solutions."
-        keywords="About Prinstan Agri Care, agriculture company India, crop protection, fertilizers, farming support"
+        title="About Us | Prinstan Agri Care Pvt Ltd"
+        description="Learn about Prinstan Agri Care Pvt Ltd, established in 2017, and our mission to transform Indian agriculture."
         url="/about"
       />
+      
       {/* Page Header */}
       <div className="bg-brand-brown-900 text-white py-24 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80')] bg-cover bg-center"></div>
+        <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center"></div>
         <div className="max-w-7xl mx-auto relative z-10 text-center">
           <motion.h1 
             initial={{ y: 20, opacity: 0 }}
@@ -54,7 +76,7 @@ const About = () => {
             transition={{ delay: 0.2 }}
             className="text-xl text-gray-300 max-w-2xl mx-auto"
           >
-            {t('about.subtitle')}
+            Growing together since 2017
           </motion.p>
         </div>
       </div>
@@ -69,114 +91,130 @@ const About = () => {
             variants={fadeIn}
           >
             <h2 className="text-3xl font-bold text-gray-900 mb-6 border-l-4 border-brand-green-500 pl-4">{t('about.ourStory')}</h2>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              {t('about.story1')}
+            <p className="text-gray-600 mb-4 leading-relaxed text-lg">
+              Established in **2017**, Prinstan Agri Care Pvt Ltd was founded with a deep-rooted commitment to serving the Indian farming community. What began as a local vision has blossomed into a trusted name in high-quality agricultural solutions.
             </p>
             <p className="text-gray-600 leading-relaxed">
-              {t('about.story2')}
+              We focus on delivering premium crop protection and nutrient management products that help farmers achieve record-breaking yields while maintaining soil health for future generations.
             </p>
           </motion.div>
           <motion.div 
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="relative h-96 rounded-2xl overflow-hidden shadow-2xl"
+            className="relative h-[450px] rounded-3xl overflow-hidden shadow-2xl border-8 border-white"
           >
-            <img src="https://images.unsplash.com/photo-1592982537447-6f2a6a0a5015?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Farming field" className="w-full h-full object-cover" />
+            <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Farming field" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+            <div className="absolute bottom-6 left-6 text-white">
+              <p className="text-sm font-bold uppercase tracking-widest opacity-80">Our Roots</p>
+              <h3 className="text-2xl font-bold">Innovation in every field</h3>
+            </div>
           </motion.div>
-        </div>
-      </div>
-
-      {/* Vision & Mission */}
-      <div className="bg-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <motion.div 
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeIn}
-              className="bg-brand-green-50 p-10 rounded-2xl border border-brand-green-100"
-            >
-              <FaEye className="text-5xl text-brand-green-600 mb-6" />
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">{t('about.vision')}</h3>
-              <p className="text-gray-600 leading-relaxed">{t('about.visionDesc')}</p>
-            </motion.div>
-            <motion.div 
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeIn}
-              className="bg-brand-brown-50 p-10 rounded-2xl border border-brand-brown-100"
-            >
-              <FaBullseye className="text-5xl text-brand-brown-600 mb-6" />
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">{t('about.mission')}</h3>
-              <p className="text-gray-600 leading-relaxed">{t('about.missionDesc')}</p>
-            </motion.div>
-          </div>
-        </div>
-      </div>
-
-      {/* Values */}
-      <div className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900">{t('about.coreValues')}</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {values.map((value, idx) => (
-              <motion.div 
-                key={idx}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0, transition: { delay: idx * 0.2 } }
-                }}
-                className="bg-white p-8 rounded-2xl shadow-lg text-center"
-              >
-                <div className="w-16 h-16 mx-auto bg-brand-green-100 rounded-full flex items-center justify-center text-2xl text-brand-green-600 mb-6">
-                  {value.icon}
-                </div>
-                <h4 className="text-xl font-bold text-gray-900 mb-3">{value.title}</h4>
-                <p className="text-gray-600">{value.desc}</p>
-              </motion.div>
-            ))}
-          </div>
         </div>
       </div>
 
       {/* Team Section */}
-      <div className="bg-white py-20">
+      <div className="bg-white py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('about.leadership')}</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">{t('about.leadershipSub')}</p>
+            <p className="text-gray-600 max-w-2xl mx-auto">Click on any card to learn more about our leadership team.</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {team.map((member, idx) => (
               <motion.div 
                 key={idx}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-                className="group relative overflow-hidden rounded-2xl shadow-lg"
+                whileHover={{ y: -10 }}
+                onClick={() => setSelectedMember(member)}
+                className="group relative overflow-hidden rounded-3xl shadow-xl cursor-pointer aspect-[3/4]"
               >
                 {member.image ? (
-                  <img src={member.image} alt={member.name} className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110" />
+                  <img src={member.image} alt={member.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
                 ) : (
-                  <div className="w-full h-80 bg-gray-200 flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
-                    <span className="text-gray-400 text-5xl">👤</span>
+                  <div className="w-full h-full bg-gradient-to-br from-brand-green-100 to-brand-brown-100 flex items-center justify-center">
+                    <span className="text-gray-400 text-6xl opacity-30">👤</span>
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6">
-                  <h4 className="text-xl font-bold text-white mb-1">{member.name}</h4>
-                  <p className="text-brand-green-400 font-medium">{member.role}</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-brand-brown-900/90 via-transparent to-transparent flex flex-col justify-end p-8 translate-y-4 group-hover:translate-y-0 transition-transform">
+                  <h4 className="text-2xl font-bold text-white mb-1">{member.name}</h4>
+                  <p className="text-brand-green-400 font-bold text-sm uppercase tracking-wider">{member.role}</p>
+                  <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-white text-xs bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm">View Profile</span>
+                  </div>
                 </div>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Leadership Modal */}
+      <AnimatePresence>
+        {selectedMember && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-white rounded-[2rem] shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col md:flex-row relative"
+            >
+              <button 
+                onClick={() => setSelectedMember(null)}
+                className="absolute top-6 right-6 z-10 bg-white/10 hover:bg-white/20 p-2 rounded-full text-white md:text-gray-400 transition-colors"
+              >
+                <FaTimes size={24} />
+              </button>
+
+              <div className="md:w-1/2 h-80 md:h-auto relative">
+                {selectedMember.image ? (
+                  <img src={selectedMember.image} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-brand-green-100 flex items-center justify-center text-8xl">👤</div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:hidden"></div>
+              </div>
+
+              <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+                <span className="text-brand-green-600 font-bold text-xs uppercase tracking-widest mb-2 block">{selectedMember.role}</span>
+                <h2 className="text-4xl font-extrabold text-gray-900 mb-6">{selectedMember.name}</h2>
+                <div className="w-12 h-1.5 bg-brand-green-500 mb-8 rounded-full"></div>
+                <p className="text-gray-600 leading-relaxed text-lg mb-8 italic">
+                  "{selectedMember.bio}"
+                </p>
+                <div className="flex gap-4">
+                  <button className="bg-brand-green-600 text-white p-3 rounded-xl hover:bg-brand-green-700 transition-colors">
+                    <FaLinkedin size={20} />
+                  </button>
+                  <button className="bg-gray-100 text-gray-600 p-3 rounded-xl hover:bg-gray-200 transition-colors">
+                    <FaEnvelope size={20} />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Vision & Mission */}
+      <div className="bg-gray-100 py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <motion.div variants={fadeIn} className="bg-white p-12 rounded-[2.5rem] shadow-xl border border-gray-100">
+              <FaEye className="text-6xl text-brand-green-600 mb-8" />
+              <h3 className="text-3xl font-bold text-gray-900 mb-6">{t('about.vision')}</h3>
+              <p className="text-gray-600 leading-relaxed text-lg">{t('about.visionDesc')}</p>
+            </motion.div>
+            <motion.div variants={fadeIn} className="bg-white p-12 rounded-[2.5rem] shadow-xl border border-gray-100">
+              <FaBullseye className="text-6xl text-brand-brown-600 mb-8" />
+              <h3 className="text-3xl font-bold text-gray-900 mb-6">{t('about.mission')}</h3>
+              <p className="text-gray-600 leading-relaxed text-lg">{t('about.missionDesc')}</p>
+            </motion.div>
           </div>
         </div>
       </div>
