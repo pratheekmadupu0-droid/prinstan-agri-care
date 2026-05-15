@@ -7,7 +7,7 @@ import {
 import SEO from '../components/SEO';
 import { auth, googleProvider, db } from '../firebase';
 import { signInWithPopup, onAuthStateChanged, signOut, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth';
-import { doc, setDoc, collection, onSnapshot } from 'firebase/firestore';
+import { ref, set, onValue } from 'firebase/database';
 
 const Dealers = () => {
   const [user, setUser] = useState(null);
@@ -36,13 +36,19 @@ const Dealers = () => {
   const [dealers, setDealers] = useState([]);
 
   useEffect(() => {
-    // Real-time listener for dealers
-    const unsubscribeDealers = onSnapshot(collection(db, "dealers"), (snapshot) => {
-      const dealersList = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setDealers(dealersList);
+    // Real-time listener for dealers (Realtime Database version)
+    const dealersRef = ref(db, 'dealers');
+    const unsubscribeDealers = onValue(dealersRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const dealersList = Object.keys(data).map(key => ({
+          id: key,
+          ...data[key]
+        }));
+        setDealers(dealersList);
+      } else {
+        setDealers([]);
+      }
       setIsLoading(false);
     }, (error) => {
       console.error("Error listening to dealers:", error);
@@ -68,6 +74,7 @@ const Dealers = () => {
     });
 
     return () => {
+      // unsubscribeDealers is a cleanup function returned by onValue? No, onValue returns a function to unsubscribe.
       unsubscribeDealers();
       unsubscribeAuth();
     };
@@ -129,13 +136,6 @@ const Dealers = () => {
     if (!user) return;
     setIsRegistering(true);
     
-    const timeoutId = setTimeout(() => {
-      if (isRegistering) {
-        setIsRegistering(false);
-        alert("Registration timeout. Check Firebase Console.");
-      }
-    }, 10000);
-
     try {
       const newDealer = {
         name: formData.name,
@@ -146,12 +146,11 @@ const Dealers = () => {
         uid: user.uid,
         createdAt: new Date().toISOString()
       };
-      await setDoc(doc(db, "dealers", user.uid), newDealer);
-      clearTimeout(timeoutId);
+      // Save to Realtime Database
+      await set(ref(db, 'dealers/' + user.uid), newDealer);
       alert("Registration Successful!");
       setShowRegister(false);
     } catch (error) {
-      clearTimeout(timeoutId);
       alert(`Registration failed: ${error.message}`);
     } finally {
       setIsRegistering(false);
