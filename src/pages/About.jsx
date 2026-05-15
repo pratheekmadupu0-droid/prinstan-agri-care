@@ -176,7 +176,9 @@ const About = () => {
                 {selectedMember.name === 'C. Viswanth Reddy' ? (
                   <video 
                     autoPlay 
-                    controls 
+                    loop
+                    muted
+                    playsInline 
                     className="w-full h-full object-cover"
                   >
                     <source src="/md.mp4" type="video/mp4" />
