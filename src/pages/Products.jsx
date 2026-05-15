@@ -35,12 +35,29 @@ const Products = () => {
         keywords="Prinstan products, agri products, fertilizers, pesticides, crop care, Prinstan Agri Care"
         url="/products"
       />
-      {/* Page Header */}
-      <div className="bg-brand-green-900 text-white py-20 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center"></div>
-        <div className="max-w-7xl mx-auto relative z-10 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">{t('products.title')}</h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">{t('products.subtitle')}</p>
+      {/* Page Header with Video */}
+      <div className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <video 
+            autoPlay 
+            muted 
+            loop 
+            playsInline 
+            className="w-full h-full object-cover"
+          >
+            <source src="/products.mp4" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-brand-green-900/40 backdrop-blur-[2px]"></div>
+        </div>
+        <div className="max-w-7xl mx-auto relative z-10 text-center px-4">
+          <motion.h1 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-5xl md:text-7xl font-black text-white mb-6 drop-shadow-2xl"
+          >
+            {t('products.title')}
+          </motion.h1>
+          <p className="text-xl md:text-2xl text-brand-green-50 max-w-2xl mx-auto font-medium drop-shadow-lg">{t('products.subtitle')}</p>
         </div>
       </div>
 

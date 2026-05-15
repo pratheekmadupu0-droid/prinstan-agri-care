@@ -49,8 +49,17 @@ const Home = () => {
       />
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center">
-          <div className="absolute inset-0 bg-black/40"></div>
+        <div className="absolute inset-0 z-0">
+          <video 
+            autoPlay 
+            muted 
+            loop 
+            playsInline 
+            className="w-full h-full object-cover opacity-60"
+          >
+            <source src="/intro.mp4" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-brand-green-900/40"></div>
         </div>
         
         <div className="relative z-10 text-center text-white px-4 max-w-5xl mx-auto">
