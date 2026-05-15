@@ -4,7 +4,7 @@ import {
   FaBox, FaImages, FaUsers, FaChartLine, 
   FaPlus, FaTrash, FaEdit, FaSave, 
   FaSignOutAlt, FaLock, FaUpload, FaCheckCircle,
-  FaArrowLeft, FaEye, FaSync
+  FaArrowLeft, FaEye, FaSync, FaTimes
 } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, db, storage } from '../firebase';
@@ -29,13 +29,13 @@ const Admin = () => {
     name: '', category: 'Bios', description: '', 
     crop: '', dosage: '', packing: '', image: ''
   });
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       if (u) {
-        // You can add an admin email check here
-        // if (u.email === 'admin@prinstan.com') { ... }
         setUser(u);
       } else {
         setUser(null);
@@ -112,16 +112,43 @@ const Admin = () => {
     }
   };
 
-  const addProduct = async (e) => {
+  const saveProduct = async (e) => {
     e.preventDefault();
     try {
       const prodRef = ref(db, 'products');
-      await push(prodRef, newProduct);
-      setNewProduct({ name: '', category: 'Bios', description: '', crop: '', dosage: '', packing: '', image: '' });
-      alert("Product added!");
+      if (isEditing && editId) {
+        await set(ref(db, `products/${editId}`), newProduct);
+        alert("Product updated!");
+      } else {
+        await push(prodRef, newProduct);
+        alert("Product added!");
+      }
+      resetForm();
     } catch (err) {
-      alert("Failed to add product");
+      alert("Failed to save product");
     }
+  };
+
+  const resetForm = () => {
+    setNewProduct({ name: '', category: 'Bios', description: '', crop: '', dosage: '', packing: '', image: '' });
+    setIsEditing(false);
+    setEditId(null);
+  };
+
+  const handleEditClick = (p) => {
+    setNewProduct({
+      name: p.name || '',
+      category: p.category || 'Bios',
+      description: p.description || p.desc || '',
+      crop: p.crop || '',
+      dosage: p.dosage || '',
+      packing: p.packing || '',
+      image: p.image || ''
+    });
+    setIsEditing(true);
+    setEditId(p.id);
+    // Scroll to top of form
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const deleteProduct = async (id) => {
@@ -131,15 +158,23 @@ const Admin = () => {
   };
 
   const syncProducts = async () => {
-    if (window.confirm("This will import all products from the local file to the database. Continue?")) {
+    if (window.confirm("This will import all products from the local file to the database. Already existing products in database will be kept. Continue?")) {
       const prodRef = ref(db, 'products');
       const updates = {};
       productsData.forEach(p => {
-        const newKey = push(prodRef).key;
-        updates[newKey] = p;
+        // Check if product already exists by name to avoid duplicates
+        const exists = products.find(existing => existing.name === p.name);
+        if (!exists) {
+          const newKey = push(prodRef).key;
+          updates[newKey] = p;
+        }
       });
-      await update(prodRef, updates);
-      alert("Sync Complete!");
+      if (Object.keys(updates).length > 0) {
+        await update(prodRef, updates);
+        alert("Sync Complete! New products added.");
+      } else {
+        alert("No new products to sync.");
+      }
     }
   };
 
@@ -265,10 +300,19 @@ const Admin = () => {
               </div>
               
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                {/* Add Form */}
+                {/* Add/Edit Form */}
                 <div className="lg:col-span-1 bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm sticky top-10 h-fit">
-                  <h3 className="text-xl font-bold mb-6 flex items-center gap-2"><FaPlus className="text-brand-green-600" /> New Product</h3>
-                  <form onSubmit={addProduct} className="space-y-4">
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-xl font-bold flex items-center gap-2">
+                      {isEditing ? <><FaEdit className="text-brand-green-600" /> Edit Product</> : <><FaPlus className="text-brand-green-600" /> New Product</>}
+                    </h3>
+                    {isEditing && (
+                      <button onClick={resetForm} className="text-gray-400 hover:text-red-500 transition-colors">
+                        <FaTimes />
+                      </button>
+                    )}
+                  </div>
+                  <form onSubmit={saveProduct} className="space-y-4">
                     <input required placeholder="Product Name" value={newProduct.name} onChange={e => setNewProduct({...newProduct, name: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-gray-100 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-brand-green-500 outline-none transition-all font-medium" />
                     <select value={newProduct.category} onChange={e => setNewProduct({...newProduct, category: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-gray-100 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-brand-green-500 outline-none transition-all font-medium">
                       <option>Bios</option><option>Fertilizers</option><option>Pesticides</option>
@@ -294,7 +338,12 @@ const Admin = () => {
                       )}
                     </div>
 
-                    <button type="submit" className="w-full bg-brand-green-600 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-brand-green-700 transition-all">Create Product</button>
+                    <button type="submit" className="w-full bg-brand-green-600 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-brand-green-700 transition-all">
+                      {isEditing ? 'Save Changes' : 'Create Product'}
+                    </button>
+                    {isEditing && (
+                      <button type="button" onClick={resetForm} className="w-full bg-gray-100 text-gray-600 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all">Cancel</button>
+                    )}
                   </form>
                 </div>
 
@@ -308,7 +357,7 @@ const Admin = () => {
                         <p className="text-xs text-brand-green-600 font-bold uppercase">{p.category}</p>
                       </div>
                       <div className="flex gap-2">
-                        <button className="p-3 text-gray-400 hover:text-brand-green-600 hover:bg-brand-green-50 rounded-xl transition-all"><FaEdit /></button>
+                        <button onClick={() => handleEditClick(p)} className="p-3 text-gray-400 hover:text-brand-green-600 hover:bg-brand-green-50 rounded-xl transition-all"><FaEdit /></button>
                         <button onClick={() => deleteProduct(p.id)} className="p-3 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"><FaTrash /></button>
                       </div>
                     </div>
