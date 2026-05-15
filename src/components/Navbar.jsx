@@ -37,13 +37,12 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'glass py-4 shadow-md' : 'bg-transparent py-6'}`}>
+    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'glass py-3 shadow-md' : 'bg-transparent py-5'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
-          <Link to="/" className="flex flex-col items-center justify-center">
-            <img src="https://i.ibb.co/nsmX0hZp/logo.png" alt="Prinstan Agri Care Logo" className="h-16 w-auto object-contain mb-1" />
-            <span className="font-black text-3xl tracking-[0.15em] text-brand-green-700 leading-none">PRINSTAN</span>
-            <span className="text-xs font-semibold tracking-[0.2em] text-gray-600 uppercase mt-1">Agricare Pvt.Ltd.</span>
+          <Link to="/" className="flex items-center gap-1">
+            <img src="https://i.ibb.co/nsmX0hZp/logo.png" alt="Prinstan Agri Care Logo" className="h-16 w-auto object-contain -translate-y-1.5 -mr-2" />
+            <span className="font-bold text-2xl tracking-tight text-gray-900">Prinstan <span className="text-brand-green-600">Agri Care Pvt. Ltd.</span></span>
           </Link>
 
           {/* Desktop Nav */}
