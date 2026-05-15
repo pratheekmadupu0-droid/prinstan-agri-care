@@ -1,31 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaUserPlus, FaSignInAlt, FaMapMarkerAlt, FaPhoneAlt, FaBoxOpen, FaTimes, FaGoogle } from 'react-icons/fa';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
+import { 
+  FaMapMarkerAlt, FaBoxOpen, 
+  FaTimes, FaGoogle, FaWhatsapp, FaStore
+} from 'react-icons/fa';
 import SEO from '../components/SEO';
 import { auth, googleProvider, db } from '../firebase';
 import { signInWithPopup, onAuthStateChanged, signOut, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth';
-import { doc, getDoc, setDoc, collection, getDocs } from 'firebase/firestore';
-
-// Fix Leaflet's default icon path issues
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-});
+import { doc, setDoc, collection, onSnapshot } from 'firebase/firestore';
 
 const Dealers = () => {
   const [user, setUser] = useState(null);
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [selectedDealer, setSelectedDealer] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   
   // Email Auth States
   const [email, setEmail] = useState("");
   const [isSendingLink, setIsSendingLink] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
 
   // Form states
   const [formData, setFormData] = useState({
@@ -42,10 +36,20 @@ const Dealers = () => {
   const [dealers, setDealers] = useState([]);
 
   useEffect(() => {
-    // Fetch all dealers immediately for everyone
-    fetchDealers();
+    // Real-time listener for dealers
+    const unsubscribeDealers = onSnapshot(collection(db, "dealers"), (snapshot) => {
+      const dealersList = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setDealers(dealersList);
+      setIsLoading(false);
+    }, (error) => {
+      console.error("Error listening to dealers:", error);
+      setIsLoading(false);
+    });
 
-    // Check if the user is returning from the email link
+    // Check for email link sign-in
     if (isSignInWithEmailLink(auth, window.location.href)) {
       let emailForSignIn = window.localStorage.getItem('emailForSignIn');
       if (!emailForSignIn) {
@@ -56,52 +60,37 @@ const Dealers = () => {
           window.localStorage.removeItem('emailForSignIn');
           setUser(result.user);
         })
-        .catch((error) => {
-          console.error("Error signing in with email link", error);
-        });
+        .catch((error) => console.error("Error signing in with email link", error));
     }
 
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      setIsLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribeDealers();
+      unsubscribeAuth();
+    };
   }, []);
 
   const handleEmailLinkLogin = async (e) => {
     e.preventDefault();
     if (!email) return;
-
     setIsSendingLink(true);
     const actionCodeSettings = {
-      url: window.location.href, // Redirect back to this page
+      url: window.location.href,
       handleCodeInApp: true,
     };
-
     try {
       await sendSignInLinkToEmail(auth, email, actionCodeSettings);
       window.localStorage.setItem('emailForSignIn', email);
-      alert(`A sign-in link has been sent to ${email}. Please check your inbox and click the link to log in.`);
+      alert(`A sign-in link has been sent to ${email}. Check your inbox!`);
       setShowLogin(false);
     } catch (error) {
-      console.error("Error sending sign-in link:", error);
-      alert("Failed to send sign-in link. Ensure Email Auth is enabled in Firebase.");
+      console.error("Error sending link:", error);
+      alert("Failed to send link. Ensure Email Auth is enabled.");
     } finally {
       setIsSendingLink(false);
-    }
-  };
-
-  const fetchDealers = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, "dealers"));
-      const dealersList = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setDealers(dealersList);
-    } catch (error) {
-      console.error("Error fetching dealers:", error);
     }
   };
 
@@ -111,7 +100,7 @@ const Dealers = () => {
       setShowLogin(false);
     } catch (error) {
       console.error("Login failed:", error);
-      alert("Login failed. Please try again.");
+      alert("Login failed.");
     }
   };
 
@@ -122,8 +111,6 @@ const Dealers = () => {
       console.error("Logout failed:", error);
     }
   };
-
-  const [isRegistering, setIsRegistering] = useState(false);
 
   const handleRegisterChange = (e) => {
     const { name, value } = e.target;
@@ -139,335 +126,216 @@ const Dealers = () => {
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
-    if (!user) {
-      alert("Please login first.");
-      return;
-    }
-
+    if (!user) return;
     setIsRegistering(true);
-    console.log("Registration process started for:", user.email);
-
-    // Create a timeout to prevent infinite "Registering..." state
+    
     const timeoutId = setTimeout(() => {
       if (isRegistering) {
         setIsRegistering(false);
-        alert("Registration is taking too long. \n\nPossible reasons:\n1. Firestore Database is not 'Created'.\n2. Security Rules are blocking the write.\n3. Slow internet connection.");
+        alert("Registration timeout. Check Firebase Console.");
       }
     }, 10000);
 
     try {
       const newDealer = {
-        name: formData.name || "Unnamed Dealer",
-        area: formData.area || "Unknown Area",
-        phone: formData.phone || "",
+        name: formData.name,
+        area: formData.area,
+        phone: formData.phone,
         stock: formData.stock,
         email: user.email,
         uid: user.uid,
-        lat: 17.3850 + (Math.random() - 0.5) * 0.2,
-        lng: 78.4867 + (Math.random() - 0.5) * 0.2,
         createdAt: new Date().toISOString()
       };
-
-      console.log("Attempting to save to Firestore...", newDealer);
-      
-      const dealerDocRef = doc(db, "dealers", user.uid);
-      await setDoc(dealerDocRef, newDealer);
-      
+      await setDoc(doc(db, "dealers", user.uid), newDealer);
       clearTimeout(timeoutId);
-      console.log("Firestore save successful!");
-      alert("Registration Successful! Your dealership has been added to the map.");
+      alert("Registration Successful!");
       setShowRegister(false);
-      fetchDealers(); 
     } catch (error) {
       clearTimeout(timeoutId);
-      console.error("CRITICAL REGISTRATION ERROR:", error);
-      alert(`Registration failed error: ${error.message}\n\nPlease check your Firebase Console Rules.`);
+      alert(`Registration failed: ${error.message}`);
     } finally {
       setIsRegistering(false);
     }
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="bg-gray-50 min-h-screen pb-20"
-    >
-      <SEO 
-        title="Dealers | Prinstan Agri Care Pvt Ltd"
-        description="Find Prinstan Agri Care dealers near you or register as a new dealer to distribute our premium agricultural products."
-        keywords="Prinstan dealers, agri care dealers, register dealer, agricultural distributors"
-        url="/dealers"
-      />
+    <div className="bg-gray-50 min-h-screen pb-20">
+      <SEO title="Dealers | Prinstan Agri Care" />
       
-      {/* Page Header */}
-      <div className="bg-brand-green-900 text-white py-20 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1592982537447-6f296cb161a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center"></div>
-        <div className="max-w-7xl mx-auto relative z-10 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Our Dealers</h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">Connect with our trusted partners or become one.</p>
+      {/* Header */}
+      <div className="bg-brand-green-900 text-white py-16 px-4 text-center">
+        <h1 className="text-4xl font-bold mb-4">Our Registered Dealers</h1>
+        <p className="text-gray-300 max-w-xl mx-auto">Browse our trusted dealer network and connect for your requirements.</p>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 p-6">
+          <div className="flex justify-between items-center mb-8 flex-wrap gap-4">
+            <h2 className="text-2xl font-bold text-gray-800">Dealer Directory</h2>
+            <div className="flex gap-3">
+              {!user ? (
+                <>
+                  <button onClick={() => setShowLogin(true)} className="text-sm font-bold text-gray-600 hover:text-brand-green-600 px-4 py-2 transition-colors">Login</button>
+                  <button onClick={() => setShowRegister(true)} className="bg-brand-green-600 text-white text-sm font-bold px-6 py-2.5 rounded-full hover:bg-brand-green-700 transition-all">Join Network</button>
+                </>
+              ) : (
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-bold text-gray-700">{user.displayName || user.email}</span>
+                  <button onClick={handleLogout} className="text-sm font-bold text-red-500 bg-red-50 px-4 py-2 rounded-lg">Logout</button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {isLoading ? (
+            <div className="py-20 text-center"><div className="animate-spin h-10 w-10 border-b-2 border-brand-green-600 mx-auto"></div></div>
+          ) : dealers.length === 0 ? (
+            <div className="py-20 text-center text-gray-400">No dealers registered yet.</div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {dealers.map(dealer => (
+                <motion.div 
+                  key={dealer.id}
+                  whileHover={{ y: -5 }}
+                  onClick={() => setSelectedDealer(dealer)}
+                  className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md cursor-pointer transition-all"
+                >
+                  <div className="bg-brand-green-50 w-12 h-12 rounded-xl flex items-center justify-center mb-4 text-brand-green-600 text-xl">
+                    <FaStore />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-1">{dealer.name}</h3>
+                  <p className="text-gray-500 text-sm flex items-center gap-1 mb-4">
+                    <FaMapMarkerAlt className="text-brand-green-500" /> {dealer.area}
+                  </p>
+                  <div className="flex items-center gap-2 text-brand-green-600 font-bold text-sm">
+                    View Details & Contact →
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
-        {isLoading ? (
-          <div className="bg-white rounded-2xl shadow-xl p-20 text-center max-w-3xl mx-auto">
-             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-green-600 mx-auto mb-4"></div>
-             <p className="text-gray-500">Loading dealer information...</p>
-          </div>
-        ) : (
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-            <div className="p-4 bg-white border-b border-gray-100 flex justify-between items-center flex-wrap gap-4">
-              <div className="flex items-center gap-3">
-                <div className="bg-brand-green-100 p-2 rounded-lg">
-                  <FaMapMarkerAlt className="text-brand-green-600 text-xl" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-gray-800 leading-none">Dealer Network</h2>
-                  <p className="text-xs text-gray-500 mt-1">{dealers.length} active dealers in your area</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-3">
-                {!user ? (
-                  <>
-                    <button 
-                      onClick={() => setShowLogin(true)}
-                      className="text-xs font-bold text-gray-600 hover:text-brand-green-600 px-4 py-2 transition-colors"
-                    >
-                      Dealer Login
-                    </button>
-                    <button 
-                      onClick={() => setShowRegister(true)}
-                      className="bg-brand-green-600 text-white text-xs font-bold px-5 py-2.5 rounded-full hover:bg-brand-green-700 transition-all shadow-md shadow-brand-green-500/20"
-                    >
-                      Join as Dealer
-                    </button>
-                  </>
-                ) : (
-                  <div className="flex items-center gap-4">
-                    <div className="hidden sm:flex items-center gap-2 border-r border-gray-100 pr-4">
-                      {user.photoURL && <img src={user.photoURL} alt="" className="w-8 h-8 rounded-full" />}
-                      <span className="text-xs font-bold text-gray-700">{user.displayName || user.email}</span>
-                    </div>
-                    <button 
-                      onClick={handleLogout}
-                      className="text-xs font-bold text-red-500 hover:text-red-700 px-3 py-2 bg-red-50 rounded-lg transition-colors"
-                    >
-                      Logout
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-            
-            <div className="h-[600px] w-full relative z-0">
-              <MapContainer center={[17.3850, 78.4867]} zoom={11} style={{ height: '100%', width: '100%' }}>
-                <TileLayer
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-                {dealers.map(dealer => (
-                  <Marker key={dealer.id} position={[dealer.lat, dealer.lng]}>
-                    <Popup className="custom-popup">
-                      <div className="p-1 min-w-[160px]">
-                        <h3 className="text-sm font-bold text-brand-green-700 mb-0.5">{dealer.name}</h3>
-                        <p className="text-gray-500 text-[10px] mb-2 flex items-center gap-1">
-                          <FaMapMarkerAlt className="text-brand-green-500" /> {dealer.area}
-                        </p>
-                        
-                        <div className="bg-gray-50 rounded-lg p-2 mb-3 border border-gray-100">
-                          <h4 className="text-[9px] font-bold text-gray-400 uppercase mb-1.5 flex items-center gap-1">
-                            <FaBoxOpen /> Current Stock
-                          </h4>
-                          <div className="grid grid-cols-3 gap-1 text-center text-[10px]">
-                            <div>
-                              <div className="font-bold text-brand-green-600 leading-none">{dealer.stock.bios}</div>
-                              <div className="text-[8px] text-gray-400">Bios</div>
-                            </div>
-                            <div>
-                              <div className="font-bold text-brand-green-600 leading-none">{dealer.stock.fertilizers}</div>
-                              <div className="text-[8px] text-gray-400">Fert</div>
-                            </div>
-                            <div>
-                              <div className="font-bold text-brand-green-600 leading-none">{dealer.stock.pesticides}</div>
-                              <div className="text-[8px] text-gray-400">Pest</div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <a 
-                          href={`https://wa.me/${dealer.phone.replace(/[^0-9]/g, '')}?text=Hello ${dealer.name}, I would like to inquire about your current stock of Prinstan Agri Care products.`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-full flex items-center justify-center gap-2 bg-brand-green-600 text-white py-1.5 rounded-lg text-xs font-bold hover:bg-brand-green-700 transition-colors"
-                        >
-                          Send Requirement
-                        </a>
-                      </div>
-                    </Popup>
-                  </Marker>
-                ))}
-              </MapContainer>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Registration Modal */}
+      {/* Dealer Detail Modal */}
       <AnimatePresence>
-        {showRegister && (
+        {selectedDealer && (
           <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           >
             <motion.div 
-              initial={{ scale: 0.95 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.95 }}
-              className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
+              initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }}
+              className="bg-white rounded-3xl shadow-2xl max-w-sm w-full overflow-hidden relative"
             >
-              <div className="bg-brand-green-600 p-4 flex justify-between items-center text-white">
-                <h2 className="text-xl font-bold">Register as Dealer</h2>
-                <button onClick={() => setShowRegister(false)} className="text-white hover:text-brand-green-200">
-                  <FaTimes size={20} />
+              <button onClick={() => setSelectedDealer(null)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <FaTimes size={20} />
+              </button>
+              
+              <div className="bg-brand-green-600 p-8 text-center text-white">
+                <div className="bg-white/20 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner">
+                  <FaStore />
+                </div>
+                <h2 className="text-2xl font-bold">{selectedDealer.name}</h2>
+                <p className="text-brand-green-100 flex items-center justify-center gap-1 mt-1">
+                  <FaMapMarkerAlt /> {selectedDealer.area}
+                </p>
+              </div>
+
+              <div className="p-8 space-y-6">
+                <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                  <h4 className="text-xs font-bold text-gray-400 uppercase mb-3 flex items-center gap-1">
+                    <FaBoxOpen /> Available Stock
+                  </h4>
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    <div>
+                      <div className="text-xl font-bold text-brand-green-600 leading-none">{selectedDealer.stock.bios}</div>
+                      <div className="text-[10px] text-gray-500 mt-1 uppercase font-bold">Bios</div>
+                    </div>
+                    <div>
+                      <div className="text-xl font-bold text-brand-green-600 leading-none">{selectedDealer.stock.fertilizers}</div>
+                      <div className="text-[10px] text-gray-500 mt-1 uppercase font-bold">Fert</div>
+                    </div>
+                    <div>
+                      <div className="text-xl font-bold text-brand-green-600 leading-none">{selectedDealer.stock.pesticides}</div>
+                      <div className="text-[10px] text-gray-500 mt-1 uppercase font-bold">Pest</div>
+                    </div>
+                  </div>
+                </div>
+
+                <a 
+                  href={`https://wa.me/${selectedDealer.phone.replace(/[^0-9]/g, '')}?text=Hello ${selectedDealer.name}, I am interested in Prinstan products.`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 bg-[#25D366] text-white py-4 rounded-2xl font-bold shadow-lg shadow-green-500/30 hover:bg-[#128C7E] transition-all"
+                >
+                  <FaWhatsapp size={20} /> Send Requirement
+                </a>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Auth Modals (Login/Register) */}
+      <AnimatePresence>
+        {(showLogin || showRegister) && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+          >
+            <motion.div 
+              initial={{ y: 50 }} animate={{ y: 0 }} exit={{ y: 50 }}
+              className="bg-white rounded-3xl shadow-2xl max-w-sm w-full overflow-hidden"
+            >
+              <div className="bg-brand-green-600 p-6 flex justify-between items-center text-white">
+                <h2 className="text-xl font-bold">{showLogin ? "Login" : "Register"}</h2>
+                <button onClick={() => { setShowLogin(false); setShowRegister(false); }} className="text-white">
+                  <FaTimes />
                 </button>
               </div>
               
-              {!user ? (
-                <div className="p-10 text-center">
-                  <FaGoogle className="text-5xl text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-xl font-bold mb-2">Login Required</h3>
-                  <p className="text-gray-600 mb-6">You must login with Google first to register as a dealer.</p>
-                  <button 
-                    onClick={handleGoogleLogin}
-                    className="flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-bold hover:bg-gray-50 transition-all w-full shadow-sm"
-                  >
+              {showLogin ? (
+                <div className="p-8 space-y-6">
+                  <button onClick={handleGoogleLogin} className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 py-3 rounded-xl font-bold text-gray-700 shadow-sm">
                     <FaGoogle className="text-red-500" /> Sign in with Google
                   </button>
+                  <div className="relative text-center"><span className="bg-white px-2 text-gray-400 text-xs font-bold uppercase">OR</span></div>
+                  <form onSubmit={handleEmailLinkLogin} className="space-y-4">
+                    <input required type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-green-500" />
+                    <button type="submit" disabled={isSendingLink} className="w-full bg-brand-green-600 text-white py-3 rounded-xl font-bold">
+                      {isSendingLink ? "Sending..." : "Login with Link"}
+                    </button>
+                  </form>
                 </div>
               ) : (
-                <form onSubmit={handleRegisterSubmit} className="p-6 space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name / Business Name</label>
-                    <input required type="text" name="name" onChange={handleRegisterChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 focus:border-transparent outline-none" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Area / Location</label>
-                    <input required type="text" name="area" onChange={handleRegisterChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 focus:border-transparent outline-none" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                    <input required type="tel" name="phone" onChange={handleRegisterChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 focus:border-transparent outline-none" />
-                  </div>
-                  
-                  <div className="pt-4 border-t border-gray-100">
-                    <label className="block text-sm font-bold text-gray-800 mb-3">Stock Information (Quantity)</label>
-                    <div className="grid grid-cols-3 gap-4">
-                      <div>
-                        <label className="block text-xs text-gray-500 mb-1">Bios</label>
-                        <input type="number" min="0" name="bios" onChange={handleRegisterChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 outline-none" placeholder="0" />
-                      </div>
-                      <div>
-                        <label className="block text-xs text-gray-500 mb-1">Fertilizers</label>
-                        <input type="number" min="0" name="fertilizers" onChange={handleRegisterChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 outline-none" placeholder="0" />
-                      </div>
-                      <div>
-                        <label className="block text-xs text-gray-500 mb-1">Pesticides</label>
-                        <input type="number" min="0" name="pesticides" onChange={handleRegisterChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 outline-none" placeholder="0" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="pt-6">
-                    <button 
-                      type="submit" 
-                      disabled={isRegistering}
-                      className={`w-full bg-brand-green-600 text-white font-bold py-3 rounded-lg hover:bg-brand-green-700 transition-colors shadow-lg shadow-brand-green-500/30 ${isRegistering ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    >
-                      {isRegistering ? "Registering..." : "Complete Registration"}
-                    </button>
-                  </div>
-                </form>
+                <div className="p-8">
+                   {!user ? (
+                     <div className="text-center space-y-4">
+                        <p className="text-gray-600">Please login first to register.</p>
+                        <button onClick={() => { setShowRegister(false); setShowLogin(true); }} className="bg-brand-green-100 text-brand-green-700 font-bold px-6 py-2 rounded-lg">Go to Login</button>
+                     </div>
+                   ) : (
+                     <form onSubmit={handleRegisterSubmit} className="space-y-4">
+                        <input required name="name" placeholder="Name" onChange={handleRegisterChange} className="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none" />
+                        <input required name="area" placeholder="Area" onChange={handleRegisterChange} className="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none" />
+                        <input required name="phone" placeholder="Phone" onChange={handleRegisterChange} className="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none" />
+                        <div className="grid grid-cols-3 gap-2">
+                           <input type="number" name="bios" placeholder="Bios" onChange={handleRegisterChange} className="w-full px-2 py-2 border rounded-lg" />
+                           <input type="number" name="fertilizers" placeholder="Fert" onChange={handleRegisterChange} className="w-full px-2 py-2 border rounded-lg" />
+                           <input type="number" name="pesticides" placeholder="Pest" onChange={handleRegisterChange} className="w-full px-2 py-2 border rounded-lg" />
+                        </div>
+                        <button type="submit" disabled={isRegistering} className="w-full bg-brand-green-600 text-white py-3 rounded-xl font-bold">
+                          {isRegistering ? "Registering..." : "Complete"}
+                        </button>
+                     </form>
+                   )}
+                </div>
               )}
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Login Modal */}
-      <AnimatePresence>
-        {showLogin && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-          >
-            <motion.div 
-              initial={{ scale: 0.95 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.95 }}
-              className="bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden"
-            >
-              <div className="bg-brand-green-600 p-4 flex justify-between items-center text-white">
-                <h2 className="text-lg font-bold">Dealer Login</h2>
-                <button 
-                  onClick={() => {
-                    setShowLogin(false);
-                    setEmail("");
-                  }} 
-                  className="text-white hover:text-brand-green-200"
-                >
-                  <FaTimes size={18} />
-                </button>
-              </div>
-              <div className="p-6 space-y-4">
-                <button 
-                  onClick={handleGoogleLogin}
-                  className="flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 px-6 py-2.5 rounded-lg font-bold hover:bg-gray-50 transition-all w-full shadow-sm text-sm"
-                >
-                  <FaGoogle className="text-red-500" /> Sign in with Google
-                </button>
-                
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200"></div></div>
-                  <div className="relative flex justify-center text-[10px] uppercase tracking-wider"><span className="px-2 bg-white text-gray-400 font-bold">OR</span></div>
-                </div>
-
-                <form onSubmit={handleEmailLinkLogin} className="space-y-3">
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Email Address</label>
-                    <input 
-                      required 
-                      type="email" 
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 outline-none text-sm" 
-                      placeholder="dealer@example.com" 
-                    />
-                  </div>
-                  <button 
-                    type="submit" 
-                    disabled={isSendingLink}
-                    className={`w-full bg-brand-green-600 text-white font-bold py-2.5 rounded-lg hover:bg-brand-green-700 transition-colors text-sm ${isSendingLink ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  >
-                    {isSendingLink ? "Sending..." : "Send Login Link"}
-                  </button>
-                  <p className="text-[9px] text-center text-gray-400 italic leading-tight">
-                    We'll send a magic link to your email for a secure login.
-                  </p>
-                </form>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-    </motion.div>
+    </div>
   );
 };
 
