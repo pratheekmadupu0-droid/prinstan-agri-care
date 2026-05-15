@@ -3,17 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaSearch, FaShoppingCart } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import SEO from '../components/SEO';
+import productsData from '../data/products.json';
 
 const Products = () => {
   const { t } = useTranslation();
 
-  const products = Array.from({ length: 56 }, (_, i) => ({
-    id: i + 1,
-    name: `Prinstan Product ${i + 1}`,
-    category: ['Bios', 'Fertilizers', 'Pesticides'][i % 3],
-    image: `/prinstan_products/Prinstan Single Page Mokups_pages-to-jpg-${String(i + 1).padStart(4, '0')}.jpg`,
-    desc: `Prinstan Product Image ${i + 1}`
-  }));
+  const products = productsData;
 
   const categories = ['All', 'Bios', 'Fertilizers', 'Pesticides'];
 
@@ -109,7 +104,7 @@ const Products = () => {
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-brand-green-600 transition-colors">{product.name}</h3>
-                  <p className="text-gray-600 text-sm mb-6 h-10">{product.desc}</p>
+                  <p className="text-gray-600 text-sm mb-6 h-10 overflow-hidden line-clamp-2">{product.desc}</p>
                   <button className="w-full flex items-center justify-center gap-2 bg-brand-green-50 text-brand-green-700 hover:bg-brand-green-600 hover:text-white py-3 rounded-xl font-medium transition-colors">
                     <FaShoppingCart /> {t('products.inquiry')}
                   </button>
@@ -164,7 +159,7 @@ const Products = () => {
                   {t(`products.categories.${selectedProduct.category}`)}
                 </div>
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">{selectedProduct.name}</h2>
-                <p className="text-gray-600 mb-8 leading-relaxed">
+                <p className="text-gray-600 mb-8 leading-relaxed whitespace-pre-wrap overflow-y-auto max-h-64 pr-2">
                   {selectedProduct.desc}
                 </p>
                 <button className="w-full flex items-center justify-center gap-2 bg-brand-green-600 text-white hover:bg-brand-green-700 py-4 rounded-xl font-bold transition-all shadow-lg shadow-brand-green-500/30">
