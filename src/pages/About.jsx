@@ -162,25 +162,34 @@ const About = () => {
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="bg-white rounded-[2rem] shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col md:flex-row relative"
+              className={`bg-white rounded-[2.5rem] shadow-2xl ${selectedMember.name === 'C. Viswanth Reddy' ? 'max-w-3xl' : 'max-w-2xl'} w-full overflow-hidden flex flex-col relative`}
             >
               <button 
                 onClick={() => setSelectedMember(null)}
-                className="absolute top-6 right-6 z-10 bg-white/10 hover:bg-white/20 p-2 rounded-full text-white md:text-gray-400 transition-colors"
+                className="absolute top-6 right-6 z-20 bg-black/20 hover:bg-black/40 p-2 rounded-full text-white transition-colors"
               >
-                <FaTimes size={24} />
+                <FaTimes size={20} />
               </button>
 
-              <div className="md:w-1/2 h-80 md:h-auto relative">
-                {selectedMember.image ? (
+              {/* Media Section */}
+              <div className={`w-full ${selectedMember.name === 'C. Viswanth Reddy' ? 'aspect-video' : 'h-80 md:h-96'} relative bg-black`}>
+                {selectedMember.name === 'C. Viswanth Reddy' ? (
+                  <video 
+                    autoPlay 
+                    controls 
+                    className="w-full h-full object-cover"
+                  >
+                    <source src="/md.mp4" type="video/mp4" />
+                  </video>
+                ) : selectedMember.image ? (
                   <img src={selectedMember.image} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full bg-brand-green-100 flex items-center justify-center text-8xl">👤</div>
+                  <div className="w-full h-full bg-brand-green-100 flex items-center justify-center text-8xl text-brand-green-200">👤</div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:hidden"></div>
               </div>
 
-              <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+              {/* Content Section */}
+              <div className="p-8 md:p-12">
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-brand-green-600 font-bold text-xs uppercase tracking-widest block">{selectedMember.role}</span>
                   {selectedMember.name === 'C. Viswanth Reddy' && (
@@ -190,15 +199,12 @@ const About = () => {
                 <h2 className="text-4xl font-extrabold text-gray-900 mb-6">{selectedMember.name}</h2>
                 <div className="w-12 h-1.5 bg-brand-green-500 mb-8 rounded-full"></div>
                 
-                {selectedMember.name === 'C. Viswanth Reddy' && (
-                  <h5 className="text-brand-green-600 font-bold text-sm mb-2 italic">Founder's Vision</h5>
-                )}
-                
                 <p className="text-gray-600 leading-relaxed text-lg mb-8 italic relative">
-                  <span className="text-6xl text-brand-green-100 absolute -top-8 -left-4 -z-10 font-serif">"</span>
+                  <span className="text-6xl text-brand-green-50 absolute -top-10 -left-6 -z-10 font-serif opacity-50">"</span>
                   {selectedMember.bio}
-                  <span className="text-6xl text-brand-green-100 absolute -bottom-12 -right-4 -z-10 font-serif">"</span>
+                  <span className="text-6xl text-brand-green-50 absolute -bottom-14 -right-6 -z-10 font-serif opacity-50">"</span>
                 </p>
+                
                 <div className="flex gap-4">
                   <button className="bg-brand-green-600 text-white p-3 rounded-xl hover:bg-brand-green-700 transition-colors">
                     <FaLinkedin size={20} />

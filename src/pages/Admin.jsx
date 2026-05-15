@@ -215,7 +215,8 @@ const Admin = () => {
         { url: '/gallery/WhatsApp Image 2026-05-15 at 7.46.48 PM.jpeg', title: 'Product Showcase', type: 'image' },
         { url: '/gallery/WhatsApp Image 2026-05-15 at 7.47.11 PM.jpeg', title: 'Farmer Interaction', type: 'image' },
         { url: '/gallery/WhatsApp Image 2026-05-15 at 7.47.27 PM.jpeg', title: 'Crop Monitoring', type: 'image' },
-        { url: '/gallery/WhatsApp Image 2026-05-15 at 7.47.48 PM.jpeg', title: 'Our Facility', type: 'image' }
+        { url: '/gallery/WhatsApp Image 2026-05-15 at 7.47.48 PM.jpeg', title: 'Our Facility', type: 'image' },
+        { url: '/main.mp4', title: 'Company Overview', type: 'video' }
       ];
       
       const updates = {};
