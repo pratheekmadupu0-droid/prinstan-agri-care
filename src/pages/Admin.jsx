@@ -15,9 +15,16 @@ import productsData from '../data/products.json';
 
 const Admin = () => {
   const [user, setUser] = useState(null);
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  const authorizedEmails = [
+    'pratheekmadupu0@gmail.com', 
+    'admin@prinstan.com',
+    'c.viswanthreddy@gmail.com'
+  ];
 
   // Data States
   const [products, setProducts] = useState([]);
@@ -41,8 +48,10 @@ const Admin = () => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       if (u) {
         setUser(u);
+        setIsAuthorized(authorizedEmails.includes(u.email?.toLowerCase()));
       } else {
         setUser(null);
+        setIsAuthorized(false);
       }
       setLoading(false);
     });
@@ -252,7 +261,7 @@ const Admin = () => {
 
   if (loading) return <div className="h-screen flex items-center justify-center">Loading Admin...</div>;
 
-  if (!user) {
+  if (!user || !isAuthorized) {
     return (
       <div className="h-screen bg-brand-green-900 flex items-center justify-center p-4">
         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white p-10 rounded-[2.5rem] shadow-2xl max-w-md w-full text-center">
@@ -260,10 +269,21 @@ const Admin = () => {
             <FaLock />
           </div>
           <h1 className="text-3xl font-black text-gray-900 mb-2">Admin Portal</h1>
-          <p className="text-gray-500 mb-8 font-medium">Authorized login required.</p>
-          <button onClick={handleLogin} className="w-full bg-brand-green-600 text-white py-4 rounded-2xl font-bold hover:bg-brand-green-700 transition-all flex items-center justify-center gap-3">
-            Sign in with Google
-          </button>
+          <p className="text-gray-500 mb-8 font-medium">
+            {!user ? "Please sign in to continue." : "Access Denied. You are not an authorized admin."}
+          </p>
+          {!user ? (
+            <button onClick={handleLogin} className="w-full bg-brand-green-600 text-white py-4 rounded-2xl font-bold hover:bg-brand-green-700 transition-all flex items-center justify-center gap-3">
+              Sign in with Google
+            </button>
+          ) : (
+            <button onClick={handleLogout} className="w-full bg-red-500 text-white py-4 rounded-2xl font-bold hover:bg-red-600 transition-all flex items-center justify-center gap-3">
+              Sign Out
+            </button>
+          )}
+          <Link to="/" className="inline-block mt-6 text-gray-400 hover:text-brand-green-600 text-sm font-bold flex items-center justify-center gap-2 transition-colors">
+            <FaArrowLeft /> Back to Website
+          </Link>
         </motion.div>
       </div>
     );
