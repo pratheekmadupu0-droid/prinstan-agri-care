@@ -15,10 +15,10 @@ const About = () => {
 
   const team = [
     { 
-      name: 'Pratheek Madupu', 
+      name: 'C. Viswanth Reddy', 
       role: 'Managing Director', 
       image: '/md_image.jpeg',
-      bio: "Leading Prinstan Agri Care with a vision to revolutionize Indian agriculture through sustainable technology and premium crop solutions since 2017."
+      bio: "A visionary leader with over a decade of expertise in the agricultural sector. C. Viswanth Reddy founded Prinstan Agri Care in 2017 with a singular mission: to empower Indian farmers with world-class crop solutions and sustainable farming practices."
     },
     { 
       name: 'General Manager', 
@@ -181,11 +181,23 @@ const About = () => {
               </div>
 
               <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
-                <span className="text-brand-green-600 font-bold text-xs uppercase tracking-widest mb-2 block">{selectedMember.role}</span>
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-brand-green-600 font-bold text-xs uppercase tracking-widest block">{selectedMember.role}</span>
+                  {selectedMember.name === 'C. Viswanth Reddy' && (
+                    <span className="bg-brand-green-100 text-brand-green-700 text-[10px] font-black px-2 py-0.5 rounded-md uppercase tracking-tighter">Founder</span>
+                  )}
+                </div>
                 <h2 className="text-4xl font-extrabold text-gray-900 mb-6">{selectedMember.name}</h2>
                 <div className="w-12 h-1.5 bg-brand-green-500 mb-8 rounded-full"></div>
-                <p className="text-gray-600 leading-relaxed text-lg mb-8 italic">
-                  "{selectedMember.bio}"
+                
+                {selectedMember.name === 'C. Viswanth Reddy' && (
+                  <h5 className="text-brand-green-600 font-bold text-sm mb-2 italic">Founder's Vision</h5>
+                )}
+                
+                <p className="text-gray-600 leading-relaxed text-lg mb-8 italic relative">
+                  <span className="text-6xl text-brand-green-100 absolute -top-8 -left-4 -z-10 font-serif">"</span>
+                  {selectedMember.bio}
+                  <span className="text-6xl text-brand-green-100 absolute -bottom-12 -right-4 -z-10 font-serif">"</span>
                 </p>
                 <div className="flex gap-4">
                   <button className="bg-brand-green-600 text-white p-3 rounded-xl hover:bg-brand-green-700 transition-colors">
