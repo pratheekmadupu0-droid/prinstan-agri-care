@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FaLeaf, FaTractor, FaSeedling, FaWater } from 'react-icons/fa';
+import SEO from '../components/SEO';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 50 },
@@ -40,6 +41,12 @@ const Home = () => {
       exit={{ opacity: 0 }}
       className="bg-white"
     >
+      <SEO 
+        title="Prinstan Agri Care Pvt Ltd | Agricultural Solutions & Crop Care in India"
+        description="Prinstan Agri Care Pvt Ltd provides premium agricultural products, crop care solutions, fertilizers, farming support, and agri innovations across India."
+        keywords="Prinstan, Prinstan Agri Care, Prinstan Agri Care Pvt Ltd, agriculture company India, fertilizers, crop care, agri products, farming innovation"
+        url="/"
+      />
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center">
@@ -53,15 +60,23 @@ const Home = () => {
             transition={{ duration: 1, delay: 0.2 }}
             className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
           >
-            {t('home.heroTitle')}
+            Welcome to Prinstan Agri Care Pvt Ltd
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.4 }}
-            className="text-xl md:text-2xl mb-10 text-gray-200"
+            className="text-xl md:text-2xl mb-6 text-gray-200"
           >
             {t('home.heroDesc')}
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="hidden md:block text-sm text-gray-300 mb-10 max-w-3xl mx-auto"
+          >
+            Empowering Indian agriculture support with advanced agricultural solutions, superior crop protection, premium fertilizers, and cutting-edge farming innovation.
           </motion.p>
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
@@ -128,7 +143,7 @@ const Home = () => {
                 className="bg-white rounded-2xl overflow-hidden shadow-xl border border-gray-100 hover:border-brand-green-200 transition-all group flex flex-col"
               >
                 <div className="h-56 w-full overflow-hidden relative">
-                   <img src={service.image} alt={service.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                   <img src={service.image} alt={`Prinstan Agri Care ${service.title} - Agricultural solutions and farming innovation`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                    <div className="absolute bottom-4 left-4 w-12 h-12 bg-brand-green-500 rounded-full flex items-center justify-center text-2xl text-white shadow-lg">
                       {service.icon}
@@ -174,7 +189,7 @@ const Home = () => {
                 </p>
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-gray-500 rounded-full overflow-hidden">
-                    <img src={`https://i.pravatar.cc/150?img=${item * 10}`} alt="Farmer" />
+                    <img src={`https://i.pravatar.cc/150?img=${item * 10}`} alt="Prinstan Agri Care satisfied farmer in India" />
                   </div>
                   <div>
                     <h5 className="font-bold">Rangayaa</h5>

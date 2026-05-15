@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
+import SEO from '../components/SEO';
 
 const Contact = () => {
   const { t } = useTranslation();
@@ -11,6 +12,12 @@ const Contact = () => {
       exit={{ opacity: 0 }}
       className="bg-gray-50 pb-20"
     >
+      <SEO 
+        title="Contact Us | Prinstan Agri Care Pvt Ltd | Agriculture Company India"
+        description="Contact Prinstan Agri Care Pvt Ltd for premium agricultural products, fertilizers, and farming support. Get in touch with our team today."
+        keywords="Contact Prinstan, Prinstan Agri Care Pvt Ltd contact, agriculture company India, farming support, crop care"
+        url="/contact"
+      />
       {/* Page Header */}
       <div className="bg-brand-green-900 text-white py-24 px-4 relative overflow-hidden">
         <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center"></div>

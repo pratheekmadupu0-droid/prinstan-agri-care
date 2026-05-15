@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { FaEye, FaBullseye, FaHandshake, FaLeaf, FaGlobe } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
+import SEO from '../components/SEO';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 30 },
@@ -30,6 +31,12 @@ const About = () => {
       exit={{ opacity: 0 }}
       className="bg-gray-50 pb-20"
     >
+      <SEO 
+        title="About Us | Prinstan Agri Care Pvt Ltd | Agriculture Company India"
+        description="Learn about Prinstan Agri Care Pvt Ltd, our mission to transform Indian agriculture, and our premium crop care and fertilizer solutions."
+        keywords="About Prinstan Agri Care, agriculture company India, crop protection, fertilizers, farming support"
+        url="/about"
+      />
       {/* Page Header */}
       <div className="bg-brand-brown-900 text-white py-24 px-4 relative overflow-hidden">
         <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80')] bg-cover bg-center"></div>

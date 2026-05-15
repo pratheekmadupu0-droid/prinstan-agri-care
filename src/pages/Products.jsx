@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaSearch, FaShoppingCart } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
+import SEO from '../components/SEO';
 
 const Products = () => {
   const { t } = useTranslation();
@@ -33,6 +34,12 @@ const Products = () => {
       exit={{ opacity: 0 }}
       className="bg-gray-50 min-h-screen pb-20"
     >
+      <SEO 
+        title="Products | Prinstan Agri Care Pvt Ltd | Fertilizers & Crop Care"
+        description="Explore Prinstan Agri Care Pvt Ltd's premium agricultural products, including bio-fertilizers, pesticides, and crop protection solutions."
+        keywords="Prinstan products, agri products, fertilizers, pesticides, crop care, Prinstan Agri Care"
+        url="/products"
+      />
       {/* Page Header */}
       <div className="bg-brand-green-900 text-white py-20 px-4 relative overflow-hidden">
         <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center"></div>

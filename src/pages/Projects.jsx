@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { FaMapMarkerAlt, FaCalendarAlt } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
+import SEO from '../components/SEO';
 
 const Projects = () => {
   const { t } = useTranslation();
@@ -51,6 +52,12 @@ const Projects = () => {
       exit={{ opacity: 0 }}
       className="bg-white pb-20"
     >
+      <SEO 
+        title="Projects | Prinstan Agri Care Pvt Ltd | Farming Innovation"
+        description="Discover how Prinstan Agri Care Pvt Ltd is supporting Indian agriculture through innovative projects and farming solutions across the country."
+        keywords="Prinstan projects, farming innovation, Indian agriculture support, agricultural solutions, Prinstan Agri Care Pvt Ltd"
+        url="/projects"
+      />
       {/* Page Header */}
       <div className="bg-brand-brown-900 text-white py-24 px-4 relative overflow-hidden">
         <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1592982537447-6f2a6a0a5015?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center"></div>
