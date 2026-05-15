@@ -4,7 +4,8 @@ import {
   FaBox, FaImages, FaUsers, FaChartLine, 
   FaPlus, FaTrash, FaEdit, FaSave, 
   FaSignOutAlt, FaLock, FaUpload, FaCheckCircle,
-  FaArrowLeft, FaEye, FaSync, FaTimes, FaPlayCircle
+  FaArrowLeft, FaEye, FaSync, FaTimes, FaPlayCircle,
+  FaBars
 } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, db, storage } from '../firebase';
@@ -18,6 +19,7 @@ const Admin = () => {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
   const authorizedEmails = [
@@ -160,6 +162,7 @@ const Admin = () => {
     setIsEditing(true);
     setEditId(p.id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    setIsSidebarOpen(false);
   };
 
   const deleteProduct = async (id) => {
@@ -290,11 +293,19 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
+      {/* Mobile Header */}
+      <div className="md:hidden bg-white border-b p-4 flex justify-between items-center sticky top-0 z-50">
+        <span className="font-black text-xl text-brand-green-600">Prinstan Admin</span>
+        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 text-gray-600">
+           {isSidebarOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+        </button>
+      </div>
+
       {/* Sidebar */}
-      <div className="w-64 bg-white border-r border-gray-100 flex flex-col fixed h-full z-30">
+      <div className={`${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform w-64 bg-white border-r border-gray-100 flex flex-col fixed h-full z-40`}>
         <div className="p-8">
-          <div className="flex items-center gap-3 mb-10 text-brand-green-600 font-black text-xl">
+          <div className="hidden md:flex items-center gap-3 mb-10 text-brand-green-600 font-black text-xl">
              Prinstan Admin
           </div>
           <nav className="space-y-2">
@@ -304,40 +315,49 @@ const Admin = () => {
               { id: 'gallery', icon: <FaImages />, label: 'Gallery' },
               { id: 'dealers', icon: <FaUsers />, label: 'Dealers' },
             ].map(tab => (
-              <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === tab.id ? 'bg-brand-green-600 text-white' : 'text-gray-400 hover:text-brand-green-600'}`}>
+              <button 
+                key={tab.id} 
+                onClick={() => { setActiveTab(tab.id); setIsSidebarOpen(false); }} 
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${activeTab === tab.id ? 'bg-brand-green-600 text-white shadow-lg shadow-brand-green-500/20' : 'text-gray-400 hover:text-brand-green-600'}`}
+              >
                 {tab.icon} {tab.label}
               </button>
             ))}
           </nav>
         </div>
         <div className="mt-auto p-8 border-t">
+          <div className="flex items-center gap-3 mb-6 overflow-hidden">
+            <img src={user.photoURL} alt="Admin" className="w-8 h-8 rounded-full" />
+            <p className="text-xs font-bold truncate">{user.displayName}</p>
+          </div>
           <button onClick={handleLogout} className="w-full text-red-500 font-bold flex items-center gap-2"><FaSignOutAlt /> Logout</button>
         </div>
       </div>
 
-      <div className="flex-1 ml-64 p-10">
+      {/* Main Content */}
+      <div className="flex-1 md:ml-64 p-4 md:p-10 min-w-0">
         <AnimatePresence mode="wait">
           {activeTab === 'dashboard' && (
             <motion.div key="dash" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-              <div className="flex justify-between items-center mb-10">
-                <h2 className="text-3xl font-black">Dashboard</h2>
-                <div className="flex gap-4">
-                  <button onClick={syncProducts} className="bg-white px-4 py-2 rounded-lg border font-bold text-xs flex items-center gap-2"><FaSync /> Sync Products</button>
-                  <button onClick={syncGallery} className="bg-white px-4 py-2 rounded-lg border font-bold text-xs flex items-center gap-2"><FaSync /> Sync Gallery</button>
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
+                <h2 className="text-2xl md:text-3xl font-black">Dashboard</h2>
+                <div className="flex flex-wrap gap-2">
+                  <button onClick={syncProducts} className="bg-white px-3 py-1.5 rounded-lg border font-bold text-[10px] md:text-xs flex items-center gap-2 hover:bg-gray-50"><FaSync /> Sync Products</button>
+                  <button onClick={syncGallery} className="bg-white px-3 py-1.5 rounded-lg border font-bold text-[10px] md:text-xs flex items-center gap-2 hover:bg-gray-50"><FaSync /> Sync Gallery</button>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-6">
-                 <div className="bg-white p-8 rounded-3xl border">
-                    <p className="text-gray-400 text-xs font-bold uppercase mb-1">Products</p>
-                    <p className="text-4xl font-black text-brand-green-600">{products.length}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
+                 <div className="bg-white p-6 md:p-8 rounded-3xl border shadow-sm">
+                    <p className="text-gray-400 text-[10px] font-bold uppercase mb-1">Products</p>
+                    <p className="text-3xl md:text-4xl font-black text-brand-green-600">{products.length}</p>
                  </div>
-                 <div className="bg-white p-8 rounded-3xl border">
-                    <p className="text-gray-400 text-xs font-bold uppercase mb-1">Gallery</p>
-                    <p className="text-4xl font-black text-brand-green-600">{gallery.length}</p>
+                 <div className="bg-white p-6 md:p-8 rounded-3xl border shadow-sm">
+                    <p className="text-gray-400 text-[10px] font-bold uppercase mb-1">Gallery</p>
+                    <p className="text-3xl md:text-4xl font-black text-brand-green-600">{gallery.length}</p>
                  </div>
-                 <div className="bg-white p-8 rounded-3xl border">
-                    <p className="text-gray-400 text-xs font-bold uppercase mb-1">Dealers</p>
-                    <p className="text-4xl font-black text-brand-green-600">{dealers.length}</p>
+                 <div className="bg-white p-6 md:p-8 rounded-3xl border shadow-sm">
+                    <p className="text-gray-400 text-[10px] font-bold uppercase mb-1">Dealers</p>
+                    <p className="text-3xl md:text-4xl font-black text-brand-green-600">{dealers.length}</p>
                  </div>
               </div>
             </motion.div>
@@ -345,45 +365,48 @@ const Admin = () => {
 
           {activeTab === 'products' && (
             <motion.div key="prod" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-               <h2 className="text-3xl font-black mb-10">Manage Products</h2>
-               <div className="grid grid-cols-3 gap-10">
-                  <div className="col-span-1 bg-white p-6 rounded-3xl border h-fit sticky top-10">
+               <h2 className="text-2xl md:text-3xl font-black mb-10">Manage Catalog</h2>
+               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  <div className="lg:col-span-1 bg-white p-6 rounded-3xl border h-fit lg:sticky lg:top-24">
                     <h3 className="font-bold mb-6 flex items-center gap-2">{isEditing ? <FaEdit /> : <FaPlus />} {isEditing ? 'Edit' : 'New'} Product</h3>
                     <form onSubmit={saveProduct} className="space-y-3">
-                       <input required placeholder="Name" value={newProduct.name} onChange={e => setNewProduct({...newProduct, name: e.target.value})} className="w-full p-3 rounded-lg border bg-gray-50 outline-none" />
-                       <select value={newProduct.category} onChange={e => setNewProduct({...newProduct, category: e.target.value})} className="w-full p-3 rounded-lg border bg-gray-50 outline-none">
+                       <input required placeholder="Name" value={newProduct.name} onChange={e => setNewProduct({...newProduct, name: e.target.value})} className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-sm" />
+                       <select value={newProduct.category} onChange={e => setNewProduct({...newProduct, category: e.target.value})} className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-sm">
                           <option>Bios</option><option>Fertilizers</option><option>Pesticides</option>
                        </select>
-                       <textarea required placeholder="Description" rows={3} value={newProduct.description} onChange={e => setNewProduct({...newProduct, description: e.target.value})} className="w-full p-3 rounded-lg border bg-gray-50 outline-none" />
-                       <input placeholder="Crops" value={newProduct.crop} onChange={e => setNewProduct({...newProduct, crop: e.target.value})} className="w-full p-3 rounded-lg border bg-gray-50 outline-none" />
-                       <input placeholder="Dosage" value={newProduct.dosage} onChange={e => setNewProduct({...newProduct, dosage: e.target.value})} className="w-full p-3 rounded-lg border bg-gray-50 outline-none" />
-                       <input placeholder="Packing" value={newProduct.packing} onChange={e => setNewProduct({...newProduct, packing: e.target.value})} className="w-full p-3 rounded-lg border bg-gray-50 outline-none" />
+                       <textarea required placeholder="Description" rows={3} value={newProduct.description} onChange={e => setNewProduct({...newProduct, description: e.target.value})} className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-sm" />
+                       <input placeholder="Crops" value={newProduct.crop} onChange={e => setNewProduct({...newProduct, crop: e.target.value})} className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-sm" />
+                       <input placeholder="Dosage" value={newProduct.dosage} onChange={e => setNewProduct({...newProduct, dosage: e.target.value})} className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-sm" />
+                       <input placeholder="Packing" value={newProduct.packing} onChange={e => setNewProduct({...newProduct, packing: e.target.value})} className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-sm" />
                        
-                       <div className="border-2 border-dashed p-4 rounded-xl text-center">
+                       <div className="border-2 border-dashed border-gray-100 p-4 rounded-xl text-center">
                           {newProduct.image ? (
-                             <div className="relative">
+                             <div className="relative group">
                                 <img src={newProduct.image} className="w-full h-32 object-cover rounded-lg" />
-                                <button onClick={() => setNewProduct({...newProduct, image: ''})} className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded"><FaTimes /></button>
+                                <button onClick={() => setNewProduct({...newProduct, image: ''})} className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"><FaTimes /></button>
                              </div>
                           ) : (
-                             <label className="cursor-pointer">
-                                {uploadingImage ? 'Uploading...' : 'Upload Image'}
+                             <label className="cursor-pointer text-xs font-bold text-gray-400 py-4 block">
+                                {uploadingImage ? 'Uploading...' : <><FaUpload className="mx-auto mb-2 text-xl" /> Click to Upload Image</>}
                                 <input type="file" className="hidden" onChange={handleProductImageUpload} disabled={uploadingImage} />
                              </label>
                           )}
                        </div>
-                       <button type="submit" className="w-full bg-brand-green-600 text-white py-3 rounded-xl font-bold">{isEditing ? 'Update' : 'Add'} Product</button>
-                       {isEditing && <button onClick={resetProductForm} className="w-full py-2 text-gray-400 font-bold">Cancel</button>}
+                       <button type="submit" className="w-full bg-brand-green-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-brand-green-500/20">{isEditing ? 'Update' : 'Add'} Product</button>
+                       {isEditing && <button onClick={resetProductForm} className="w-full py-2 text-gray-400 font-bold text-sm">Cancel Edit</button>}
                     </form>
                   </div>
-                  <div className="col-span-2 space-y-3">
+                  <div className="lg:col-span-2 space-y-3">
                      {products.map(p => (
-                        <div key={p.id} className="bg-white p-3 rounded-2xl border flex items-center gap-4">
-                           <img src={p.image} className="w-12 h-12 rounded-lg object-cover" />
-                           <div className="flex-1"><p className="font-bold">{p.name}</p><p className="text-[10px] text-gray-400">{p.category}</p></div>
-                           <div className="flex gap-2">
-                              <button onClick={() => handleEditClick(p)} className="p-2 text-gray-400 hover:text-brand-green-600"><FaEdit /></button>
-                              <button onClick={() => deleteProduct(p.id)} className="p-2 text-gray-400 hover:text-red-500"><FaTrash /></button>
+                        <div key={p.id} className="bg-white p-3 rounded-2xl border flex items-center gap-4 hover:shadow-sm transition-all overflow-hidden">
+                           <img src={p.image} className="w-12 h-12 md:w-16 md:h-16 rounded-xl object-cover" />
+                           <div className="flex-1 min-w-0">
+                              <p className="font-bold text-sm md:text-base truncate">{p.name}</p>
+                              <p className="text-[10px] text-brand-green-600 font-bold uppercase tracking-wider">{p.category}</p>
+                           </div>
+                           <div className="flex gap-1 md:gap-2">
+                              <button onClick={() => handleEditClick(p)} className="p-2 md:p-3 text-gray-400 hover:text-brand-green-600 hover:bg-brand-green-50 rounded-lg transition-all"><FaEdit /></button>
+                              <button onClick={() => deleteProduct(p.id)} className="p-2 md:p-3 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"><FaTrash /></button>
                            </div>
                         </div>
                      )).reverse()}
@@ -394,38 +417,40 @@ const Admin = () => {
 
           {activeTab === 'gallery' && (
             <motion.div key="gall" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-               <h2 className="text-3xl font-black mb-10">Manage Gallery</h2>
-               <div className="bg-white p-8 rounded-3xl border mb-10">
-                  <h3 className="font-bold mb-4">Add New Media</h3>
-                  <div className="flex gap-4 items-end">
+               <h2 className="text-2xl md:text-3xl font-black mb-10">Manage Gallery</h2>
+               <div className="bg-white p-6 md:p-8 rounded-3xl border shadow-sm mb-10">
+                  <h3 className="font-bold mb-4 text-sm md:text-base">Add New Media</h3>
+                  <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-end">
                      <div className="flex-1">
-                        <input placeholder="Title for the image/video" value={galleryTitle} onChange={e => setGalleryTitle(e.target.value)} className="w-full p-3 rounded-xl border bg-gray-50 outline-none" />
+                        <input placeholder="Title for the media" value={galleryTitle} onChange={e => setGalleryTitle(e.target.value)} className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-sm" />
                      </div>
-                     <label className="bg-brand-green-600 text-white px-6 py-3 rounded-xl font-bold cursor-pointer flex items-center gap-2">
-                        {uploadingGallery ? '...' : <><FaPlus /> Add Image</>}
-                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleGalleryUpload(e, 'image')} disabled={uploadingGallery} />
-                     </label>
-                     <label className="bg-brand-brown-600 text-white px-6 py-3 rounded-xl font-bold cursor-pointer flex items-center gap-2">
-                        {uploadingGallery ? '...' : <><FaPlus /> Add Video</>}
-                        <input type="file" accept="video/*" className="hidden" onChange={(e) => handleGalleryUpload(e, 'video')} disabled={uploadingGallery} />
-                     </label>
+                     <div className="flex gap-2">
+                        <label className="flex-1 sm:flex-none bg-brand-green-600 text-white px-4 py-3 rounded-xl font-bold cursor-pointer flex items-center justify-center gap-2 text-xs md:text-sm">
+                           {uploadingGallery ? '...' : <><FaPlus /> Image</>}
+                           <input type="file" accept="image/*" className="hidden" onChange={(e) => handleGalleryUpload(e, 'image')} disabled={uploadingGallery} />
+                        </label>
+                        <label className="flex-1 sm:flex-none bg-brand-brown-600 text-white px-4 py-3 rounded-xl font-bold cursor-pointer flex items-center justify-center gap-2 text-xs md:text-sm">
+                           {uploadingGallery ? '...' : <><FaPlus /> Video</>}
+                           <input type="file" accept="video/*" className="hidden" onChange={(e) => handleGalleryUpload(e, 'video')} disabled={uploadingGallery} />
+                        </label>
+                     </div>
                   </div>
                </div>
 
-               <div className="grid grid-cols-4 gap-6">
+               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
                   {gallery.map(item => (
-                     <div key={item.id} className="group relative aspect-square bg-white rounded-3xl border overflow-hidden">
+                     <div key={item.id} className="group relative aspect-square bg-white rounded-2xl md:rounded-3xl border overflow-hidden shadow-sm">
                         {item.type === 'video' ? (
                           <div className="w-full h-full flex items-center justify-center bg-gray-900 text-white"><FaPlayCircle size={32} /></div>
                         ) : (
                           <img src={item.url} className="w-full h-full object-cover" />
                         )}
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all flex flex-col justify-between p-4">
-                           <div className="flex justify-end gap-2">
-                              <button onClick={() => updateGalleryTitle(item.id, item.title)} className="bg-white p-2 rounded-lg text-brand-green-600"><FaEdit /></button>
-                              <button onClick={() => deleteGalleryItem(item.id)} className="bg-red-500 p-2 rounded-lg text-white"><FaTrash /></button>
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all flex flex-col justify-between p-3 md:p-4">
+                           <div className="flex justify-end gap-1 md:gap-2">
+                              <button onClick={() => updateGalleryTitle(item.id, item.title)} className="bg-white p-1.5 md:p-2 rounded-lg text-brand-green-600"><FaEdit size={12} /></button>
+                              <button onClick={() => deleteGalleryItem(item.id)} className="bg-red-500 p-1.5 md:p-2 rounded-lg text-white"><FaTrash size={12} /></button>
                            </div>
-                           <p className="text-white text-sm font-bold truncate">{item.title}</p>
+                           <p className="text-white text-[10px] md:text-xs font-bold truncate">{item.title}</p>
                         </div>
                      </div>
                   )).reverse()}
@@ -435,33 +460,36 @@ const Admin = () => {
 
           {activeTab === 'dealers' && (
             <motion.div key="deal" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-               <h2 className="text-3xl font-black mb-10">Dealers</h2>
-               <div className="bg-white rounded-3xl border overflow-hidden">
-                  <table className="w-full text-left">
+               <h2 className="text-2xl md:text-3xl font-black mb-10">Dealer Partners</h2>
+               <div className="bg-white rounded-3xl border overflow-hidden shadow-sm overflow-x-auto">
+                  <table className="w-full text-left min-w-[600px]">
                      <thead className="bg-gray-50 border-b">
                         <tr>
-                           <th className="p-5 font-bold text-xs uppercase text-gray-400">Name</th>
-                           <th className="p-5 font-bold text-xs uppercase text-gray-400">Location</th>
-                           <th className="p-5 font-bold text-xs uppercase text-gray-400">Phone</th>
-                           <th className="p-5 font-bold text-xs uppercase text-gray-400">Stock</th>
-                           <th className="p-5 font-bold text-xs uppercase text-gray-400">Actions</th>
+                           <th className="p-5 font-bold text-[10px] uppercase text-gray-400 tracking-widest">Name</th>
+                           <th className="p-5 font-bold text-[10px] uppercase text-gray-400 tracking-widest">Location</th>
+                           <th className="p-5 font-bold text-[10px] uppercase text-gray-400 tracking-widest">Phone</th>
+                           <th className="p-5 font-bold text-[10px] uppercase text-gray-400 tracking-widest text-center">Stock</th>
+                           <th className="p-5 font-bold text-[10px] uppercase text-gray-400 tracking-widest text-right">Actions</th>
                         </tr>
                      </thead>
-                     <tbody className="divide-y">
+                     <tbody className="divide-y divide-gray-50">
                         {dealers.map(d => (
-                           <tr key={d.id}>
-                              <td className="p-5 font-bold">{d.name}</td>
-                              <td className="p-5 text-sm">{d.area}</td>
-                              <td className="p-5 text-sm">{d.phone}</td>
+                           <tr key={d.id} className="hover:bg-gray-50/50 transition-colors">
                               <td className="p-5">
-                                 <div className="flex gap-1">
-                                    <span className="px-2 py-1 bg-green-50 text-green-600 rounded text-[10px] font-black">{d.stock?.bios || 0}</span>
-                                    <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded text-[10px] font-black">{d.stock?.fertilizers || 0}</span>
-                                    <span className="px-2 py-1 bg-orange-50 text-orange-600 rounded text-[10px] font-black">{d.stock?.pesticides || 0}</span>
+                                 <p className="font-bold text-sm text-gray-900">{d.name}</p>
+                                 <p className="text-[10px] text-gray-400 truncate max-w-[150px]">{d.email}</p>
+                              </td>
+                              <td className="p-5 text-xs font-medium text-gray-600">{d.area}</td>
+                              <td className="p-5 text-xs font-medium text-gray-600">{d.phone}</td>
+                              <td className="p-5">
+                                 <div className="flex justify-center gap-1">
+                                    <span className="w-6 h-6 flex items-center justify-center bg-brand-green-50 text-brand-green-600 rounded-lg text-[9px] font-black" title="Bios">{d.stock?.bios || 0}</span>
+                                    <span className="w-6 h-6 flex items-center justify-center bg-blue-50 text-blue-600 rounded-lg text-[9px] font-black" title="Fertilizers">{d.stock?.fertilizers || 0}</span>
+                                    <span className="w-6 h-6 flex items-center justify-center bg-orange-50 text-orange-600 rounded-lg text-[9px] font-black" title="Pesticides">{d.stock?.pesticides || 0}</span>
                                  </div>
                               </td>
-                              <td className="p-5">
-                                 <button onClick={() => remove(ref(db, `dealers/${d.id}`))} className="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-all"><FaTrash /></button>
+                              <td className="p-5 text-right">
+                                 <button onClick={() => remove(ref(db, `dealers/${d.id}`))} className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-all"><FaTrash size={14} /></button>
                               </td>
                            </tr>
                         ))}

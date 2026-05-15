@@ -41,9 +41,9 @@ const Navbar = () => {
     <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'glass py-3 shadow-md' : 'bg-transparent py-5'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
-          <Link to="/" className="flex items-center gap-1">
-            <img src="https://i.ibb.co/nsmX0hZp/logo.png" alt="Prinstan Agri Care Logo" className="h-16 w-auto object-contain -translate-y-1.5 -mr-2" />
-            <span className="font-bold text-2xl tracking-tight text-gray-900">Prinstan <span className="text-brand-green-600">Agri Care Pvt. Ltd.</span></span>
+          <Link to="/" className="flex items-center gap-1 overflow-hidden">
+            <img src="https://i.ibb.co/nsmX0hZp/logo.png" alt="Prinstan Agri Care Logo" className="h-12 md:h-16 w-auto object-contain -translate-y-1.5 -mr-2" />
+            <span className="font-bold text-lg md:text-2xl tracking-tight text-gray-900 truncate">Prinstan <span className="hidden sm:inline text-brand-green-600">Agri Care Pvt. Ltd.</span></span>
           </Link>
 
           {/* Desktop Nav */}
