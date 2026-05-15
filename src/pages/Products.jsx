@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaSearch, FaShoppingCart } from 'react-icons/fa';
+import { FaSearch, FaShoppingCart, FaWhatsapp } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import SEO from '../components/SEO';
 import productsData from '../data/products.json';
@@ -104,7 +104,7 @@ const Products = () => {
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-brand-green-600 transition-colors">{product.name}</h3>
-                  <p className="text-gray-600 text-sm mb-6 h-10 overflow-hidden line-clamp-2">{product.desc}</p>
+                  <p className="text-gray-600 text-sm mb-6 h-10 overflow-hidden line-clamp-2">{product.description || product.desc}</p>
                   <button className="w-full flex items-center justify-center gap-2 bg-brand-green-50 text-brand-green-700 hover:bg-brand-green-600 hover:text-white py-3 rounded-xl font-medium transition-colors">
                     <FaShoppingCart /> {t('products.inquiry')}
                   </button>
@@ -137,7 +137,7 @@ const Products = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-3xl overflow-hidden shadow-2xl max-w-3xl w-full flex flex-col md:flex-row relative"
+              className="bg-white rounded-[2rem] shadow-2xl max-w-5xl w-full flex flex-col md:flex-row relative overflow-hidden border-2 border-brand-green-50"
             >
               <button
                 onClick={() => setSelectedProduct(null)}
@@ -146,25 +146,47 @@ const Products = () => {
                 ✕
               </button>
               
-              <div className="md:w-1/2 h-64 md:h-auto relative">
-                <img
-                  src={selectedProduct.image}
-                  alt={selectedProduct.name}
-                  className="w-full h-full object-cover"
-                />
+              <div className="md:w-1/2 p-6 md:p-10 flex items-center justify-center relative bg-brand-green-50/20">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-brand-green-100 rounded-full blur-3xl -z-10 opacity-50"></div>
+                <div className="w-full h-full min-h-[300px] bg-black rounded-3xl flex items-center justify-center shadow-xl border-4 border-white overflow-hidden">
+                   <img
+                     src={selectedProduct.image}
+                     alt={selectedProduct.name}
+                     className="w-full h-full object-contain bg-white"
+                   />
+                </div>
               </div>
               
-              <div className="p-8 md:w-1/2 flex flex-col justify-center">
-                <div className="inline-block bg-brand-green-100 text-brand-green-800 px-3 py-1 rounded-full text-xs font-bold mb-4 w-max">
-                  {t(`products.categories.${selectedProduct.category}`)}
-                </div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">{selectedProduct.name}</h2>
-                <p className="text-gray-600 mb-8 leading-relaxed whitespace-pre-wrap overflow-y-auto max-h-64 pr-2">
-                  {selectedProduct.desc}
+              <div className="p-8 md:p-10 md:w-1/2 flex flex-col justify-center">
+                <h2 className="text-3xl font-extrabold text-gray-900 mb-4">{selectedProduct.name}</h2>
+                <p className="text-gray-600 mb-8 leading-relaxed text-sm whitespace-pre-wrap overflow-y-auto max-h-40 pr-2">
+                  {selectedProduct.description || selectedProduct.desc}
                 </p>
-                <button className="w-full flex items-center justify-center gap-2 bg-brand-green-600 text-white hover:bg-brand-green-700 py-4 rounded-xl font-bold transition-all shadow-lg shadow-brand-green-500/30">
-                  <FaShoppingCart /> {t('products.inquiry')}
-                </button>
+                
+                <div className="grid grid-cols-2 gap-4 mb-8">
+                  <div className="border border-brand-green-100 rounded-xl p-4 bg-brand-green-50/30">
+                    <h4 className="text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Crop</h4>
+                    <p className="text-sm font-bold text-gray-900">{selectedProduct.crop || "Cotton, Chilli, Vegetables & Other Field Crops"}</p>
+                  </div>
+                  <div className="border border-brand-green-100 rounded-xl p-4 bg-brand-green-50/30">
+                    <h4 className="text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Dosage</h4>
+                    <p className="text-sm font-bold text-gray-900">{selectedProduct.dosage || "1 - 1.5 ml per Liter of water"}</p>
+                  </div>
+                  <div className="border border-brand-green-100 rounded-xl p-4 bg-brand-green-50/30">
+                    <h4 className="text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Packing</h4>
+                    <p className="text-sm font-bold text-gray-900">{selectedProduct.packing || "100 ml | 250 ml | 500 ml | 1 L"}</p>
+                  </div>
+                  <div className="border border-brand-green-100 rounded-xl p-4 bg-brand-green-50/30">
+                    <h4 className="text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Category</h4>
+                    <p className="text-sm font-bold text-gray-900">{t(`products.categories.${selectedProduct.category}`) || selectedProduct.category}</p>
+                  </div>
+                </div>
+
+                <div className="flex">
+                  <button className="flex items-center justify-center gap-2 bg-[#25D366] text-white hover:bg-[#128C7E] px-6 py-3 rounded-lg font-bold transition-all shadow-lg shadow-green-500/30">
+                    <FaWhatsapp className="text-xl" /> Product Enquiry
+                  </button>
+                </div>
               </div>
             </motion.div>
           </motion.div>
