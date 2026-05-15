@@ -33,6 +33,7 @@ const Navbar = () => {
     { key: 'nav.about', path: '/about' },
     { key: 'nav.products', path: '/products' },
     { key: 'nav.projects', path: '/projects' },
+    { key: 'nav.dealers', path: '/dealers' },
     { key: 'nav.contact', path: '/contact' },
   ];
 
