@@ -60,9 +60,9 @@ const Dealers = () => {
   const setupRecaptcha = () => {
     if (window.recaptchaVerifier) return;
     window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-      'size': 'invisible',
+      'size': 'normal',
       'callback': (response) => {
-        // reCAPTCHA solved, allow signInWithPhoneNumber.
+        console.log("reCAPTCHA solved");
       }
     });
   };
@@ -81,9 +81,15 @@ const Dealers = () => {
       const result = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
       setConfirmationResult(result);
       setShowOtpInput(true);
+      alert("OTP Sent to " + formattedPhone);
     } catch (error) {
       console.error("OTP send failed:", error);
-      // Detailed error message for the user
+      // Clear recaptcha on error so it can be re-initialized
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.clear();
+        window.recaptchaVerifier = null;
+      }
+      
       let errorMsg = "Failed to send OTP.";
       if (error.code === 'auth/invalid-phone-number') errorMsg = "Invalid phone number format.";
       if (error.code === 'auth/quota-exceeded') errorMsg = "SMS quota exceeded for today.";
@@ -91,10 +97,6 @@ const Dealers = () => {
       if (error.code === 'auth/too-many-requests') errorMsg = "Too many attempts. Please try again later.";
       
       alert(`${errorMsg}\n\nError Code: ${error.code}\n\nPlease ensure Phone Auth is enabled and your domain is authorized in the Firebase Console.`);
-      if (window.recaptchaVerifier) {
-        window.recaptchaVerifier.clear();
-        window.recaptchaVerifier = null;
-      }
     } finally {
       setIsVerifying(false);
     }
@@ -440,7 +442,7 @@ const Dealers = () => {
                       />
                       <p className="mt-1 text-[10px] text-gray-500 italic">Include country code (e.g., +91 for India)</p>
                     </div>
-                    <div id="recaptcha-container"></div>
+                    <div id="recaptcha-container" className="flex justify-center my-4 overflow-hidden rounded-lg"></div>
                     <button 
                       type="submit" 
                       disabled={isVerifying}
