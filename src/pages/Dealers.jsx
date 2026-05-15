@@ -238,37 +238,39 @@ const Dealers = () => {
                 {dealers.map(dealer => (
                   <Marker key={dealer.id} position={[dealer.lat, dealer.lng]}>
                     <Popup className="custom-popup">
-                      <div className="p-2 min-w-[200px]">
-                        <h3 className="text-lg font-bold text-brand-green-700 mb-1">{dealer.name}</h3>
-                        <p className="text-gray-600 text-sm mb-3 flex items-center gap-1">
+                      <div className="p-1 min-w-[180px]">
+                        <h3 className="text-base font-bold text-brand-green-700 mb-0.5">{dealer.name}</h3>
+                        <p className="text-gray-500 text-[11px] mb-2 flex items-center gap-1">
                           <FaMapMarkerAlt className="text-brand-green-500" /> {dealer.area}
                         </p>
                         
-                        <div className="bg-gray-50 rounded-lg p-3 mb-4 border border-gray-100">
-                          <h4 className="text-xs font-bold text-gray-500 uppercase mb-2 flex items-center gap-1">
+                        <div className="bg-gray-50 rounded-lg p-2 mb-3 border border-gray-100">
+                          <h4 className="text-[9px] font-bold text-gray-400 uppercase mb-1.5 flex items-center gap-1">
                             <FaBoxOpen /> Current Stock
                           </h4>
-                          <div className="grid grid-cols-3 gap-2 text-center text-sm">
+                          <div className="grid grid-cols-3 gap-1 text-center text-[11px]">
                             <div>
-                              <div className="font-bold text-brand-green-600">{dealer.stock.bios}</div>
-                              <div className="text-[10px] text-gray-500">Bios</div>
+                              <div className="font-bold text-brand-green-600 leading-none">{dealer.stock.bios}</div>
+                              <div className="text-[9px] text-gray-400">Bios</div>
                             </div>
                             <div>
-                              <div className="font-bold text-brand-green-600">{dealer.stock.fertilizers}</div>
-                              <div className="text-[10px] text-gray-500">Fertilizers</div>
+                              <div className="font-bold text-brand-green-600 leading-none">{dealer.stock.fertilizers}</div>
+                              <div className="text-[9px] text-gray-400">Fert</div>
                             </div>
                             <div>
-                              <div className="font-bold text-brand-green-600">{dealer.stock.pesticides}</div>
-                              <div className="text-[10px] text-gray-500">Pesticides</div>
+                              <div className="font-bold text-brand-green-600 leading-none">{dealer.stock.pesticides}</div>
+                              <div className="text-[9px] text-gray-400">Pest</div>
                             </div>
                           </div>
                         </div>
 
                         <a 
-                          href={`tel:${dealer.phone}`}
-                          className="w-full flex items-center justify-center gap-2 bg-brand-green-600 text-white py-2 rounded-lg text-sm font-bold hover:bg-brand-green-700 transition-colors"
+                          href={`https://wa.me/${dealer.phone.replace(/[^0-9]/g, '')}?text=Hello ${dealer.name}, I would like to inquire about your current stock of Prinstan Agri Care products.`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full flex items-center justify-center gap-2 bg-brand-green-600 text-white py-1.5 rounded-lg text-xs font-bold hover:bg-brand-green-700 transition-colors"
                         >
-                          <FaPhoneAlt /> Products Contact
+                          Send Requirement
                         </a>
                       </div>
                     </Popup>
@@ -293,12 +295,12 @@ const Dealers = () => {
               initial={{ scale: 0.95 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.95 }}
-              className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden"
+              className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
             >
-              <div className="bg-brand-green-600 p-6 flex justify-between items-center text-white">
-                <h2 className="text-2xl font-bold">Register as Dealer</h2>
+              <div className="bg-brand-green-600 p-4 flex justify-between items-center text-white">
+                <h2 className="text-xl font-bold">Register as Dealer</h2>
                 <button onClick={() => setShowRegister(false)} className="text-white hover:text-brand-green-200">
-                  <FaTimes size={24} />
+                  <FaTimes size={20} />
                 </button>
               </div>
               
@@ -374,8 +376,8 @@ const Dealers = () => {
               exit={{ scale: 0.95 }}
               className="bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden"
             >
-              <div className="bg-brand-green-600 p-6 flex justify-between items-center text-white">
-                <h2 className="text-xl font-bold">Dealer Login</h2>
+              <div className="bg-brand-green-600 p-4 flex justify-between items-center text-white">
+                <h2 className="text-lg font-bold">Dealer Login</h2>
                 <button 
                   onClick={() => {
                     setShowLogin(false);
@@ -383,43 +385,43 @@ const Dealers = () => {
                   }} 
                   className="text-white hover:text-brand-green-200"
                 >
-                  <FaTimes size={20} />
+                  <FaTimes size={18} />
                 </button>
               </div>
-              <div className="p-8 space-y-6">
+              <div className="p-6 space-y-4">
                 <button 
                   onClick={handleGoogleLogin}
-                  className="flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-bold hover:bg-gray-50 transition-all w-full shadow-sm"
+                  className="flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 px-6 py-2.5 rounded-lg font-bold hover:bg-gray-50 transition-all w-full shadow-sm text-sm"
                 >
                   <FaGoogle className="text-red-500" /> Sign in with Google
                 </button>
                 
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200"></div></div>
-                  <div className="relative flex justify-center text-sm"><span className="px-2 bg-white text-gray-500">OR</span></div>
+                  <div className="relative flex justify-center text-[10px] uppercase tracking-wider"><span className="px-2 bg-white text-gray-400 font-bold">OR</span></div>
                 </div>
 
-                <form onSubmit={handleEmailLinkLogin} className="space-y-4">
+                <form onSubmit={handleEmailLinkLogin} className="space-y-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Email Address</label>
                     <input 
                       required 
                       type="email" 
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 outline-none" 
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 outline-none text-sm" 
                       placeholder="dealer@example.com" 
                     />
                   </div>
                   <button 
                     type="submit" 
                     disabled={isSendingLink}
-                    className={`w-full bg-brand-green-600 text-white font-bold py-3 rounded-lg hover:bg-brand-green-700 transition-colors ${isSendingLink ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`w-full bg-brand-green-600 text-white font-bold py-2.5 rounded-lg hover:bg-brand-green-700 transition-colors text-sm ${isSendingLink ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
-                    {isSendingLink ? "Sending Link..." : "Send Login Link"}
+                    {isSendingLink ? "Sending..." : "Send Login Link"}
                   </button>
-                  <p className="text-[10px] text-center text-gray-500 italic">
-                    We'll send a magic link to your email for a secure, passwordless login.
+                  <p className="text-[9px] text-center text-gray-400 italic leading-tight">
+                    We'll send a magic link to your email for a secure login.
                   </p>
                 </form>
               </div>
