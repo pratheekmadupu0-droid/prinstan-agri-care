@@ -6,7 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import SEO from '../components/SEO';
 import { auth, googleProvider, db } from '../firebase';
-import { signInWithPopup, onAuthStateChanged, signOut, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import { signInWithPopup, onAuthStateChanged, signOut, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth';
 import { doc, getDoc, setDoc, collection, getDocs } from 'firebase/firestore';
 
 // Fix Leaflet's default icon path issues
@@ -23,12 +23,9 @@ const Dealers = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Phone Auth States
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [otp, setOtp] = useState("");
-  const [showOtpInput, setShowOtpInput] = useState(false);
-  const [confirmationResult, setConfirmationResult] = useState(null);
-  const [isVerifying, setIsVerifying] = useState(false);
+  // Email Auth States
+  const [email, setEmail] = useState("");
+  const [isSendingLink, setIsSendingLink] = useState(false);
 
   // Form states
   const [formData, setFormData] = useState({
@@ -45,10 +42,25 @@ const Dealers = () => {
   const [dealers, setDealers] = useState([]);
 
   useEffect(() => {
+    // Check if the user is returning from the email link
+    if (isSignInWithEmailLink(auth, window.location.href)) {
+      let emailForSignIn = window.localStorage.getItem('emailForSignIn');
+      if (!emailForSignIn) {
+        emailForSignIn = window.prompt('Please provide your email for confirmation');
+      }
+      signInWithEmailLink(auth, emailForSignIn, window.location.href)
+        .then((result) => {
+          window.localStorage.removeItem('emailForSignIn');
+          setUser(result.user);
+        })
+        .catch((error) => {
+          console.error("Error signing in with email link", error);
+        });
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
-        // Fetch all dealers when logged in
         fetchDealers();
       }
       setIsLoading(false);
@@ -57,65 +69,26 @@ const Dealers = () => {
     return () => unsubscribe();
   }, []);
 
-  const setupRecaptcha = () => {
-    if (window.recaptchaVerifier) return;
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-      'size': 'normal',
-      'callback': (response) => {
-        console.log("reCAPTCHA solved");
-      }
-    });
-  };
-
-  const handleSendOtp = async (e) => {
+  const handleEmailLinkLogin = async (e) => {
     e.preventDefault();
-    if (!phoneNumber) return;
-    
-    setIsVerifying(true);
-    try {
-      // Prepend + if not present to ensure E.164 format
-      const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber : `+${phoneNumber}`;
-      
-      setupRecaptcha();
-      const appVerifier = window.recaptchaVerifier;
-      const result = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
-      setConfirmationResult(result);
-      setShowOtpInput(true);
-      alert("OTP Sent to " + formattedPhone);
-    } catch (error) {
-      console.error("OTP send failed:", error);
-      // Clear recaptcha on error so it can be re-initialized
-      if (window.recaptchaVerifier) {
-        window.recaptchaVerifier.clear();
-        window.recaptchaVerifier = null;
-      }
-      
-      let errorMsg = "Failed to send OTP.";
-      if (error.code === 'auth/invalid-phone-number') errorMsg = "Invalid phone number format.";
-      if (error.code === 'auth/quota-exceeded') errorMsg = "SMS quota exceeded for today.";
-      if (error.code === 'auth/captcha-check-failed') errorMsg = "ReCAPTCHA verification failed.";
-      if (error.code === 'auth/too-many-requests') errorMsg = "Too many attempts. Please try again later.";
-      
-      alert(`${errorMsg}\n\nError Code: ${error.code}\n\nPlease ensure Phone Auth is enabled and your domain is authorized in the Firebase Console.`);
-    } finally {
-      setIsVerifying(false);
-    }
-  };
+    if (!email) return;
 
-  const handleVerifyOtp = async (e) => {
-    e.preventDefault();
-    if (!otp || !confirmationResult) return;
+    setIsSendingLink(true);
+    const actionCodeSettings = {
+      url: window.location.href, // Redirect back to this page
+      handleCodeInApp: true,
+    };
 
-    setIsVerifying(true);
     try {
-      await confirmationResult.confirm(otp);
+      await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+      window.localStorage.setItem('emailForSignIn', email);
+      alert(`A sign-in link has been sent to ${email}. Please check your inbox and click the link to log in.`);
       setShowLogin(false);
-      setShowOtpInput(false);
     } catch (error) {
-      console.error("OTP verification failed:", error);
-      alert("Invalid OTP. Please try again.");
+      console.error("Error sending sign-in link:", error);
+      alert("Failed to send sign-in link. Ensure Email Auth is enabled in Firebase.");
     } finally {
-      setIsVerifying(false);
+      setIsSendingLink(false);
     }
   };
 
@@ -406,9 +379,7 @@ const Dealers = () => {
                 <button 
                   onClick={() => {
                     setShowLogin(false);
-                    setShowOtpInput(false);
-                    setPhoneNumber("");
-                    setOtp("");
+                    setEmail("");
                   }} 
                   className="text-white hover:text-brand-green-200"
                 >
@@ -428,59 +399,29 @@ const Dealers = () => {
                   <div className="relative flex justify-center text-sm"><span className="px-2 bg-white text-gray-500">OR</span></div>
                 </div>
 
-                {!showOtpInput ? (
-                  <form onSubmit={handleSendOtp} className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                      <input 
-                        required 
-                        type="tel" 
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 outline-none" 
-                        placeholder="e.g., +91 70752 09102" 
-                      />
-                      <p className="mt-1 text-[10px] text-gray-500 italic">Include country code (e.g., +91 for India)</p>
-                    </div>
-                    <div id="recaptcha-container" className="flex justify-center my-4 overflow-hidden rounded-lg"></div>
-                    <button 
-                      type="submit" 
-                      disabled={isVerifying}
-                      className={`w-full bg-brand-green-600 text-white font-bold py-3 rounded-lg hover:bg-brand-green-700 transition-colors ${isVerifying ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    >
-                      {isVerifying ? "Sending OTP..." : "Send OTP"}
-                    </button>
-                  </form>
-                ) : (
-                  <form onSubmit={handleVerifyOtp} className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Enter 6-digit OTP</label>
-                      <input 
-                        required 
-                        type="text" 
-                        maxLength="6"
-                        value={otp}
-                        onChange={(e) => setOtp(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg text-center text-2xl tracking-widest focus:ring-2 focus:ring-brand-green-500 outline-none" 
-                        placeholder="000000" 
-                      />
-                    </div>
-                    <button 
-                      type="submit" 
-                      disabled={isVerifying}
-                      className={`w-full bg-brand-green-600 text-white font-bold py-3 rounded-lg hover:bg-brand-green-700 transition-colors ${isVerifying ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    >
-                      {isVerifying ? "Verifying..." : "Verify OTP"}
-                    </button>
-                    <button 
-                      type="button"
-                      onClick={() => setShowOtpInput(false)}
-                      className="w-full text-sm text-gray-500 hover:text-brand-green-600 font-medium"
-                    >
-                      Change Phone Number
-                    </button>
-                  </form>
-                )}
+                <form onSubmit={handleEmailLinkLogin} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <input 
+                      required 
+                      type="email" 
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 outline-none" 
+                      placeholder="dealer@example.com" 
+                    />
+                  </div>
+                  <button 
+                    type="submit" 
+                    disabled={isSendingLink}
+                    className={`w-full bg-brand-green-600 text-white font-bold py-3 rounded-lg hover:bg-brand-green-700 transition-colors ${isSendingLink ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    {isSendingLink ? "Sending Link..." : "Send Login Link"}
+                  </button>
+                  <p className="text-[10px] text-center text-gray-500 italic">
+                    We'll send a magic link to your email for a secure, passwordless login.
+                  </p>
+                </form>
               </div>
             </motion.div>
           </motion.div>
