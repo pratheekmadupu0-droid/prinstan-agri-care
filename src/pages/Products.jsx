@@ -148,11 +148,11 @@ const Products = () => {
               
               <div className="md:w-1/2 p-6 md:p-10 flex items-center justify-center relative bg-brand-green-50/20">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-brand-green-100 rounded-full blur-3xl -z-10 opacity-50"></div>
-                <div className="w-full h-full min-h-[300px] bg-black rounded-3xl flex items-center justify-center shadow-xl border-4 border-white overflow-hidden">
+                <div className="w-full h-full min-h-[300px] rounded-3xl flex items-center justify-center overflow-hidden">
                    <img
                      src={selectedProduct.image}
                      alt={selectedProduct.name}
-                     className="w-full h-full object-contain bg-white"
+                     className="w-full h-full object-contain mix-blend-multiply"
                    />
                 </div>
               </div>
