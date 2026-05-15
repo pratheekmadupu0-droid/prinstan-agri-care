@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaUserPlus, FaSignInAlt, FaMapMarkerAlt, FaPhoneAlt, FaBoxOpen, FaTimes } from 'react-icons/fa';
+import { FaUserPlus, FaSignInAlt, FaMapMarkerAlt, FaPhoneAlt, FaBoxOpen, FaTimes, FaGoogle } from 'react-icons/fa';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import SEO from '../components/SEO';
+import { auth, googleProvider, db } from '../firebase';
+import { signInWithPopup, onAuthStateChanged, signOut, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import { doc, getDoc, setDoc, collection, getDocs } from 'firebase/firestore';
 
 // Fix Leaflet's default icon path issues
 delete L.Icon.Default.prototype._getIconUrl;
@@ -15,10 +18,18 @@ L.Icon.Default.mergeOptions({
 });
 
 const Dealers = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   
+  // Phone Auth States
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [otp, setOtp] = useState("");
+  const [showOtpInput, setShowOtpInput] = useState(false);
+  const [confirmationResult, setConfirmationResult] = useState(null);
+  const [isVerifying, setIsVerifying] = useState(false);
+
   // Form states
   const [formData, setFormData] = useState({
     name: '',
@@ -31,18 +42,101 @@ const Dealers = () => {
     }
   });
 
-  const [dealers, setDealers] = useState([
-    // Mock dealer for demonstration purposes after login
-    {
-      id: 1,
-      name: 'AgriPro Solutions',
-      area: 'Hyderabad, Telangana',
-      phone: '+91 9876543210',
-      stock: { bios: 120, fertilizers: 300, pesticides: 150 },
-      lat: 17.3850,
-      lng: 78.4867
+  const [dealers, setDealers] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setUser(currentUser);
+      if (currentUser) {
+        // Fetch all dealers when logged in
+        fetchDealers();
+      }
+      setIsLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const setupRecaptcha = () => {
+    if (window.recaptchaVerifier) return;
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      'size': 'invisible',
+      'callback': (response) => {
+        // reCAPTCHA solved, allow signInWithPhoneNumber.
+      }
+    });
+  };
+
+  const handleSendOtp = async (e) => {
+    e.preventDefault();
+    if (!phoneNumber) return;
+    
+    setIsVerifying(true);
+    try {
+      setupRecaptcha();
+      const appVerifier = window.recaptchaVerifier;
+      const result = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
+      setConfirmationResult(result);
+      setShowOtpInput(true);
+    } catch (error) {
+      console.error("OTP send failed:", error);
+      alert("Failed to send OTP. Make sure the phone number is correct (including country code).");
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.clear();
+        window.recaptchaVerifier = null;
+      }
+    } finally {
+      setIsVerifying(false);
     }
-  ]);
+  };
+
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+    if (!otp || !confirmationResult) return;
+
+    setIsVerifying(true);
+    try {
+      await confirmationResult.confirm(otp);
+      setShowLogin(false);
+      setShowOtpInput(false);
+    } catch (error) {
+      console.error("OTP verification failed:", error);
+      alert("Invalid OTP. Please try again.");
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const fetchDealers = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "dealers"));
+      const dealersList = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setDealers(dealersList);
+    } catch (error) {
+      console.error("Error fetching dealers:", error);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      setShowLogin(false);
+    } catch (error) {
+      console.error("Login failed:", error);
+      alert("Login failed. Please try again.");
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   const handleRegisterChange = (e) => {
     const { name, value } = e.target;
@@ -56,24 +150,31 @@ const Dealers = () => {
     }
   };
 
-  const handleRegisterSubmit = (e) => {
+  const handleRegisterSubmit = async (e) => {
     e.preventDefault();
-    const newDealer = {
-      id: Date.now(),
-      ...formData,
-      // Assigning a random location near Hyderabad for demo
-      lat: 17.3850 + (Math.random() - 0.5) * 0.1,
-      lng: 78.4867 + (Math.random() - 0.5) * 0.1,
-    };
-    setDealers([...dealers, newDealer]);
-    setShowRegister(false);
-    setIsLoggedIn(true);
-  };
+    if (!user) return;
 
-  const handleLoginSubmit = (e) => {
-    e.preventDefault();
-    setShowLogin(false);
-    setIsLoggedIn(true);
+    try {
+      const newDealer = {
+        name: formData.name,
+        area: formData.area,
+        phone: formData.phone,
+        stock: formData.stock,
+        email: user.email,
+        uid: user.uid,
+        // Assigning a random location near Hyderabad for demo
+        lat: 17.3850 + (Math.random() - 0.5) * 0.1,
+        lng: 78.4867 + (Math.random() - 0.5) * 0.1,
+        createdAt: new Date().toISOString()
+      };
+
+      await setDoc(doc(db, "dealers", user.uid), newDealer);
+      setShowRegister(false);
+      fetchDealers(); // Refresh list
+    } catch (error) {
+      console.error("Registration failed:", error);
+      alert("Failed to register. Please try again.");
+    }
   };
 
   return (
@@ -100,7 +201,12 @@ const Dealers = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
-        {!isLoggedIn ? (
+        {isLoading ? (
+          <div className="bg-white rounded-2xl shadow-xl p-20 text-center max-w-3xl mx-auto">
+             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-green-600 mx-auto mb-4"></div>
+             <p className="text-gray-500">Loading dealer information...</p>
+          </div>
+        ) : !user ? (
           <div className="bg-white rounded-2xl shadow-xl p-12 text-center max-w-3xl mx-auto">
             <FaMapMarkerAlt className="text-6xl text-gray-300 mx-auto mb-6" />
             <h2 className="text-2xl font-bold text-gray-800 mb-4">As of now, no one is here</h2>
@@ -124,10 +230,16 @@ const Dealers = () => {
         ) : (
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
             <div className="p-6 bg-brand-green-50 border-b border-brand-green-100 flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-brand-green-900">Dealer Locations</h2>
+              <div className="flex items-center gap-3">
+                <img src={user.photoURL} alt={user.displayName} className="w-10 h-10 rounded-full border-2 border-brand-green-200" />
+                <div>
+                  <h2 className="text-xl font-bold text-brand-green-900 leading-none">{user.displayName}</h2>
+                  <p className="text-xs text-brand-green-600">{user.email}</p>
+                </div>
+              </div>
               <button 
-                onClick={() => setIsLoggedIn(false)}
-                className="text-sm font-medium text-brand-green-600 hover:text-brand-green-800"
+                onClick={handleLogout}
+                className="text-sm font-medium text-red-600 hover:text-red-800 bg-red-50 px-4 py-2 rounded-lg transition-colors"
               >
                 Logout
               </button>
@@ -204,44 +316,59 @@ const Dealers = () => {
                   <FaTimes size={24} />
                 </button>
               </div>
-              <form onSubmit={handleRegisterSubmit} className="p-6 space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name / Business Name</label>
-                  <input required type="text" name="name" onChange={handleRegisterChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 focus:border-transparent outline-none" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Area / Location</label>
-                  <input required type="text" name="area" onChange={handleRegisterChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 focus:border-transparent outline-none" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                  <input required type="tel" name="phone" onChange={handleRegisterChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 focus:border-transparent outline-none" />
-                </div>
-                
-                <div className="pt-4 border-t border-gray-100">
-                  <label className="block text-sm font-bold text-gray-800 mb-3">Stock Information (Quantity)</label>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-xs text-gray-500 mb-1">Bios</label>
-                      <input type="number" min="0" name="bios" onChange={handleRegisterChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 outline-none" placeholder="0" />
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-500 mb-1">Fertilizers</label>
-                      <input type="number" min="0" name="fertilizers" onChange={handleRegisterChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 outline-none" placeholder="0" />
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-500 mb-1">Pesticides</label>
-                      <input type="number" min="0" name="pesticides" onChange={handleRegisterChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 outline-none" placeholder="0" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-6">
-                  <button type="submit" className="w-full bg-brand-green-600 text-white font-bold py-3 rounded-lg hover:bg-brand-green-700 transition-colors shadow-lg shadow-brand-green-500/30">
-                    Complete Registration
+              
+              {!user ? (
+                <div className="p-10 text-center">
+                  <FaGoogle className="text-5xl text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-xl font-bold mb-2">Login Required</h3>
+                  <p className="text-gray-600 mb-6">You must login with Google first to register as a dealer.</p>
+                  <button 
+                    onClick={handleGoogleLogin}
+                    className="flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-bold hover:bg-gray-50 transition-all w-full shadow-sm"
+                  >
+                    <FaGoogle className="text-red-500" /> Sign in with Google
                   </button>
                 </div>
-              </form>
+              ) : (
+                <form onSubmit={handleRegisterSubmit} className="p-6 space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name / Business Name</label>
+                    <input required type="text" name="name" onChange={handleRegisterChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 focus:border-transparent outline-none" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Area / Location</label>
+                    <input required type="text" name="area" onChange={handleRegisterChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 focus:border-transparent outline-none" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                    <input required type="tel" name="phone" onChange={handleRegisterChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 focus:border-transparent outline-none" />
+                  </div>
+                  
+                  <div className="pt-4 border-t border-gray-100">
+                    <label className="block text-sm font-bold text-gray-800 mb-3">Stock Information (Quantity)</label>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-xs text-gray-500 mb-1">Bios</label>
+                        <input type="number" min="0" name="bios" onChange={handleRegisterChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 outline-none" placeholder="0" />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-gray-500 mb-1">Fertilizers</label>
+                        <input type="number" min="0" name="fertilizers" onChange={handleRegisterChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 outline-none" placeholder="0" />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-gray-500 mb-1">Pesticides</label>
+                        <input type="number" min="0" name="pesticides" onChange={handleRegisterChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 outline-none" placeholder="0" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-6">
+                    <button type="submit" className="w-full bg-brand-green-600 text-white font-bold py-3 rounded-lg hover:bg-brand-green-700 transition-colors shadow-lg shadow-brand-green-500/30">
+                      Complete Registration
+                    </button>
+                  </div>
+                </form>
+              )}
             </motion.div>
           </motion.div>
         )}
@@ -264,25 +391,84 @@ const Dealers = () => {
             >
               <div className="bg-brand-green-600 p-6 flex justify-between items-center text-white">
                 <h2 className="text-xl font-bold">Dealer Login</h2>
-                <button onClick={() => setShowLogin(false)} className="text-white hover:text-brand-green-200">
+                <button 
+                  onClick={() => {
+                    setShowLogin(false);
+                    setShowOtpInput(false);
+                    setPhoneNumber("");
+                    setOtp("");
+                  }} 
+                  className="text-white hover:text-brand-green-200"
+                >
                   <FaTimes size={20} />
                 </button>
               </div>
-              <form onSubmit={handleLoginSubmit} className="p-6 space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                  <input required type="tel" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 outline-none" placeholder="+91" />
+              <div className="p-8 space-y-6">
+                <button 
+                  onClick={handleGoogleLogin}
+                  className="flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-bold hover:bg-gray-50 transition-all w-full shadow-sm"
+                >
+                  <FaGoogle className="text-red-500" /> Sign in with Google
+                </button>
+                
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200"></div></div>
+                  <div className="relative flex justify-center text-sm"><span className="px-2 bg-white text-gray-500">OR</span></div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">OTP / Password</label>
-                  <input required type="password" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 outline-none" placeholder="Enter password" />
-                </div>
-                <div className="pt-4">
-                  <button type="submit" className="w-full bg-brand-green-600 text-white font-bold py-3 rounded-lg hover:bg-brand-green-700 transition-colors">
-                    Login
-                  </button>
-                </div>
-              </form>
+
+                {!showOtpInput ? (
+                  <form onSubmit={handleSendOtp} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                      <input 
+                        required 
+                        type="tel" 
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 outline-none" 
+                        placeholder="+91 1234567890" 
+                      />
+                    </div>
+                    <div id="recaptcha-container"></div>
+                    <button 
+                      type="submit" 
+                      disabled={isVerifying}
+                      className={`w-full bg-brand-green-600 text-white font-bold py-3 rounded-lg hover:bg-brand-green-700 transition-colors ${isVerifying ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      {isVerifying ? "Sending OTP..." : "Send OTP"}
+                    </button>
+                  </form>
+                ) : (
+                  <form onSubmit={handleVerifyOtp} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Enter 6-digit OTP</label>
+                      <input 
+                        required 
+                        type="text" 
+                        maxLength="6"
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg text-center text-2xl tracking-widest focus:ring-2 focus:ring-brand-green-500 outline-none" 
+                        placeholder="000000" 
+                      />
+                    </div>
+                    <button 
+                      type="submit" 
+                      disabled={isVerifying}
+                      className={`w-full bg-brand-green-600 text-white font-bold py-3 rounded-lg hover:bg-brand-green-700 transition-colors ${isVerifying ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      {isVerifying ? "Verifying..." : "Verify OTP"}
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => setShowOtpInput(false)}
+                      className="w-full text-sm text-gray-500 hover:text-brand-green-600 font-medium"
+                    >
+                      Change Phone Number
+                    </button>
+                  </form>
+                )}
+              </div>
             </motion.div>
           </motion.div>
         )}
