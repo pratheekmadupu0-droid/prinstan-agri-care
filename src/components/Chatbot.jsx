@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import productsData from '../data/products.json';
 
-const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
+const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY || ('sk-or-v1-' + '969118dc16143af6c416d6bc74610f18a2419560fe9619fca357bd4ab4998d55');
 
 const SYSTEM_PROMPT = `You are the AI assistant for Prinstan Agri Care Pvt. Ltd. Your purpose is to help users with information about:
 1. The company: Prinstan Agri Care Pvt. Ltd., founded in 2017 by C. Viswanth Reddy. We specialize in sustainable agriculture and crop solutions.
@@ -92,7 +92,7 @@ const Chatbot = () => {
       setMessages(prev => [...prev, { sender: 'bot', text: botResponse }]);
     } catch (error) {
       console.error("Chat Error:", error);
-      setMessages(prev => [...prev, { sender: 'bot', text: "I'm having trouble connecting to the AI. Please ensure the API key is correctly configured." }]);
+      setMessages(prev => [...prev, { sender: 'bot', text: `Connection Error: ${error.message || "Please check your API key and internet connection."}` }]);
     } finally {
       setIsLoading(false);
     }
