@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaEye, FaBullseye, FaHandshake, FaLeaf, FaGlobe, FaTimes, FaLinkedin, FaEnvelope, FaInfoCircle } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,15 @@ const fadeIn = {
 const About = () => {
   const { t } = useTranslation();
   const [selectedMember, setSelectedMember] = useState(null);
+
+  useEffect(() => {
+    const video = document.getElementById('main-overview-video');
+    if (video) {
+      video.play().catch(error => {
+        console.warn("Autoplay was prevented, user interaction might be needed:", error);
+      });
+    }
+  }, []);
 
   const team = [
     { 
@@ -251,12 +260,16 @@ const About = () => {
           className="relative w-full aspect-video rounded-[40px] overflow-hidden shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] bg-black"
         >
           <video 
-            autoPlay
-            muted
-            controls
-            loop
-            playsInline 
+            id="main-overview-video"
+            key="main-overview-video"
+            autoPlay={true}
+            muted={true}
+            controls={true}
+            loop={true}
+            playsInline={true}
+            preload="auto"
             className="w-full h-full object-cover"
+            style={{ minHeight: '100%', minWidth: '100%' }}
           >
             <source src="/main.mp4" type="video/mp4" />
           </video>
