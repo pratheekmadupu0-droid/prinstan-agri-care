@@ -310,9 +310,21 @@ const Home = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {[
-              { name: 'Rangaya', place: 'Surya pet' },
-              { name: 'Yadayya', place: 'Domalaguda' },
-              { name: 'Pullayaa', place: 'Kariminagar' }
+              { 
+                name: 'Rangaya', 
+                place: 'Surya pet',
+                review: "The quality of Bio-fertilizers from Prinstan has significantly improved my cotton yield. Their technical support team guided me throughout the season, ensuring optimal crop health."
+              },
+              { 
+                name: 'Yadayya', 
+                place: 'Domalaguda',
+                review: "Switching to Prinstan's organic solutions was the best decision for my farm. I've seen a noticeable reduction in pest attacks and a substantial increase in the quality of my chili harvest."
+              },
+              { 
+                name: 'Pullayaa', 
+                place: 'Kariminagar',
+                review: "Prinstan Agri Care provides more than just products; they provide real solutions. Their commitment to sustainable farming has helped me reduce chemical usage while maintaining high productivity."
+              }
             ].map((item, index) => (
               <motion.div 
                 key={index}
@@ -320,15 +332,28 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.2 }}
-                className="bg-brand-green-50 p-12 rounded-logi relative group border border-brand-green-100 shadow-xl"
+                className="bg-white p-12 rounded-[40px] relative group border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_rgba(34,197,94,0.15)] transition-all duration-700 flex flex-col h-full"
               >
-                <div className="text-brand-green-200 text-9xl absolute -top-4 -right-4 opacity-50 group-hover:rotate-12 transition-transform font-serif leading-none">"</div>
-                <p className="text-gray-600 text-xl leading-relaxed mb-10 relative z-10 font-medium">
-                  {t('home.t1')}
+                <div className="absolute top-8 right-10 text-brand-green-100 text-8xl opacity-30 font-serif leading-none group-hover:text-brand-green-200 transition-colors">"</div>
+                
+                <div className="flex gap-1 mb-8">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <span key={star} className="text-yellow-400 text-sm">★</span>
+                  ))}
+                </div>
+
+                <p className="text-gray-700 text-xl leading-relaxed mb-10 relative z-10 font-medium italic flex-grow">
+                  "{item.review}"
                 </p>
-                <div>
-                  <h5 className="text-xl font-black text-brand-green-900 uppercase tracking-tight">{item.name}</h5>
-                  <p className="logi-label text-brand-green-600">{item.place}</p>
+
+                <div className="pt-10 border-t border-gray-50 flex items-center justify-between">
+                  <div>
+                    <h5 className="text-xl font-black text-brand-green-900 uppercase tracking-tight">{item.name}</h5>
+                    <p className="text-xs font-black text-brand-green-600 uppercase tracking-widest mt-1">{item.place}</p>
+                  </div>
+                  <div className="bg-brand-green-50 text-brand-green-600 text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-tighter border border-brand-green-100">
+                    Verified Farmer
+                  </div>
                 </div>
               </motion.div>
             ))}
