@@ -251,6 +251,7 @@ const About = () => {
         >
           <video 
             controls 
+            loop
             playsInline 
             className="w-full h-full object-cover"
             poster="/md.png"
