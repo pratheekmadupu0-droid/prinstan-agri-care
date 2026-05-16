@@ -28,7 +28,7 @@ const Home = () => {
   const [selectedService, setSelectedService] = useState(null);
 
   const stats = [
-    { number: '25+', label: t('home.stats.exp') },
+    { number: '10+', label: t('home.stats.exp') },
     { number: '10k+', label: t('home.stats.farmers') },
     { number: '5k+', label: t('home.stats.products') },
     { number: '150+', label: t('home.stats.projects') },
