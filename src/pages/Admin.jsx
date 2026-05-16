@@ -25,7 +25,8 @@ const Admin = () => {
   const authorizedEmails = [
     'pratheekmadupu0@gmail.com', 
     'admin@prinstan.com',
-    'c.viswanthreddy@gmail.com'
+    'c.viswanthreddy@gmail.com',
+    'prinstanagricarepvtltd2025@gmail.com'
   ];
 
   // Data States
