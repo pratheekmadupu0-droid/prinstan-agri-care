@@ -46,6 +46,24 @@ const About = () => {
     { icon: <FaHandshake />, title: t('about.values.v3Title'), desc: t('about.values.v3Desc') },
   ];
 
+  const processes = [
+    { 
+      title: 'Testing', 
+      video: '/testing.mp4', 
+      desc: 'Rigorous quality control and soil testing in our advanced laboratories to ensure the highest safety standards.' 
+    },
+    { 
+      title: 'Creating', 
+      video: '/creating.mp4', 
+      desc: 'Research and development of innovative crop protection solutions tailored for Indian farmers.' 
+    },
+    { 
+      title: 'Manufacturing', 
+      video: '/manufacturing.mp4', 
+      desc: 'Precision engineering and sustainable manufacturing processes at our state-of-the-art facilities.' 
+    },
+  ];
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -218,7 +236,44 @@ const About = () => {
         )}
       </AnimatePresence>
 
-      {/* Vision & Mission */}
+      {/* Process & Innovation Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 bg-white">
+        <div className="text-left mb-20">
+          <h2 className="logi-label text-brand-green-600 mb-4">Our Operations</h2>
+          <h3 className="text-6xl md:text-8xl logi-heading text-brand-green-900">PROCESS &<br /><span className="text-brand-green-500">INNOVATION.</span></h3>
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          {processes.map((item, idx) => (
+            <motion.div 
+              key={idx}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeIn}
+              className="flex flex-col group"
+            >
+              <div className="relative aspect-video rounded-logi overflow-hidden shadow-2xl mb-8 bg-black">
+                <video 
+                  autoPlay 
+                  loop 
+                  muted 
+                  playsInline 
+                  className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700"
+                >
+                  <source src={item.video} type="video/mp4" />
+                </video>
+                <div className="absolute inset-0 bg-brand-green-900/10 mix-blend-multiply"></div>
+                <div className="absolute bottom-6 left-6">
+                  <span className="logi-label bg-white text-brand-green-900 px-4 py-2 rounded-full shadow-xl">{item.title}</span>
+                </div>
+              </div>
+              <h4 className="text-3xl font-black text-brand-green-900 uppercase tracking-tight mb-4">{item.title}</h4>
+              <p className="text-gray-500 text-lg leading-relaxed">{item.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
       <div className="bg-white py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
