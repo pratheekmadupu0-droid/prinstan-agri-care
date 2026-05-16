@@ -3,20 +3,25 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaCommentDots, FaTimes, FaPaperPlane, FaRobot, FaWhatsapp } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
+import productsData from '../data/products.json';
 
+// IMPORTANT: Ensure VITE_OPENROUTER_API_KEY is set in your .env file or deployment dashboard.
 const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
 
-const SYSTEM_PROMPT = `You are the AI assistant for Prinstan Agri Care Pvt. Ltd. Your purpose is to help users with information ONLY about:
+const SYSTEM_PROMPT = `You are the AI assistant for Prinstan Agri Care Pvt. Ltd. Your purpose is to help users with information about:
 1. The company: Prinstan Agri Care Pvt. Ltd., founded in 2017 by C. Viswanth Reddy. We specialize in sustainable agriculture and crop solutions.
-2. Our products: We offer premium Bio-fertilizers, Organic Fertilizers, and Pesticides.
+2. Our products: You have access to our full product catalog. You must tell users about specific products if they ask.
 3. Our dealers: we have a verified network of regional dealers across India.
-4. Dealership registration: To become a dealer, users should go to the "Dealers" page and click the "Join Network" button. They will need to log in (using Google or Email) and fill out the registration form.
+4. Dealership registration: To become a dealer, users should go to the "Dealers" page and click the "Join Network" button. They will need to log in and fill out the registration form.
+
+Product Catalog Summary:
+${productsData.map(p => `- ${p.name}: ${p.description} (Category: ${p.category}, Dosage: ${p.dosage})`).join('\n')}
 
 Strict Guidelines:
-- Do NOT answer questions unrelated to Prinstan Agri Care, its products, or dealership.
-- If asked about other topics, politely say: "I am sorry, but I can only provide information related to Prinstan Agri Care's company details, products, and dealership programs."
-- Keep responses professional, concise, and helpful.
-- Language: Answer in the language the user speaks (English or Telugu).`;
+- Only answer questions related to Prinstan Agri Care, its products, and dealership.
+- If asked about other topics, politely decline.
+- Be professional, concise, and helpful.
+- Support both English and Telugu.`;
 
 const Chatbot = () => {
   const { t } = useTranslation();
@@ -31,7 +36,7 @@ const Chatbot = () => {
 
   useEffect(() => {
     setMessages([
-      { sender: 'bot', text: t('chatbot.welcome') }
+      { sender: 'bot', text: "Hi! I'm the Prinstan Assistant. How can I help you today? I can tell you about our company, any of our products, or how to become a dealer." }
     ]);
   }, [t]);
 
@@ -67,7 +72,7 @@ const Chatbot = () => {
           "model": "google/gemini-2.0-flash-001",
           "messages": [
             { "role": "system", "content": SYSTEM_PROMPT },
-            ...messages.map(m => ({ 
+            ...messages.slice(-5).map(m => ({ 
               "role": m.sender === 'user' ? 'user' : 'assistant', 
               "content": m.text 
             })),
@@ -77,11 +82,13 @@ const Chatbot = () => {
       });
 
       const data = await response.json();
+      if (data.error) throw new Error(data.error.message || "API Error");
+      
       const botResponse = data.choices[0].message.content;
       setMessages(prev => [...prev, { sender: 'bot', text: botResponse }]);
     } catch (error) {
       console.error("Chat Error:", error);
-      setMessages(prev => [...prev, { sender: 'bot', text: "I'm having trouble connecting right now. Please try again later or contact us directly." }]);
+      setMessages(prev => [...prev, { sender: 'bot', text: "I'm having trouble connecting to the AI. Please ensure the API key is correctly configured." }]);
     } finally {
       setIsLoading(false);
     }
