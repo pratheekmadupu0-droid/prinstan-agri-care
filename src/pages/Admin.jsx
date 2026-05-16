@@ -51,7 +51,8 @@ const Admin = () => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       if (u) {
         setUser(u);
-        setIsAuthorized(authorizedEmails.includes(u.email?.toLowerCase()));
+        const userEmail = u.email?.toLowerCase().trim();
+        setIsAuthorized(authorizedEmails.map(e => e.toLowerCase().trim()).includes(userEmail));
       } else {
         setUser(null);
         setIsAuthorized(false);
@@ -274,7 +275,7 @@ const Admin = () => {
           </div>
           <h1 className="text-3xl font-black text-gray-900 mb-2">Admin Portal</h1>
           <p className="text-gray-500 mb-8 font-medium">
-            {!user ? "Please sign in to continue." : "Access Denied. You are not an authorized admin."}
+            {!user ? "Please sign in to continue." : `Access Denied. ${user.email} is not an authorized admin.`}
           </p>
           {!user ? (
             <button onClick={handleLogin} className="w-full bg-brand-green-600 text-white py-4 rounded-2xl font-bold hover:bg-brand-green-700 transition-all flex items-center justify-center gap-3">
