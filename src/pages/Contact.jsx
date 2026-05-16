@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram, FaWhatsapp } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 
 const Contact = () => {
@@ -62,7 +62,9 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="font-bold text-gray-900">{t('contact.phone')}</h4>
-                  <p className="text-gray-600 mt-1">+91 (40) 2345-6789<br />+91 (40) 9876-5432</p>
+                  <p className="text-gray-600 mt-1">
+                    <a href="tel:+919550758929" className="hover:text-brand-green-600 transition-colors">+91 95507 58929</a>
+                  </p>
                 </div>
               </div>
 
@@ -72,7 +74,9 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="font-bold text-gray-900">{t('contact.email')}</h4>
-                  <p className="text-gray-600 mt-1">contact@prinstan.com<br />support@prinstan.com</p>
+                  <p className="text-gray-600 mt-1">
+                    <a href="mailto:prinstanagricarepvtltd2025@gmail.com" className="hover:text-brand-green-600 transition-colors break-all">prinstanagricarepvtltd2025@gmail.com</a>
+                  </p>
                 </div>
               </div>
             </div>
@@ -103,30 +107,45 @@ const Contact = () => {
             transition={{ delay: 0.4 }}
             className="lg:col-span-2 bg-white rounded-3xl shadow-xl p-8 md:p-12 border border-gray-100"
           >
-            <h3 className="text-2xl font-bold text-gray-900 mb-8">{t('contact.sendMsg')}</h3>
-            <form className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('contact.form.name')}</label>
-                  <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-green-500 focus:border-transparent transition-all outline-none" placeholder={t('contact.form.namePlace')} />
+            <div className="space-y-6">
+              <p className="text-gray-600 text-lg">Prefer instant messaging? Connect with us directly on WhatsApp for quick assistance.</p>
+              <a 
+                href="https://wa.me/919550758929" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-3 w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-black uppercase tracking-widest text-xs py-5 rounded-xl transition-all shadow-xl shadow-green-500/20"
+              >
+                <FaWhatsapp className="text-xl" /> Send Us A Message on WhatsApp
+              </a>
+              <div className="flex items-center gap-4 py-4">
+                <div className="h-px bg-gray-100 flex-grow"></div>
+                <span className="text-gray-400 text-xs font-bold uppercase tracking-widest">Or use the form</span>
+                <div className="h-px bg-gray-100 flex-grow"></div>
+              </div>
+              <form className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('contact.form.name')}</label>
+                    <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-green-500 focus:border-transparent transition-all outline-none" placeholder={t('contact.form.namePlace')} />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('contact.form.email')}</label>
+                    <input type="email" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-green-500 focus:border-transparent transition-all outline-none" placeholder={t('contact.form.emailPlace')} />
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('contact.form.email')}</label>
-                  <input type="email" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-green-500 focus:border-transparent transition-all outline-none" placeholder={t('contact.form.emailPlace')} />
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('contact.form.phone')}</label>
+                  <input type="tel" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-green-500 focus:border-transparent transition-all outline-none" placeholder={t('contact.form.phonePlace')} />
                 </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">{t('contact.form.phone')}</label>
-                <input type="tel" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-green-500 focus:border-transparent transition-all outline-none" placeholder={t('contact.form.phonePlace')} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">{t('contact.form.message')}</label>
-                <textarea rows="5" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-green-500 focus:border-transparent transition-all outline-none resize-none" placeholder={t('contact.form.msgPlace')}></textarea>
-              </div>
-              <button type="button" className="w-full bg-brand-green-600 hover:bg-brand-green-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-brand-green-500/30">
-                {t('contact.form.send')}
-              </button>
-            </form>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('contact.form.message')}</label>
+                  <textarea rows="5" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-green-500 focus:border-transparent transition-all outline-none resize-none" placeholder={t('contact.form.msgPlace')}></textarea>
+                </div>
+                <button type="button" className="w-full bg-brand-green-900 hover:bg-brand-green-800 text-white font-bold py-4 rounded-xl transition-all shadow-lg">
+                  {t('contact.form.send')}
+                </button>
+              </form>
+            </div>
           </motion.div>
         </div>
 

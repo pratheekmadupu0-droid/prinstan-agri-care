@@ -78,11 +78,11 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-3">
                 <FaPhoneAlt className="text-brand-green-500 flex-shrink-0" />
-                <span>+91 (40) 2345-6789</span>
+                <a href="tel:+919550758929" className="hover:text-brand-green-500 transition-colors">+91 95507 58929</a>
               </li>
               <li className="flex items-center gap-3">
                 <FaEnvelope className="text-brand-green-500 flex-shrink-0" />
-                <span>contact@prinstan.com</span>
+                <a href="mailto:prinstanagricarepvtltd2025@gmail.com" className="hover:text-brand-green-500 transition-colors">prinstanagricarepvtltd2025@gmail.com</a>
               </li>
             </ul>
           </div>
