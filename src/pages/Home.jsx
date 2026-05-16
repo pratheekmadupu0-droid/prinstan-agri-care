@@ -1,7 +1,13 @@
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FaLeaf, FaTractor, FaSeedling, FaWater } from 'react-icons/fa';
+import { FaLeaf, FaTractor, FaSeedling, FaWater, FaTimes } from 'react-icons/fa';
+
+import organicImg from '../assets/services/organic.png';
+import smartImg from '../assets/services/smart.png';
+import cropImg from '../assets/services/crop.png';
+import irrigationImg from '../assets/services/irrigation.png';
 import SEO from '../components/SEO';
 
 const fadeIn = {
@@ -19,6 +25,7 @@ const staggerContainer = {
 
 const Home = () => {
   const { t } = useTranslation();
+  const [selectedService, setSelectedService] = useState(null);
 
   const stats = [
     { number: '25+', label: t('home.stats.exp') },
@@ -28,10 +35,34 @@ const Home = () => {
   ];
 
   const services = [
-    { icon: <FaLeaf />, title: t('home.services.s1Title'), desc: t('home.services.s1Desc'), image: 'https://images.unsplash.com/photo-1592982537447-6f2a6a0a5015?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-    { icon: <FaTractor />, title: t('home.services.s2Title'), desc: t('home.services.s2Desc'), image: 'https://images.unsplash.com/photo-1589923188900-85dae523342b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-    { icon: <FaSeedling />, title: t('home.services.s3Title'), desc: t('home.services.s3Desc'), image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-    { icon: <FaWater />, title: t('home.services.s4Title'), desc: t('home.services.s4Desc'), image: 'https://images.unsplash.com/photo-1563514253386-4b2a3c748c08?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+    { 
+      icon: <FaLeaf />, 
+      title: t('home.services.s1Title'), 
+      desc: t('home.services.s1Desc'), 
+      detail: t('home.services.s1Detail'),
+      image: organicImg 
+    },
+    { 
+      icon: <FaTractor />, 
+      title: t('home.services.s2Title'), 
+      desc: t('home.services.s2Desc'), 
+      detail: t('home.services.s2Detail'),
+      image: smartImg 
+    },
+    { 
+      icon: <FaSeedling />, 
+      title: t('home.services.s3Title'), 
+      desc: t('home.services.s3Desc'), 
+      detail: t('home.services.s3Detail'),
+      image: cropImg 
+    },
+    { 
+      icon: <FaWater />, 
+      title: t('home.services.s4Title'), 
+      desc: t('home.services.s4Desc'), 
+      detail: t('home.services.s4Detail'),
+      image: irrigationImg 
+    },
   ];
 
   return (
@@ -158,7 +189,8 @@ const Home = () => {
                 key={index} 
                 variants={fadeIn}
                 whileHover={{ y: -10 }}
-                className="bg-white rounded-2xl overflow-hidden shadow-xl border border-gray-100 hover:border-brand-green-200 transition-all group flex flex-col"
+                onClick={() => setSelectedService(service)}
+                className="bg-white rounded-2xl overflow-hidden shadow-xl border border-gray-100 hover:border-brand-green-200 transition-all group flex flex-col cursor-pointer"
               >
                 <div className="h-56 w-full overflow-hidden relative">
                    <img src={service.image} alt={`Prinstan Agri Care ${service.title} - Agricultural solutions and farming innovation`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
@@ -170,10 +202,68 @@ const Home = () => {
                 <div className="p-8 flex-grow">
                   <h4 className="text-xl font-bold text-gray-900 mb-4">{service.title}</h4>
                   <p className="text-gray-600 leading-relaxed">{service.desc}</p>
+                  <button className="mt-6 text-brand-green-600 font-semibold group-hover:text-brand-green-700 flex items-center gap-2">
+                    Learn More <span className="transition-transform group-hover:translate-x-1">→</span>
+                  </button>
                 </div>
               </motion.div>
             ))}
           </motion.div>
+
+          <AnimatePresence>
+            {selectedService && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+                onClick={() => setSelectedService(null)}
+              >
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                  animate={{ scale: 1, opacity: 1, y: 0 }}
+                  exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                  className="bg-white rounded-3xl overflow-hidden max-w-2xl w-full shadow-2xl relative"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <button 
+                    onClick={() => setSelectedService(null)}
+                    className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center text-white md:text-gray-800 transition-colors"
+                  >
+                    <FaTimes size={20} />
+                  </button>
+
+                  <div className="h-64 w-full relative">
+                    <img src={selectedService.image} alt={selectedService.title} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8">
+                      <div className="flex items-center gap-4 mb-2">
+                        <div className="w-12 h-12 bg-brand-green-500 rounded-full flex items-center justify-center text-2xl text-white">
+                          {selectedService.icon}
+                        </div>
+                        <h3 className="text-3xl font-bold text-white">{selectedService.title}</h3>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-8">
+                    <p className="text-lg text-brand-green-600 font-semibold mb-4">{selectedService.desc}</p>
+                    <div className="h-px bg-gray-100 mb-6"></div>
+                    <p className="text-gray-700 leading-relaxed text-lg">
+                      {selectedService.detail}
+                    </p>
+                    <div className="mt-8 flex justify-end">
+                      <button 
+                        onClick={() => setSelectedService(null)}
+                        className="bg-brand-green-600 hover:bg-brand-green-700 text-white px-8 py-3 rounded-xl font-bold transition-all"
+                      >
+                        Close Details
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </section>
 

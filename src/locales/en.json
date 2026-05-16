@@ -24,12 +24,16 @@
     "services": {
       "s1Title": "Organic Farming",
       "s1Desc": "Sustainable and eco-friendly farming solutions.",
+      "s1Detail": "Our organic farming solutions focus on maintaining soil health and ecosystem balance. We provide organic fertilizers, biopesticides, and expert guidance to help you transition to sustainable agriculture without compromising on yield quality.",
       "s2Title": "Smart Agriculture",
       "s2Desc": "Tech-driven approaches to modern farming.",
+      "s2Detail": "Leverage the power of IoT, AI, and data analytics in your fields. From drone monitoring to automated climate control, our smart agriculture services provide real-time insights that optimize resource usage and maximize productivity.",
       "s3Title": "Crop Solutions",
       "s3Desc": "High-yield seeds and plant protection.",
+      "s3Detail": "Protect your investment with our comprehensive crop solutions. We offer premium, high-yield seeds tailored to your local climate, along with advanced plant protection products that ensure healthy growth from sowing to harvest.",
       "s4Title": "Irrigation Systems",
-      "s4Desc": "Water-efficient irrigation technology."
+      "s4Desc": "Water-efficient irrigation technology.",
+      "s4Detail": "Maximize every drop with our state-of-the-art irrigation systems. We design and install precision drip and sprinkler systems that deliver water directly to the roots, significantly reducing waste while ensuring optimal hydration for your crops."
     },
     "testimonials": "Testimonials",
     "whatFarmersSay": "What Farmers Say",
