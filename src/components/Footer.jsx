@@ -12,9 +12,12 @@ const Footer = () => {
           <div>
             <Link to="/" className="flex items-center gap-1 text-white mb-6">
               <div className="bg-white p-2 rounded-xl">
-                <img src="/logo.png" alt="Prinstan Agri Care Logo" className="h-16 w-auto object-contain -mr-2" />
+                <img src="/logo.png" alt="Prinstan Agri Care Logo" className="h-16 w-auto object-contain" />
               </div>
-              <span className="font-bold text-2xl tracking-tight">Prinstan <span className="text-brand-green-500">Agri Care</span></span>
+              <div className="flex flex-col ml-2">
+                <span className="font-bold text-2xl tracking-tight leading-none uppercase">Prinstan Agri Care</span>
+                <span className="text-xs text-brand-green-500 font-bold uppercase tracking-[0.2em] mt-1">Pvt. Ltd.</span>
+              </div>
             </Link>
             <p className="text-gray-400 mb-6 leading-relaxed">
               {t('footer.desc')}

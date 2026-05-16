@@ -124,7 +124,7 @@ const Home = () => {
               <h2 className="logi-label text-brand-green-600 mb-6">Pioneering Sustainable Agriculture</h2>
               <h1 className="text-[12vw] lg:text-[10vw] logi-heading text-brand-green-900 mb-8">
                 PRINSTAN<br />
-                <span className="text-brand-green-500">AGRI CARE.</span>
+                <span className="text-brand-green-500">AGRI CARE PVT. LTD.</span>
               </h1>
               <div className="max-w-xl">
                 <p className="text-xl text-gray-600 mb-10 leading-relaxed font-medium">

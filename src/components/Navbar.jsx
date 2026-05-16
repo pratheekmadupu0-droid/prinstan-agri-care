@@ -41,13 +41,13 @@ const Navbar = () => {
     <div className="fixed w-full z-50 px-4 pt-4 pointer-events-none">
       <nav className={`max-w-7xl mx-auto transition-all duration-500 pointer-events-auto ${scrolled ? 'glass rounded-full py-2 px-6 shadow-2xl scale-95 md:scale-100' : 'bg-white/50 backdrop-blur-sm rounded-[30px] md:rounded-full py-4 px-8 md:px-12'}`}>
         <div className="flex justify-between items-center">
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="bg-brand-green-600 p-2 rounded-xl group-hover:rotate-12 transition-transform">
-              <FaLeaf className="text-white text-xl" />
+          <Link to="/" className="flex items-center gap-4 group">
+            <div className="bg-white p-1.5 rounded-xl group-hover:rotate-12 transition-transform shadow-lg border border-brand-green-50">
+              <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
             </div>
             <div className="flex flex-col">
-              <span className="font-black text-xl tracking-tighter text-brand-green-900 leading-none uppercase">Prinstan</span>
-              <span className="logi-label text-[10px] text-brand-green-600 leading-none mt-1">Agri Care</span>
+              <span className="font-black text-xl tracking-tighter text-brand-green-900 leading-none uppercase">Prinstan Agri Care</span>
+              <span className="logi-label text-[10px] text-brand-green-600 leading-none mt-1">Pvt. Ltd.</span>
             </div>
           </Link>
 
