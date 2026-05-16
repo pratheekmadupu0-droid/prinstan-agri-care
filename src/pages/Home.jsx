@@ -91,72 +91,102 @@ const Home = () => {
         </video>
       </section>
 
-      {/* Hero Section with Text and Background Image */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <img 
-            src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" 
-            alt="Farming Background" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/50"></div>
+      {/* Ticker / Marquee */}
+      <div className="bg-brand-green-900 text-white py-2 overflow-hidden whitespace-nowrap relative z-[60]">
+        <motion.div 
+          animate={{ x: [0, -1000] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="flex gap-20 items-center text-xs font-bold uppercase tracking-[0.3em]"
+        >
+          <span>• INNOVATING INDIAN AGRICULTURE</span>
+          <span>• PREMIUM CROP PROTECTION</span>
+          <span>• SUSTAINABLE FARMING SOLUTIONS</span>
+          <span>• 25+ YEARS OF EXCELLENCE</span>
+          <span>• EMPOWERING 10k+ FARMERS</span>
+          {/* Duplicate for seamless loop */}
+          <span>• INNOVATING INDIAN AGRICULTURE</span>
+          <span>• PREMIUM CROP PROTECTION</span>
+          <span>• SUSTAINABLE FARMING SOLUTIONS</span>
+          <span>• 25+ YEARS OF EXCELLENCE</span>
+          <span>• EMPOWERING 10k+ FARMERS</span>
+        </motion.div>
+      </div>
+
+      {/* Hero Section - Logi Style */}
+      <section className="relative min-h-screen flex items-center justify-center pt-20 px-4 overflow-hidden bg-white">
+        <div className="max-w-[1400px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="lg:col-span-8 z-10">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1 }}
+            >
+              <h2 className="logi-label text-brand-green-600 mb-6">Pioneering Sustainable Agriculture</h2>
+              <h1 className="text-[12vw] lg:text-[10vw] logi-heading text-brand-green-900 mb-8">
+                PRINSTAN<br />
+                <span className="text-brand-green-500">AGRI CARE.</span>
+              </h1>
+              <div className="max-w-xl">
+                <p className="text-xl text-gray-600 mb-10 leading-relaxed font-medium">
+                  {t('home.heroDesc')}
+                </p>
+                <div className="flex flex-wrap gap-6">
+                  <Link to="/products" className="bg-brand-green-900 text-white px-10 py-5 rounded-full font-black uppercase tracking-widest text-sm hover:bg-brand-green-800 transition-all transform hover:scale-105 shadow-xl">
+                    {t('home.explore')}
+                  </Link>
+                  <Link to="/contact" className="border-2 border-brand-green-900 text-brand-green-900 px-10 py-5 rounded-full font-black uppercase tracking-widest text-sm hover:bg-brand-green-50 transition-all transform hover:scale-105">
+                    {t('home.contactUs')}
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+          
+          <div className="lg:col-span-4 relative h-[500px] lg:h-[700px]">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
+              className="w-full h-full rounded-logi overflow-hidden shadow-2xl relative"
+            >
+              <img 
+                src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" 
+                alt="Farming Background" 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-brand-green-900/10 mix-blend-multiply"></div>
+            </motion.div>
+            
+            {/* Floating Badge */}
+            <motion.div
+              animate={{ y: [0, -20, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -bottom-10 -left-10 bg-white p-8 rounded-logi shadow-2xl z-20 hidden md:block border border-gray-100"
+            >
+              <div className="text-4xl font-black text-brand-green-600 mb-1">25+</div>
+              <div className="logi-label text-gray-500">Years of Experience</div>
+            </motion.div>
+          </div>
         </div>
         
-        <div className="relative z-10 text-center text-white px-4 max-w-5xl mx-auto">
-          <motion.h1 
-            initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.2 }}
-            className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
-          >
-            Welcome to Prinstan Agri Care Pvt Ltd
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.4 }}
-            className="text-xl md:text-2xl mb-6 text-gray-200"
-          >
-            {t('home.heroDesc')}
-          </motion.p>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.5 }}
-            className="hidden md:block text-sm text-gray-300 mb-10 max-w-3xl mx-auto"
-          >
-            Empowering Indian agriculture support with advanced agricultural solutions, superior crop protection, premium fertilizers, and cutting-edge farming innovation.
-          </motion.p>
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="flex flex-col sm:flex-row justify-center gap-4"
-          >
-            <Link to="/products" className="bg-brand-green-600 hover:bg-brand-green-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all shadow-lg hover:shadow-brand-green-500/50">
-              {t('home.explore')}
-            </Link>
-            <Link to="/contact" className="bg-white hover:bg-gray-100 text-brand-green-800 px-8 py-4 rounded-full font-semibold text-lg transition-all shadow-lg">
-              {t('home.contactUs')}
-            </Link>
-          </motion.div>
-        </div>
+        {/* Background Decorative Element */}
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-brand-green-50/50 -z-10 rounded-l-[100px]"></div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-brand-green-50">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8"
+            className="grid grid-cols-2 md:grid-cols-4 gap-12 bg-brand-green-50 p-12 rounded-logi border border-brand-green-100 shadow-inner"
           >
             {stats.map((stat, index) => (
               <motion.div key={index} variants={fadeIn} className="text-center">
-                <h3 className="text-4xl md:text-5xl font-bold text-brand-green-600 mb-2">{stat.number}</h3>
-                <p className="text-gray-600 font-medium text-lg">{stat.label}</p>
+                <h3 className="text-5xl md:text-6xl font-black text-brand-green-900 mb-2">{stat.number}</h3>
+                <p className="logi-label text-brand-green-600">{stat.label}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -171,10 +201,10 @@ const Home = () => {
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeIn}
-            className="text-center mb-16"
+            className="text-left mb-20"
           >
-            <h2 className="text-sm font-bold text-brand-green-600 tracking-widest uppercase mb-2">{t('home.expertise')}</h2>
-            <h3 className="text-4xl font-bold text-gray-900">{t('home.premiumServices')}</h3>
+            <h2 className="logi-label text-brand-green-600 mb-4">{t('home.expertise')}</h2>
+            <h3 className="text-6xl md:text-8xl logi-heading text-brand-green-900">{t('home.premiumServices')}</h3>
           </motion.div>
 
           <motion.div 
@@ -185,25 +215,25 @@ const Home = () => {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
           >
             {services.map((service, index) => (
-              <motion.div 
                 key={index} 
                 variants={fadeIn}
-                whileHover={{ y: -10 }}
+                whileHover={{ y: -20 }}
                 onClick={() => setSelectedService(service)}
-                className="bg-white rounded-2xl overflow-hidden shadow-xl border border-gray-100 hover:border-brand-green-200 transition-all group flex flex-col cursor-pointer"
+                className="bg-white rounded-logi overflow-hidden shadow-2xl border border-gray-100 hover:border-brand-green-200 transition-all group flex flex-col cursor-pointer"
               >
-                <div className="h-56 w-full overflow-hidden relative">
-                   <img src={service.image} alt={`Prinstan Agri Care ${service.title} - Agricultural solutions and farming innovation`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                   <div className="absolute bottom-4 left-4 w-12 h-12 bg-brand-green-500 rounded-full flex items-center justify-center text-2xl text-white shadow-lg">
+                <div className="h-72 w-full overflow-hidden relative">
+                   <img src={service.image} alt={`Prinstan Agri Care ${service.title} - Agricultural solutions and farming innovation`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                   <div className="absolute inset-0 bg-brand-green-900/20 group-hover:bg-transparent transition-colors duration-500"></div>
+                   <div className="absolute top-6 right-6 w-14 h-14 bg-white rounded-full flex items-center justify-center text-3xl text-brand-green-600 shadow-2xl transform group-hover:rotate-12 transition-transform">
                       {service.icon}
                    </div>
                 </div>
-                <div className="p-8 flex-grow">
-                  <h4 className="text-xl font-bold text-gray-900 mb-4">{service.title}</h4>
-                  <p className="text-gray-600 leading-relaxed">{service.desc}</p>
-                  <button className="mt-6 text-brand-green-600 font-semibold group-hover:text-brand-green-700 flex items-center gap-2">
-                    Learn More <span className="transition-transform group-hover:translate-x-1">→</span>
+                <div className="p-10 flex-grow bg-white">
+                  <div className="logi-label text-brand-green-500 mb-4">Service {index + 1}</div>
+                  <h4 className="text-3xl font-black text-brand-green-900 uppercase tracking-tight mb-4">{service.title}</h4>
+                  <p className="text-gray-600 leading-relaxed text-lg mb-8">{service.desc}</p>
+                  <button className="text-brand-green-900 font-black uppercase tracking-widest text-xs flex items-center gap-3 group-hover:gap-5 transition-all">
+                    Explore Details <span className="text-xl">→</span>
                   </button>
                 </div>
               </motion.div>
@@ -223,38 +253,34 @@ const Home = () => {
                   initial={{ scale: 0.9, opacity: 0, y: 20 }}
                   animate={{ scale: 1, opacity: 1, y: 0 }}
                   exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                  className="bg-white rounded-3xl overflow-hidden max-w-2xl w-full shadow-2xl relative"
+                  className="bg-white rounded-logi overflow-hidden max-w-4xl w-full shadow-2xl relative"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <button 
                     onClick={() => setSelectedService(null)}
-                    className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center text-white md:text-gray-800 transition-colors"
+                    className="absolute top-6 right-6 z-20 w-12 h-12 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center text-white md:text-gray-900 transition-colors"
                   >
-                    <FaTimes size={20} />
+                    <FaTimes size={24} />
                   </button>
 
-                  <div className="h-64 w-full relative">
-                    <img src={selectedService.image} alt={selectedService.title} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8">
-                      <div className="flex items-center gap-4 mb-2">
-                        <div className="w-12 h-12 bg-brand-green-500 rounded-full flex items-center justify-center text-2xl text-white">
-                          {selectedService.icon}
-                        </div>
-                        <h3 className="text-3xl font-bold text-white">{selectedService.title}</h3>
-                      </div>
+                  <div className="flex flex-col md:flex-row h-full">
+                    <div className="md:w-1/2 h-80 md:h-auto relative">
+                      <img src={selectedService.image} alt={selectedService.title} className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-brand-green-900/20 mix-blend-multiply"></div>
                     </div>
-                  </div>
-                  
-                  <div className="p-8">
-                    <p className="text-lg text-brand-green-600 font-semibold mb-4">{selectedService.desc}</p>
-                    <div className="h-px bg-gray-100 mb-6"></div>
-                    <p className="text-gray-700 leading-relaxed text-lg">
-                      {selectedService.detail}
-                    </p>
-                    <div className="mt-8 flex justify-end">
+                    
+                    <div className="md:w-1/2 p-12 flex flex-col justify-center bg-white">
+                      <div className="logi-label text-brand-green-600 mb-4">Service Details</div>
+                      <h3 className="text-4xl font-black text-brand-green-900 uppercase tracking-tight mb-6">{selectedService.title}</h3>
+                      <div className="w-16 h-2 bg-brand-green-500 mb-8 rounded-full"></div>
+                      
+                      <p className="text-gray-600 leading-relaxed text-xl mb-10">
+                        {selectedService.detail}
+                      </p>
+                      
                       <button 
                         onClick={() => setSelectedService(null)}
-                        className="bg-brand-green-600 hover:bg-brand-green-700 text-white px-8 py-3 rounded-xl font-bold transition-all"
+                        className="bg-brand-green-900 text-white px-10 py-4 rounded-full font-black uppercase tracking-widest text-xs hover:bg-brand-green-800 transition-all self-start shadow-xl shadow-brand-green-900/20"
                       >
                         Close Details
                       </button>
@@ -268,20 +294,20 @@ const Home = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-24 bg-brand-brown-900 text-white">
+      <section className="py-32 bg-white relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeIn}
-            className="text-center mb-16"
+            className="text-left mb-20"
           >
-            <h2 className="text-sm font-bold text-brand-green-500 tracking-widest uppercase mb-2">{t('home.testimonials')}</h2>
-            <h3 className="text-4xl font-bold">{t('home.whatFarmersSay')}</h3>
+            <h2 className="logi-label text-brand-green-600 mb-4">{t('home.testimonials')}</h2>
+            <h3 className="text-6xl md:text-8xl logi-heading text-brand-green-900">{t('home.whatFarmersSay')}</h3>
           </motion.div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {[1, 2, 3].map((item) => (
               <motion.div 
                 key={item}
@@ -289,19 +315,19 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: item * 0.2 }}
-                className="bg-brand-brown-800 p-8 rounded-2xl relative"
+                className="bg-brand-green-50 p-12 rounded-logi relative group border border-brand-green-100 shadow-xl"
               >
-                <div className="text-brand-green-500 text-4xl absolute top-4 right-6 opacity-30">"</div>
-                <p className="text-gray-300 italic mb-6 relative z-10">
+                <div className="text-brand-green-200 text-9xl absolute -top-4 -right-4 opacity-50 group-hover:rotate-12 transition-transform font-serif leading-none">"</div>
+                <p className="text-gray-600 text-xl leading-relaxed mb-10 relative z-10 font-medium">
                   {t('home.t1')}
                 </p>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gray-500 rounded-full overflow-hidden">
+                <div className="flex items-center gap-6">
+                  <div className="w-16 h-16 bg-white rounded-full overflow-hidden border-2 border-brand-green-500 shadow-lg">
                     <img src={`https://i.pravatar.cc/150?img=${item * 10}`} alt="Prinstan Agri Care satisfied farmer in India" />
                   </div>
                   <div>
-                    <h5 className="font-bold">Rangayaa</h5>
-                    <p className="text-sm text-brand-green-400">Farm Owner, Punjab, India</p>
+                    <h5 className="text-xl font-black text-brand-green-900 uppercase tracking-tight">Rangayaa</h5>
+                    <p className="logi-label text-brand-green-600">Farmer, Punjab</p>
                   </div>
                 </div>
               </motion.div>

@@ -38,41 +38,51 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'glass py-3 shadow-md' : 'bg-transparent py-5'}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="fixed w-full z-50 px-4 pt-4 pointer-events-none">
+      <nav className={`max-w-7xl mx-auto transition-all duration-500 pointer-events-auto ${scrolled ? 'glass rounded-full py-2 px-6 shadow-2xl scale-95 md:scale-100' : 'bg-white/50 backdrop-blur-sm rounded-[30px] md:rounded-full py-4 px-8 md:px-12'}`}>
         <div className="flex justify-between items-center">
-          <Link to="/" className="flex items-center gap-1 overflow-hidden">
-            <img src="https://i.ibb.co/nsmX0hZp/logo.png" alt="Prinstan Agri Care Logo" className="h-12 md:h-16 w-auto object-contain -translate-y-1.5 -mr-2" />
-            <span className="font-bold text-lg md:text-2xl tracking-tight text-gray-900 truncate">Prinstan <span className="hidden sm:inline text-brand-green-600">Agri Care Pvt. Ltd.</span></span>
+          <Link to="/" className="flex items-center gap-2 group">
+            <div className="bg-brand-green-600 p-2 rounded-xl group-hover:rotate-12 transition-transform">
+              <FaLeaf className="text-white text-xl" />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-black text-xl tracking-tighter text-brand-green-900 leading-none uppercase">Prinstan</span>
+              <span className="logi-label text-[10px] text-brand-green-600 leading-none mt-1">Agri Care</span>
+            </div>
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-10">
             {navLinks.map((link) => (
               <Link
                 key={link.key}
                 to={link.path}
-                className={`font-medium transition-colors hover:text-brand-green-600 ${location.pathname === link.path ? 'text-brand-green-600' : 'text-gray-700'
+                className={`logi-label transition-all hover:text-brand-green-600 relative group ${location.pathname === link.path ? 'text-brand-green-600' : 'text-brand-green-900'
                   }`}
               >
                 {t(link.key)}
+                <span className={`absolute -bottom-1 left-0 h-0.5 bg-brand-green-600 transition-all duration-300 ${location.pathname === link.path ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
               </Link>
             ))}
-            <button
-              onClick={toggleLanguage}
-              className="flex items-center gap-1 text-gray-700 hover:text-brand-green-600 font-medium transition-colors"
-            >
-              <FaGlobe /> {i18n.language === 'en' ? 'తెలుగు' : 'English'}
-            </button>
-            <Link to="/contact">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-brand-green-600 text-white px-6 py-2 rounded-full font-medium hover:bg-brand-green-700 transition-colors shadow-lg shadow-brand-green-500/30"
+            
+            <div className="flex items-center gap-4 border-l border-gray-200 pl-8">
+              <button
+                onClick={toggleLanguage}
+                className="logi-label text-brand-green-900 hover:text-brand-green-600 transition-colors flex items-center gap-2"
               >
-                {t('nav.getQuote')}
-              </motion.button>
-            </Link>
+                <FaGlobe className="text-brand-green-600" /> {i18n.language === 'en' ? 'తెలుగు' : 'EN'}
+              </button>
+              
+              <Link to="/contact">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-brand-green-900 text-white px-8 py-3 rounded-full font-black uppercase tracking-widest text-[10px] hover:bg-brand-green-800 transition-all shadow-xl shadow-brand-green-900/20"
+                >
+                  {t('nav.getQuote')}
+                </motion.button>
+              </Link>
+            </div>
           </div>
 
           {/* Mobile Nav Toggle */}
@@ -85,35 +95,35 @@ const Navbar = () => {
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Mobile Nav Menu */}
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          className="md:hidden absolute top-full left-0 w-full bg-white shadow-xl py-4 px-4 flex flex-col space-y-4"
-        >
-          {navLinks.map((link) => (
-            <Link
-              key={link.key}
-              to={link.path}
-              className={`block text-lg font-medium ${location.pathname === link.path ? 'text-brand-green-600' : 'text-gray-700'
-                }`}
-            >
-              {t(link.key)}
-            </Link>
-          ))}
-          <button
-            onClick={toggleLanguage}
-            className="flex items-center gap-2 text-lg font-medium text-brand-green-600 py-2"
+        {/* Mobile Nav Menu */}
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="md:hidden absolute top-full left-0 w-full bg-white shadow-xl py-4 px-4 flex flex-col space-y-4 rounded-3xl mt-2"
           >
-            <FaGlobe /> {i18n.language === 'en' ? 'తెలుగు' : 'English'}
-          </button>
-        </motion.div>
-      )}
-    </nav>
+            {navLinks.map((link) => (
+              <Link
+                key={link.key}
+                to={link.path}
+                className={`logi-label py-2 ${location.pathname === link.path ? 'text-brand-green-600' : 'text-brand-green-900'
+                  }`}
+              >
+                {t(link.key)}
+              </Link>
+            ))}
+            <button
+              onClick={toggleLanguage}
+              className="logi-label flex items-center gap-2 text-brand-green-600 py-2"
+            >
+              <FaGlobe /> {i18n.language === 'en' ? 'తెలుగు' : 'English'}
+            </button>
+          </motion.div>
+        )}
+      </nav>
+    </div>
   );
 };
 

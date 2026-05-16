@@ -15,4 +15,13 @@
   .glass-dark {
     @apply bg-black/50 backdrop-blur-md border border-white/10;
   }
+  .logi-heading {
+    @apply font-black uppercase tracking-tighter leading-[0.85];
+  }
+  .logi-label {
+    @apply text-xs uppercase tracking-[0.3em] font-bold;
+  }
+  .rounded-logi {
+    @apply rounded-[40px] md:rounded-[60px];
+  }
 }

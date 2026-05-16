@@ -59,88 +59,85 @@ const About = () => {
         url="/about"
       />
       
-      {/* Page Header */}
-      <div className="bg-brand-brown-900 text-white py-24 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center"></div>
-        <div className="max-w-7xl mx-auto relative z-10 text-center">
-          <motion.h1 
+      {/* Page Header - Logi Style */}
+      <div className="bg-white py-32 px-4 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto relative z-10">
+          <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="text-5xl font-bold mb-4"
+            className="text-left"
           >
-            {t('about.title')}
-          </motion.h1>
-          <motion.p 
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl text-gray-300 max-w-2xl mx-auto"
-          >
-            Growing together since 2017
-          </motion.p>
+            <h2 className="logi-label text-brand-green-600 mb-6">Our Legacy Since 2017</h2>
+            <h1 className="text-[10vw] logi-heading text-brand-green-900 mb-8">
+              ABOUT<br />
+              <span className="text-brand-green-500">PRINSTAN.</span>
+            </h1>
+            <p className="text-xl text-gray-600 max-w-2xl leading-relaxed font-medium">
+              {t('about.subtitle')}
+            </p>
+          </motion.div>
         </div>
+        {/* Background Decorative */}
+        <div className="absolute top-0 right-0 w-1/4 h-full bg-brand-green-50/50 -z-10 rounded-l-[100px]"></div>
       </div>
 
       {/* Story Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-white">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <motion.div 
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeIn}
           >
-            <h2 className="text-3xl font-bold text-gray-900 mb-6 border-l-4 border-brand-green-500 pl-4">{t('about.ourStory')}</h2>
-            <p className="text-gray-600 mb-4 leading-relaxed text-lg">
-              Established in **2017**, Prinstan Agri Care Pvt Ltd was founded with a deep-rooted commitment to serving the Indian farming community. What began as a local vision has blossomed into a trusted name in high-quality agricultural solutions.
+            <h2 className="logi-label text-brand-green-600 mb-8">{t('about.ourStory')}</h2>
+            <h3 className="text-5xl font-black text-brand-green-900 uppercase tracking-tight mb-8">Nurturing Growth Across Generations</h3>
+            <p className="text-gray-600 mb-6 leading-relaxed text-xl">
+              Established in **2017**, Prinstan Agri Care Pvt Ltd was founded with a deep-rooted commitment to serving the Indian farming community.
             </p>
-            <p className="text-gray-600 leading-relaxed">
+            <p className="text-gray-500 leading-relaxed text-lg">
               We focus on delivering premium crop protection and nutrient management products that help farmers achieve record-breaking yields while maintaining soil health for future generations.
             </p>
           </motion.div>
           <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="relative h-[450px] rounded-3xl overflow-hidden shadow-2xl border-8 border-white"
+            className="relative h-[600px] rounded-logi overflow-hidden shadow-2xl"
           >
             <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Farming field" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-            <div className="absolute bottom-6 left-6 text-white">
-              <p className="text-sm font-bold uppercase tracking-widest opacity-80">Our Roots</p>
-              <h3 className="text-2xl font-bold">Innovation in every field</h3>
-            </div>
+            <div className="absolute inset-0 bg-brand-green-900/10 mix-blend-multiply"></div>
           </motion.div>
         </div>
       </div>
 
       {/* Team Section */}
-      <div className="bg-white py-24">
+      <div className="bg-brand-green-50 py-32 rounded-logi mx-4 mb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('about.leadership')}</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">Click on any card to learn more about our leadership team.</p>
+          <div className="text-left mb-20">
+            <h2 className="logi-label text-brand-green-600 mb-4">The Team</h2>
+            <h3 className="text-6xl md:text-8xl logi-heading text-brand-green-900">{t('about.leadership')}</h3>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
             {team.map((member, idx) => (
               <motion.div 
                 key={idx}
-                whileHover={{ y: -10 }}
+                whileHover={{ y: -20 }}
                 onClick={() => setSelectedMember(member)}
-                className="group relative overflow-hidden rounded-3xl shadow-xl cursor-pointer aspect-[3/4]"
+                className="group relative overflow-hidden rounded-logi shadow-2xl cursor-pointer aspect-[3/4] bg-white border border-brand-green-100"
               >
                 {member.image ? (
                   <img src={member.image} alt={member.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-brand-green-100 to-brand-brown-100 flex items-center justify-center">
-                    <span className="text-gray-400 text-6xl opacity-30">👤</span>
+                  <div className="w-full h-full bg-brand-green-50 flex items-center justify-center">
+                    <span className="text-brand-green-200 text-8xl opacity-30 uppercase font-black">{member.role[0]}</span>
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-brown-900/90 via-transparent to-transparent flex flex-col justify-end p-8 translate-y-4 group-hover:translate-y-0 transition-transform">
-                  <h4 className="text-2xl font-bold text-white mb-1">{member.name}</h4>
-                  <p className="text-brand-green-400 font-bold text-sm uppercase tracking-wider">{member.role}</p>
-                  <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="text-white text-xs bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm">View Profile</span>
+                <div className="absolute inset-0 bg-brand-green-900/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-10">
+                  <h4 className="text-3xl font-black text-white uppercase tracking-tight mb-2">{member.name}</h4>
+                  <p className="logi-label text-brand-green-400">{member.role}</p>
+                  <div className="mt-6 flex items-center gap-3 text-white font-black uppercase tracking-widest text-[10px]">
+                    Read Bio <span>→</span>
                   </div>
                 </div>
               </motion.div>
@@ -222,18 +219,22 @@ const About = () => {
       </AnimatePresence>
 
       {/* Vision & Mission */}
-      <div className="bg-gray-100 py-24">
+      <div className="bg-white py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <motion.div variants={fadeIn} className="bg-white p-12 rounded-[2.5rem] shadow-xl border border-gray-100">
-              <FaEye className="text-6xl text-brand-green-600 mb-8" />
-              <h3 className="text-3xl font-bold text-gray-900 mb-6">{t('about.vision')}</h3>
-              <p className="text-gray-600 leading-relaxed text-lg">{t('about.visionDesc')}</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+            <motion.div variants={fadeIn} className="bg-brand-green-50 p-16 rounded-logi border border-brand-green-100 relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:rotate-12 transition-transform">
+                <FaEye size={120} className="text-brand-green-900" />
+              </div>
+              <h3 className="text-4xl font-black text-brand-green-900 uppercase tracking-tight mb-8">{t('about.vision')}</h3>
+              <p className="text-gray-600 leading-relaxed text-xl">{t('about.visionDesc')}</p>
             </motion.div>
-            <motion.div variants={fadeIn} className="bg-white p-12 rounded-[2.5rem] shadow-xl border border-gray-100">
-              <FaBullseye className="text-6xl text-brand-brown-600 mb-8" />
-              <h3 className="text-3xl font-bold text-gray-900 mb-6">{t('about.mission')}</h3>
-              <p className="text-gray-600 leading-relaxed text-lg">{t('about.missionDesc')}</p>
+            <motion.div variants={fadeIn} className="bg-brand-green-900 p-16 rounded-logi relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:rotate-12 transition-transform">
+                <FaBullseye size={120} className="text-white" />
+              </div>
+              <h3 className="text-4xl font-black text-white uppercase tracking-tight mb-8">{t('about.mission')}</h3>
+              <p className="text-brand-green-100 leading-relaxed text-xl opacity-90">{t('about.missionDesc')}</p>
             </motion.div>
           </div>
         </div>
