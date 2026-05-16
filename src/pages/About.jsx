@@ -11,16 +11,8 @@ const fadeIn = {
 
 const About = () => {
   const { t } = useTranslation();
-  const [selectedMember, setSelectedMember] = useState(null);
 
-  useEffect(() => {
-    const video = document.getElementById('main-overview-video');
-    if (video) {
-      video.play().catch(error => {
-        console.warn("Autoplay was prevented, user interaction might be needed:", error);
-      });
-    }
-  }, []);
+  const [selectedMember, setSelectedMember] = useState(null);
 
   const team = [
     { 
@@ -205,7 +197,7 @@ const About = () => {
                     playsInline 
                     className="w-full h-full object-cover"
                   >
-                    <source src="/main.mp4" type="video/mp4" />
+                    <source src="/md.mp4" type="video/mp4" />
                   </video>
                 ) : selectedMember.image ? (
                   <img src={selectedMember.image} alt="" className="w-full h-full object-cover" />
@@ -245,42 +237,6 @@ const About = () => {
         )}
       </AnimatePresence>
 
-
-      {/* Cinematic Overview Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 bg-white">
-        <div className="text-left mb-20">
-          <h2 className="logi-label text-brand-green-600 mb-4">Corporate Film</h2>
-          <h3 className="text-6xl md:text-8xl logi-heading text-brand-green-900">COMPANY<br /><span className="text-brand-green-500">OVERVIEW.</span></h3>
-        </div>
-        
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="relative w-full aspect-video rounded-[40px] overflow-hidden shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] bg-black"
-        >
-          <video 
-            id="main-overview-video"
-            key="main-overview-video"
-            autoPlay={true}
-            muted={true}
-            controls={true}
-            loop={true}
-            playsInline={true}
-            preload="auto"
-            className="w-full h-full object-cover"
-            style={{ minHeight: '100%', minWidth: '100%' }}
-          >
-            <source src="/main.mp4" type="video/mp4" />
-          </video>
-        </motion.div>
-        
-        <div className="mt-12 max-w-3xl">
-          <p className="text-2xl text-gray-600 leading-relaxed font-medium">
-            Take an immersive journey through our facilities and witness the dedication that goes into every Prinstan solution. Our corporate film showcases the synergy between advanced technology and sustainable agriculture.
-          </p>
-        </div>
-      </div>
 
       {/* Process & Innovation Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 bg-white">
