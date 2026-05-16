@@ -1,11 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaCommentDots, FaTimes, FaPaperPlane, FaRobot, FaWhatsapp } from 'react-icons/fa';
+import { FaCommentDots, FaTimes, FaPaperPlane, FaRobot, FaWhatsapp, FaInfoCircle, FaStore, FaSeedling } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import productsData from '../data/products.json';
 
-// IMPORTANT: Ensure VITE_OPENROUTER_API_KEY is set in your .env file or deployment dashboard.
 const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
 
 const SYSTEM_PROMPT = `You are the AI assistant for Prinstan Agri Care Pvt. Ltd. Your purpose is to help users with information about:
@@ -15,13 +14,19 @@ const SYSTEM_PROMPT = `You are the AI assistant for Prinstan Agri Care Pvt. Ltd.
 4. Dealership registration: To become a dealer, users should go to the "Dealers" page and click the "Join Network" button. They will need to log in and fill out the registration form.
 
 Product Catalog Summary:
-${productsData.map(p => `- ${p.name}: ${p.description} (Category: ${p.category}, Dosage: ${p.dosage})`).join('\n')}
+${productsData.slice(0, 30).map(p => `- ${p.name}: ${p.description} (Category: ${p.category})`).join('\n')}
+... and many more.
 
 Strict Guidelines:
 - Only answer questions related to Prinstan Agri Care, its products, and dealership.
 - If asked about other topics, politely decline.
-- Be professional, concise, and helpful.
 - Support both English and Telugu.`;
+
+const suggestedQuestions = [
+  { text: "About Company", icon: <FaInfoCircle /> },
+  { text: "Become a Dealer", icon: <FaStore /> },
+  { text: "Top Products", icon: <FaSeedling /> },
+];
 
 const Chatbot = () => {
   const { t } = useTranslation();
@@ -50,13 +55,12 @@ const Chatbot = () => {
     }
   }, [messages, isOpen]);
 
-  const handleSend = async (e) => {
-    e.preventDefault();
-    if (!input.trim() || isLoading) return;
+  const handleSend = async (messageText) => {
+    const textToSend = messageText || input;
+    if (!textToSend.trim() || isLoading) return;
 
-    const userMessage = input.trim();
-    setMessages(prev => [...prev, { sender: 'user', text: userMessage }]);
-    setInput('');
+    setMessages(prev => [...prev, { sender: 'user', text: textToSend }]);
+    if (!messageText) setInput('');
     setIsLoading(true);
 
     try {
@@ -76,13 +80,13 @@ const Chatbot = () => {
               "role": m.sender === 'user' ? 'user' : 'assistant', 
               "content": m.text 
             })),
-            { "role": "user", "content": userMessage }
+            { "role": "user", "content": textToSend }
           ]
         })
       });
 
       const data = await response.json();
-      if (data.error) throw new Error(data.error.message || "API Error");
+      if (data.error) throw new Error(data.error.message);
       
       const botResponse = data.choices[0].message.content;
       setMessages(prev => [...prev, { sender: 'bot', text: botResponse }]);
@@ -134,7 +138,7 @@ const Chatbot = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.9 }}
             className="fixed bottom-6 right-6 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl overflow-hidden z-50 border border-gray-100 flex flex-col"
-            style={{ height: '500px', maxHeight: '80vh' }}
+            style={{ height: '540px', maxHeight: '85vh' }}
           >
             <div className="bg-brand-green-600 p-4 text-white flex justify-between items-center shadow-md">
               <div className="flex items-center gap-3">
@@ -177,7 +181,21 @@ const Chatbot = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            <form onSubmit={handleSend} className="p-4 bg-white border-t border-gray-100 flex gap-2">
+            {/* Suggested Questions */}
+            <div className="px-4 py-2 bg-gray-50 flex flex-wrap gap-2 border-t border-gray-100">
+              {suggestedQuestions.map((q, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleSend(q.text)}
+                  disabled={isLoading}
+                  className="flex items-center gap-2 bg-white border border-gray-200 px-3 py-1.5 rounded-full text-xs font-bold text-gray-600 hover:border-brand-green-500 hover:text-brand-green-600 transition-all shadow-sm"
+                >
+                  {q.icon} {q.text}
+                </button>
+              ))}
+            </div>
+
+            <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="p-4 bg-white border-t border-gray-100 flex gap-2">
               <input
                 type="text"
                 value={input}
