@@ -24,6 +24,7 @@ const Admin = () => {
 
   const authorizedEmails = [
     'pratheekmadupu0@gmail.com', 
+    'pratheekmadupu2006@gmail.com',
     'admin@prinstan.com',
     'c.viswanthreddy@gmail.com',
     'prinstanagricarepvtltd2025@gmail.com'
