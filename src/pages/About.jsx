@@ -251,11 +251,12 @@ const About = () => {
           className="relative w-full aspect-video rounded-[40px] overflow-hidden shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] bg-black"
         >
           <video 
-            controls 
+            autoPlay
+            muted
+            controls
             loop
             playsInline 
             className="w-full h-full object-cover"
-            poster="/md.png"
           >
             <source src="/main.mp4" type="video/mp4" />
           </video>
