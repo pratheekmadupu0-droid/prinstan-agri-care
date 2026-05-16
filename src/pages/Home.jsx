@@ -309,27 +309,26 @@ const Home = () => {
           </motion.div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {[1, 2, 3].map((item) => (
+            {[
+              { name: 'Rangaya', place: 'Surya pet' },
+              { name: 'Yadayya', place: 'Domalaguda' },
+              { name: 'Pullayaa', place: 'Kariminagar' }
+            ].map((item, index) => (
               <motion.div 
-                key={item}
+                key={index}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: item * 0.2 }}
+                transition={{ delay: index * 0.2 }}
                 className="bg-brand-green-50 p-12 rounded-logi relative group border border-brand-green-100 shadow-xl"
               >
                 <div className="text-brand-green-200 text-9xl absolute -top-4 -right-4 opacity-50 group-hover:rotate-12 transition-transform font-serif leading-none">"</div>
                 <p className="text-gray-600 text-xl leading-relaxed mb-10 relative z-10 font-medium">
                   {t('home.t1')}
                 </p>
-                <div className="flex items-center gap-6">
-                  <div className="w-16 h-16 bg-white rounded-full overflow-hidden border-2 border-brand-green-500 shadow-lg">
-                    <img src={`https://i.pravatar.cc/150?img=${item * 10}`} alt="Prinstan Agri Care satisfied farmer in India" />
-                  </div>
-                  <div>
-                    <h5 className="text-xl font-black text-brand-green-900 uppercase tracking-tight">Rangayaa</h5>
-                    <p className="logi-label text-brand-green-600">Farmer, Punjab</p>
-                  </div>
+                <div>
+                  <h5 className="text-xl font-black text-brand-green-900 uppercase tracking-tight">{item.name}</h5>
+                  <p className="logi-label text-brand-green-600">{item.place}</p>
                 </div>
               </motion.div>
             ))}
