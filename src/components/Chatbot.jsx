@@ -4,12 +4,19 @@ import { FaCommentDots, FaTimes, FaPaperPlane, FaRobot, FaWhatsapp } from 'react
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 
-const predefinedResponses = {
-  greetings: ['hi', 'hello', 'hey', 'start'],
-  company: ['company', 'about', 'who are you', 'prinstan'],
-  products: ['products', 'buy', 'seeds', 'fertilizers', 'equipment', 'irrigation'],
-  projects: ['projects', 'work', 'portfolio', 'success'],
-};
+const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
+
+const SYSTEM_PROMPT = `You are the AI assistant for Prinstan Agri Care Pvt. Ltd. Your purpose is to help users with information ONLY about:
+1. The company: Prinstan Agri Care Pvt. Ltd., founded in 2017 by C. Viswanth Reddy. We specialize in sustainable agriculture and crop solutions.
+2. Our products: We offer premium Bio-fertilizers, Organic Fertilizers, and Pesticides.
+3. Our dealers: we have a verified network of regional dealers across India.
+4. Dealership registration: To become a dealer, users should go to the "Dealers" page and click the "Join Network" button. They will need to log in (using Google or Email) and fill out the registration form.
+
+Strict Guidelines:
+- Do NOT answer questions unrelated to Prinstan Agri Care, its products, or dealership.
+- If asked about other topics, politely say: "I am sorry, but I can only provide information related to Prinstan Agri Care's company details, products, and dealership programs."
+- Keep responses professional, concise, and helpful.
+- Language: Answer in the language the user speaks (English or Telugu).`;
 
 const Chatbot = () => {
   const { t } = useTranslation();
@@ -17,11 +24,11 @@ const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
   const isContactPage = location.pathname === '/contact';
 
-  // Initialize first message
   useEffect(() => {
     setMessages([
       { sender: 'bot', text: t('chatbot.welcome') }
@@ -38,30 +45,46 @@ const Chatbot = () => {
     }
   }, [messages, isOpen]);
 
-  const handleSend = (e) => {
+  const handleSend = async (e) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
 
     const userMessage = input.trim();
     setMessages(prev => [...prev, { sender: 'user', text: userMessage }]);
     setInput('');
+    setIsLoading(true);
 
-    setTimeout(() => {
-      let botResponse = t('chatbot.fallback');
-      const lowerInput = userMessage.toLowerCase();
+    try {
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+          "HTTP-Referer": window.location.origin,
+          "X-Title": "Prinstan Agri Care Chatbot",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          "model": "google/gemini-2.0-flash-001",
+          "messages": [
+            { "role": "system", "content": SYSTEM_PROMPT },
+            ...messages.map(m => ({ 
+              "role": m.sender === 'user' ? 'user' : 'assistant', 
+              "content": m.text 
+            })),
+            { "role": "user", "content": userMessage }
+          ]
+        })
+      });
 
-      if (predefinedResponses.greetings.some(keyword => lowerInput.includes(keyword))) {
-        botResponse = t('chatbot.replyGreetings');
-      } else if (predefinedResponses.company.some(keyword => lowerInput.includes(keyword))) {
-        botResponse = t('chatbot.replyCompany');
-      } else if (predefinedResponses.products.some(keyword => lowerInput.includes(keyword))) {
-        botResponse = t('chatbot.replyProducts');
-      } else if (predefinedResponses.projects.some(keyword => lowerInput.includes(keyword))) {
-        botResponse = t('chatbot.replyProjects');
-      }
-
+      const data = await response.json();
+      const botResponse = data.choices[0].message.content;
       setMessages(prev => [...prev, { sender: 'bot', text: botResponse }]);
-    }, 600);
+    } catch (error) {
+      console.error("Chat Error:", error);
+      setMessages(prev => [...prev, { sender: 'bot', text: "I'm having trouble connecting right now. Please try again later or contact us directly." }]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isContactPage) {
@@ -135,6 +158,15 @@ const Chatbot = () => {
                   </div>
                 </div>
               ))}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-white border border-gray-200 p-3 rounded-2xl rounded-bl-sm shadow-sm flex gap-1">
+                    <span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce"></span>
+                    <span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                    <span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                  </div>
+                </div>
+              )}
               <div ref={messagesEndRef} />
             </div>
 
@@ -148,8 +180,8 @@ const Chatbot = () => {
               />
               <button 
                 type="submit" 
-                className="w-10 h-10 bg-brand-green-600 rounded-full flex items-center justify-center text-white hover:bg-brand-green-700 transition-colors flex-shrink-0"
-                disabled={!input.trim()}
+                className="w-10 h-10 bg-brand-green-600 rounded-full flex items-center justify-center text-white hover:bg-brand-green-700 transition-colors flex-shrink-0 disabled:opacity-50"
+                disabled={!input.trim() || isLoading}
               >
                 <FaPaperPlane className="text-sm ml-[-2px]" />
               </button>
