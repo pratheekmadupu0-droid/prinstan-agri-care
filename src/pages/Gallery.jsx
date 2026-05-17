@@ -131,11 +131,11 @@ const Gallery = () => {
   return (
     <div className="bg-[#fcfdfc] min-h-screen pb-36 overflow-hidden">
       <SEO 
-        title="Field Exhibition | Prinstan Agri Care" 
-        description="Experience the visual archives of Prinstan Agri Care Pvt Ltd. An immersive exhibition showcasing agricultural field records across India."
+        title="Pride Events | Prinstan Agri Care" 
+        description="Experience the visual archives of Prinstan Agri Care Pvt Ltd. An immersive documentation showcasing our proud corporate events and regional agricultural milestones."
       />
       
-      {/* Cinematic Hero Exhibition Canvas */}
+      {/* Cinematic Hero Pride Events Canvas */}
       <div className="relative bg-gradient-to-br from-[#081e13] via-[#0d2a1c] to-[#040e09] py-36 px-4 md:px-8 text-white overflow-hidden border-b border-[#143d28]">
         {/* Abstract Floating Ambient Particles & Grid */}
         <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:40px_40px]"></div>
@@ -150,19 +150,19 @@ const Gallery = () => {
             className="text-left"
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-green-950/80 border border-brand-green-500/30 text-brand-green-400 font-semibold uppercase tracking-[0.25em] text-[10px] mb-8 shadow-inner">
-              <FaCamera className="text-xs animate-pulse" /> Digital Field Exhibition
+              <FaCamera className="text-xs animate-pulse" /> Pride Events in Prinstan
             </div>
             
             <h1 className="text-[12vw] sm:text-[9vw] md:text-[7vw] lg:text-[6.5vw] font-black uppercase tracking-tighter leading-[0.85] text-white mb-10 select-none">
-              FIELD<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-green-400 via-emerald-300 to-teal-400 font-extrabold">EXHIBITION.</span>
+              PRIDE<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-green-400 via-emerald-300 to-teal-400 font-extrabold">EVENTS.</span>
             </h1>
             
             <p className="text-lg md:text-xl text-emerald-100/70 max-w-2xl leading-relaxed font-light mb-16">
-              Step into an authentic visual documentation of crops, soils, and farming environments. An unaltered photographic index preserved directly from rural Indian farmlands.
+              Step into an authentic visual archive of our field milestones, farmer meetings, and regional celebrations. A proud photographic index preserved directly from our local corporate fields.
             </p>
 
-            {/* Dynamic Exhibition Stats Dashboard */}
+            {/* Dynamic Pride Events Stats Dashboard */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-10 border-t border-emerald-950/60 max-w-5xl">
               <div className="border-r border-emerald-900/40 pr-4">
                 <span className="block text-[10px] uppercase tracking-widest text-brand-green-500 font-bold mb-1">Catalogued records</span>
