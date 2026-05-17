@@ -203,7 +203,7 @@ const Gallery = () => {
         ) : (
           <>
             {/* Immersive Asymmetric Masonry Grid */}
-            <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-8 space-y-8 [column-fill:_auto]">
+            <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-8 space-y-8">
               {visibleItems.map((item, idx) => (
                 <motion.div
                   key={item.id || idx}
