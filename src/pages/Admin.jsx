@@ -5,7 +5,8 @@ import {
   FaPlus, FaTrash, FaEdit, FaSave, 
   FaSignOutAlt, FaLock, FaUpload, FaCheckCircle,
   FaArrowLeft, FaEye, FaSync, FaTimes, FaPlayCircle,
-  FaBars
+  FaBars, FaMapMarkerAlt, FaBoxOpen, FaAward, FaBuilding,
+  FaClock, FaPhoneAlt
 } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, db, storage } from '../firebase';
@@ -49,6 +50,17 @@ const Admin = () => {
   const [galleryTitle, setGalleryTitle] = useState('');
   const [uploadingGallery, setUploadingGallery] = useState(false);
   const [galleryVisibleCount, setGalleryVisibleCount] = useState(15);
+
+  // Dealer Form State
+  const [newDealer, setNewDealer] = useState({
+    name: '', area: '', address: '', phone: '',
+    hours: '9:00 AM - 6:00 PM', category: 'Authorized Dealer',
+    image: '', stock: { bios: 10, fertilizers: 10, pesticides: 10 }
+  });
+  const [isEditingDealer, setIsEditingDealer] = useState(false);
+  const [editDealerId, setEditDealerId] = useState(null);
+  const [uploadingDealerImage, setUploadingDealerImage] = useState(false);
+  const [dealersVisibleCount, setDealersVisibleCount] = useState(10);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
@@ -281,6 +293,84 @@ const Admin = () => {
     }
   };
 
+  // --- Dealer Functions ---
+  const handleDealerImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploadingDealerImage(true);
+    const storageRef = sRef(storage, `dealers/${Date.now()}_${file.name}`);
+    try {
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      setNewDealer(prev => ({ ...prev, image: url }));
+      alert("Dealer storefront photo uploaded!");
+    } catch (err) {
+      alert("Storefront photo upload failed!");
+    } finally {
+      setUploadingDealerImage(false);
+    }
+  };
+
+  const saveDealer = async (e) => {
+    e.preventDefault();
+    try {
+      const finalImage = newDealer.image || 'https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&q=80&w=800';
+      const dealerPayload = {
+        ...newDealer,
+        image: finalImage,
+        createdAt: new Date().toISOString()
+      };
+      
+      if (isEditingDealer && editDealerId) {
+        await set(ref(db, `dealers/${editDealerId}`), {
+          ...dealerPayload,
+          uid: editDealerId
+        });
+        alert("Dealer profile updated!");
+      } else {
+        const newKey = push(ref(db, 'dealers')).key;
+        await set(ref(db, `dealers/${newKey}`), {
+          ...dealerPayload,
+          uid: newKey
+        });
+        alert("Dealer partner added!");
+      }
+      resetDealerForm();
+    } catch (err) {
+      alert("Failed to save dealer: " + err.message);
+    }
+  };
+
+  const resetDealerForm = () => {
+    setNewDealer({
+      name: '', area: '', address: '', phone: '',
+      hours: '9:00 AM - 6:00 PM', category: 'Authorized Dealer',
+      image: '', stock: { bios: 10, fertilizers: 10, pesticides: 10 }
+    });
+    setIsEditingDealer(false);
+    setEditDealerId(null);
+  };
+
+  const handleEditDealerClick = (d) => {
+    setNewDealer({
+      name: d.name || '',
+      area: d.area || '',
+      address: d.address || '',
+      phone: d.phone || '',
+      hours: d.hours || '9:00 AM - 6:00 PM',
+      category: d.category || 'Authorized Dealer',
+      image: d.image || '',
+      stock: {
+        bios: d.stock?.bios ?? 10,
+        fertilizers: d.stock?.fertilizers ?? 10,
+        pesticides: d.stock?.pesticides ?? 10
+      }
+    });
+    setIsEditingDealer(true);
+    setEditDealerId(d.id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   if (loading) return <div className="h-screen flex items-center justify-center">Loading Admin...</div>;
 
   if (!user || !isAuthorized) {
@@ -490,41 +580,189 @@ const Admin = () => {
 
           {activeTab === 'dealers' && (
             <motion.div key="deal" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-               <h2 className="text-2xl md:text-3xl font-black mb-10">Dealer Partners</h2>
-               <div className="bg-white rounded-3xl border overflow-hidden shadow-sm overflow-x-auto">
-                  <table className="w-full text-left min-w-[600px]">
-                     <thead className="bg-gray-50 border-b">
-                        <tr>
-                           <th className="p-5 font-bold text-[10px] uppercase text-gray-400 tracking-widest">Name</th>
-                           <th className="p-5 font-bold text-[10px] uppercase text-gray-400 tracking-widest">Location</th>
-                           <th className="p-5 font-bold text-[10px] uppercase text-gray-400 tracking-widest">Phone</th>
-                           <th className="p-5 font-bold text-[10px] uppercase text-gray-400 tracking-widest text-center">Stock</th>
-                           <th className="p-5 font-bold text-[10px] uppercase text-gray-400 tracking-widest text-right">Actions</th>
-                        </tr>
-                     </thead>
-                     <tbody className="divide-y divide-gray-50">
-                        {dealers.map(d => (
-                           <tr key={d.id} className="hover:bg-gray-50/50 transition-colors">
-                              <td className="p-5">
-                                 <p className="font-bold text-sm text-gray-900">{d.name}</p>
-                                 <p className="text-[10px] text-gray-400 truncate max-w-[150px]">{d.email}</p>
-                              </td>
-                              <td className="p-5 text-xs font-medium text-gray-600">{d.area}</td>
-                              <td className="p-5 text-xs font-medium text-gray-600">{d.phone}</td>
-                              <td className="p-5">
-                                 <div className="flex justify-center gap-1">
-                                    <span className="w-6 h-6 flex items-center justify-center bg-brand-green-50 text-brand-green-600 rounded-lg text-[9px] font-black" title="Bios">{d.stock?.bios || 0}</span>
-                                    <span className="w-6 h-6 flex items-center justify-center bg-blue-50 text-blue-600 rounded-lg text-[9px] font-black" title="Fertilizers">{d.stock?.fertilizers || 0}</span>
-                                    <span className="w-6 h-6 flex items-center justify-center bg-orange-50 text-orange-600 rounded-lg text-[9px] font-black" title="Pesticides">{d.stock?.pesticides || 0}</span>
+               <div className="flex justify-between items-center mb-10">
+                  <div>
+                     <h2 className="text-2xl md:text-3xl font-black text-gray-900">Dealer Network Administration</h2>
+                     <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">Configure partner profiles, storefront photos, and live inventory records</p>
+                  </div>
+                  {isEditingDealer && (
+                     <button onClick={resetDealerForm} className="bg-gray-150 hover:bg-gray-200 text-gray-700 px-4 py-2.5 rounded-xl text-xs font-bold transition-all">
+                        Cancel Edit
+                     </button>
+                  )}
+               </div>
+
+               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* Left Column - Add / Edit Form */}
+                  <div className="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-150 shadow-sm h-fit">
+                     <h3 className="text-lg font-black text-gray-900 mb-6 flex items-center gap-2">
+                        {isEditingDealer ? 'Edit Partner Profile' : 'Register New Partner'}
+                     </h3>
+                     
+                     <form onSubmit={saveDealer} className="space-y-4">
+                        <div>
+                           <label className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-1">Dealership / Store Name</label>
+                           <input required value={newDealer.name} onChange={e => setNewDealer({...newDealer, name: e.target.value})} placeholder="e.g. Balaji Agro Centers" className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-xs focus:bg-white focus:ring-2 focus:ring-brand-green-500" />
+                        </div>
+                        
+                        <div>
+                           <label className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-1">General Area / District (e.g. Guntur, AP)</label>
+                           <input required value={newDealer.area} onChange={e => setNewDealer({...newDealer, area: e.target.value})} placeholder="e.g. Guntur, Andhra Pradesh" className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-xs focus:bg-white focus:ring-2 focus:ring-brand-green-500" />
+                        </div>
+
+                        <div>
+                           <label className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-1">Full Store Address</label>
+                           <input required value={newDealer.address} onChange={e => setNewDealer({...newDealer, address: e.target.value})} placeholder="e.g. Shop 5, Main Bazaar Road" className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-xs focus:bg-white focus:ring-2 focus:ring-brand-green-500" />
+                        </div>
+
+                        <div>
+                           <label className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-1">Direct Contact Phone Number</label>
+                           <input required value={newDealer.phone} onChange={e => setNewDealer({...newDealer, phone: e.target.value})} placeholder="e.g. +91 98765 43210" className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-xs focus:bg-white focus:ring-2 focus:ring-brand-green-500" />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                           <div>
+                              <label className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-1">Operating Hours</label>
+                              <input required value={newDealer.hours} onChange={e => setNewDealer({...newDealer, hours: e.target.value})} placeholder="9:00 AM - 6:00 PM" className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-xs focus:bg-white" />
+                           </div>
+                           <div>
+                              <label className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-1">Partner Tier</label>
+                              <select value={newDealer.category} onChange={e => setNewDealer({...newDealer, category: e.target.value})} className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-xs focus:bg-white">
+                                 <option>Authorized Dealer</option>
+                                 <option>Gold Distributor</option>
+                                 <option>Platinum Partner</option>
+                              </select>
+                           </div>
+                        </div>
+
+                        {/* Storefront Image Uploader */}
+                        <div>
+                           <label className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-1">Dealership Photo</label>
+                           <div className="border border-dashed border-gray-200 p-4 rounded-xl text-center bg-gray-50">
+                              {newDealer.image ? (
+                                 <div className="relative">
+                                    <img src={newDealer.image} className="w-full h-24 object-cover rounded-lg" alt="" />
+                                    <button type="button" onClick={() => setNewDealer({...newDealer, image: ''})} className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-lg hover:bg-red-600 transition-colors text-[9px]"><FaTimes /></button>
                                  </div>
-                              </td>
-                              <td className="p-5 text-right">
-                                 <button onClick={() => remove(ref(db, `dealers/${d.id}`))} className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-all"><FaTrash size={14} /></button>
-                              </td>
-                           </tr>
-                        ))}
-                     </tbody>
-                  </table>
+                              ) : (
+                                 <label className="cursor-pointer text-[10px] font-bold text-gray-400 py-3 block hover:text-brand-green-600 transition-colors">
+                                    {uploadingDealerImage ? 'Uploading storefront...' : <><FaUpload className="mx-auto mb-1.5 text-base text-gray-400" /> Upload Storefront Photo</>}
+                                    <input type="file" accept="image/*" className="hidden" onChange={handleDealerImageUpload} disabled={uploadingDealerImage} />
+                                 </label>
+                              )}
+                           </div>
+                        </div>
+
+                        {/* Stock Controls */}
+                        <div className="bg-gray-50 p-4 rounded-xl space-y-3 border border-gray-150/70">
+                           <span className="block text-[9px] font-black text-gray-500 uppercase tracking-wider border-b border-gray-200 pb-1.5 flex items-center gap-1.5"><FaBoxOpen /> Stock Quantities</span>
+                           <div className="grid grid-cols-3 gap-2">
+                              <div>
+                                 <label className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-0.5 text-center">Bios</label>
+                                 <input type="number" value={newDealer.stock.bios} onChange={e => setNewDealer({...newDealer, stock: {...newDealer.stock, bios: parseInt(e.target.value) || 0}})} className="w-full p-2 border border-gray-250 rounded-lg text-center text-xs font-bold" />
+                              </div>
+                              <div>
+                                 <label className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-0.5 text-center">Fert</label>
+                                 <input type="number" value={newDealer.stock.fertilizers} onChange={e => setNewDealer({...newDealer, stock: {...newDealer.stock, fertilizers: parseInt(e.target.value) || 0}})} className="w-full p-2 border border-gray-250 rounded-lg text-center text-xs font-bold" />
+                              </div>
+                              <div>
+                                 <label className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-0.5 text-center">Pest</label>
+                                 <input type="number" value={newDealer.stock.pesticides} onChange={e => setNewDealer({...newDealer, stock: {...newDealer.stock, pesticides: parseInt(e.target.value) || 0}})} className="w-full p-2 border border-gray-250 rounded-lg text-center text-xs font-bold" />
+                              </div>
+                           </div>
+                        </div>
+
+                        <button type="submit" disabled={uploadingDealerImage} className="w-full bg-brand-green-600 hover:bg-brand-green-700 text-white py-3.5 rounded-xl font-bold transition-all shadow-md shadow-brand-green-500/10 uppercase tracking-widest text-[10px]">
+                           {isEditingDealer ? 'Update Partner' : 'Register Partner'}
+                        </button>
+                     </form>
+                  </div>
+
+                  {/* Right Column - Catalog Listings */}
+                  <div className="lg:col-span-2 space-y-6">
+                     <div className="bg-white rounded-[2rem] border overflow-hidden shadow-sm overflow-x-auto">
+                        <table className="w-full text-left min-w-[700px]">
+                           <thead className="bg-gray-50 border-b">
+                              <tr>
+                                 <th className="p-5 font-bold text-[10px] uppercase text-gray-400 tracking-widest">Dealer Partner</th>
+                                 <th className="p-5 font-bold text-[10px] uppercase text-gray-400 tracking-widest">Area / Hours</th>
+                                 <th className="p-5 font-bold text-[10px] uppercase text-gray-400 tracking-widest">Contact Details</th>
+                                 <th className="p-5 font-bold text-[10px] uppercase text-gray-400 tracking-widest text-center">Stock Volume</th>
+                                 <th className="p-5 font-bold text-[10px] uppercase text-gray-400 tracking-widest text-right">Actions</th>
+                              </tr>
+                           </thead>
+                           <tbody className="divide-y divide-gray-50">
+                              {[...dealers].reverse().slice(0, dealersVisibleCount).map(d => (
+                                 <tr key={d.id} className="hover:bg-gray-50/50 transition-colors">
+                                    <td className="p-5">
+                                       <div className="flex items-center gap-3">
+                                          <img 
+                                             src={d.image || 'https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&q=80&w=80'} 
+                                             className="w-12 h-12 rounded-xl object-cover shadow-sm bg-gray-100 flex-shrink-0" 
+                                             alt=""
+                                          />
+                                          <div>
+                                             <p className="font-extrabold text-sm text-gray-900 leading-tight">{d.name}</p>
+                                             <span className={`inline-block text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full mt-1.5 shadow-sm border ${
+                                                d.category === 'Platinum Partner' 
+                                                   ? 'bg-amber-50 text-amber-600 border-amber-205' 
+                                                   : d.category === 'Gold Distributor'
+                                                   ? 'bg-slate-50 text-slate-600 border-slate-205'
+                                                   : 'bg-emerald-50 text-emerald-600 border-emerald-250'
+                                             }`}>
+                                                {d.category || 'Authorized Dealer'}
+                                             </span>
+                                          </div>
+                                       </div>
+                                    </td>
+                                    <td className="p-5 text-xs font-semibold text-gray-700 leading-tight">
+                                       <div className="flex items-center gap-1.5 text-gray-800"><FaMapMarkerAlt className="text-brand-green-500" /> {d.area}</div>
+                                       <div className="flex items-center gap-1.5 text-gray-400 mt-1.5 font-medium"><FaClock /> {d.hours || '9:00 AM - 6:00 PM'}</div>
+                                    </td>
+                                    <td className="p-5 text-xs font-semibold text-gray-700">
+                                       <div className="flex items-center gap-1.5 text-gray-800"><FaPhoneAlt className="text-gray-400" /> {d.phone}</div>
+                                       <p className="text-[10px] text-gray-400 mt-1 truncate max-w-[150px] font-medium">{d.email}</p>
+                                    </td>
+                                    <td className="p-5">
+                                       <div className="flex justify-center gap-1.5">
+                                          <span className="w-8 h-8 flex flex-col items-center justify-center bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl text-[9px] font-black" title="Bios">
+                                             <span className="text-[7px] text-emerald-400 font-bold leading-none mb-0.5">B</span>
+                                             {d.stock?.bios || 0}
+                                          </span>
+                                          <span className="w-8 h-8 flex flex-col items-center justify-center bg-blue-50 text-blue-600 border border-blue-100 rounded-xl text-[9px] font-black" title="Fertilizers">
+                                             <span className="text-[7px] text-blue-400 font-bold leading-none mb-0.5">F</span>
+                                             {d.stock?.fertilizers || 0}
+                                          </span>
+                                          <span className="w-8 h-8 flex flex-col items-center justify-center bg-orange-50 text-orange-600 border border-orange-100 rounded-xl text-[9px] font-black" title="Pesticides">
+                                             <span className="text-[7px] text-orange-400 font-bold leading-none mb-0.5">P</span>
+                                             {d.stock?.pesticides || 0}
+                                          </span>
+                                       </div>
+                                    </td>
+                                    <td className="p-5 text-right">
+                                       <div className="flex justify-end gap-1">
+                                          <button onClick={() => handleEditDealerClick(d)} className="text-gray-400 hover:text-brand-green-600 hover:bg-brand-green-50 p-2.5 rounded-xl transition-all" title="Edit Dealer"><FaEdit size={14} /></button>
+                                          <button onClick={() => remove(ref(db, `dealers/${d.id}`))} className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2.5 rounded-xl transition-all" title="Delete Dealer"><FaTrash size={14} /></button>
+                                       </div>
+                                    </td>
+                                 </tr>
+                              ))}
+                           </tbody>
+                        </table>
+                     </div>
+
+                     {/* Dealer Load More Button */}
+                     {dealers.length > dealersVisibleCount && (
+                        <div className="text-center mt-4">
+                           <button 
+                              onClick={() => setDealersVisibleCount(prev => prev + 10)} 
+                              className="bg-brand-green-600 hover:bg-brand-green-700 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition-all shadow-md shadow-brand-green-500/10"
+                           >
+                              Load More Distributor Profiles
+                           </button>
+                        </div>
+                     )}
+                  </div>
                </div>
             </motion.div>
           )}
