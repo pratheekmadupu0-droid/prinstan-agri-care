@@ -37,8 +37,11 @@ const Gallery = () => {
         }));
       }
       
-      // Combine custom uploaded images first, followed by our optimized set
-      const combinedList = [...firebaseList, ...preloadedImages];
+      // Combine custom uploaded images first, followed by our optimized set, filtering out duplicates
+      const firebaseUrls = new Set(firebaseList.map(item => item.url));
+      const uniquePreloaded = preloadedImages.filter(item => !firebaseUrls.has(item.url));
+      const combinedList = [...firebaseList, ...uniquePreloaded];
+      
       setGallery(combinedList);
       setLoading(false);
     });

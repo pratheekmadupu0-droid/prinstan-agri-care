@@ -13,6 +13,7 @@ import { onAuthStateChanged, signOut, signInWithPopup, GoogleAuthProvider } from
 import { ref, onValue, set, push, remove, update } from 'firebase/database';
 import { ref as sRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import productsData from '../data/products.json';
+import preloadedImages from '../data/gallery.json';
 
 const Admin = () => {
   const [user, setUser] = useState(null);
@@ -47,6 +48,7 @@ const Admin = () => {
   // Gallery Form State
   const [galleryTitle, setGalleryTitle] = useState('');
   const [uploadingGallery, setUploadingGallery] = useState(false);
+  const [galleryVisibleCount, setGalleryVisibleCount] = useState(15);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
@@ -223,31 +225,45 @@ const Admin = () => {
   };
 
   const syncGallery = async () => {
-    if (window.confirm("Import default images to the gallery database?")) {
+    if (window.confirm(`Sync all ${preloadedImages.length} optimized archive captures to the gallery database?`)) {
       const gallRef = ref(db, 'gallery');
-      const defaultItems = [
-        { url: '/gallery/WhatsApp Image 2026-05-15 at 7.46.35 PM.jpeg', title: 'Field Visit', type: 'image' },
-        { url: '/gallery/WhatsApp Image 2026-05-15 at 7.46.48 PM.jpeg', title: 'Product Showcase', type: 'image' },
-        { url: '/gallery/WhatsApp Image 2026-05-15 at 7.47.11 PM.jpeg', title: 'Farmer Interaction', type: 'image' },
-        { url: '/gallery/WhatsApp Image 2026-05-15 at 7.47.27 PM.jpeg', title: 'Crop Monitoring', type: 'image' },
-        { url: '/gallery/WhatsApp Image 2026-05-15 at 7.47.48 PM.jpeg', title: 'Our Facility', type: 'image' },
-        { url: '/main.mp4', title: 'Company Overview', type: 'video' }
-      ];
-      
       const updates = {};
-      defaultItems.forEach(item => {
-        const exists = gallery.find(existing => existing.url === item.url);
+      
+      preloadedImages.forEach(item => {
+        const exists = gallery.find(existing => existing.id === item.id || existing.url === item.url);
         if (!exists) {
           const newKey = push(gallRef).key;
-          updates[newKey] = item;
+          updates[newKey] = {
+            id: item.id,
+            url: item.url,
+            thumbnailUrl: item.thumbnailUrl,
+            title: item.title,
+            category: item.category || 'Field Trials',
+            type: 'image',
+            createdAt: new Date().toISOString()
+          };
         }
       });
       
+      // Sync default video if missing
+      const videoExists = gallery.find(existing => existing.url === '/main.mp4');
+      if (!videoExists) {
+        const newKey = push(gallRef).key;
+        updates[newKey] = {
+          id: 'main_video',
+          url: '/main.mp4',
+          title: 'Company Overview',
+          type: 'video',
+          category: 'Company Video',
+          createdAt: new Date().toISOString()
+        };
+      }
+      
       if (Object.keys(updates).length > 0) {
         await update(gallRef, updates);
-        alert("Gallery sync complete!");
+        alert("Gallery sync complete! All captures are now live and fully editable in this portal.");
       } else {
-        alert("Gallery is already synced.");
+        alert("All archive captures are already present in your live database.");
       }
     }
   };
@@ -441,12 +457,12 @@ const Admin = () => {
                </div>
 
                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-                  {gallery.map(item => (
+                  {[...gallery].reverse().slice(0, galleryVisibleCount).map(item => (
                      <div key={item.id} className="group relative aspect-square bg-white rounded-2xl md:rounded-3xl border overflow-hidden shadow-sm">
                         {item.type === 'video' ? (
                           <div className="w-full h-full flex items-center justify-center bg-gray-900 text-white"><FaPlayCircle size={32} /></div>
                         ) : (
-                          <img src={item.url} className="w-full h-full object-cover" />
+                          <img src={item.thumbnailUrl || item.url} className="w-full h-full object-cover" />
                         )}
                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all flex flex-col justify-between p-3 md:p-4">
                            <div className="flex justify-end gap-1 md:gap-2">
@@ -456,7 +472,18 @@ const Admin = () => {
                            <p className="text-white text-[10px] md:text-xs font-bold truncate">{item.title}</p>
                         </div>
                      </div>
-                  )).reverse()}
+                  ))}
+                  
+                  {gallery.length > galleryVisibleCount && (
+                     <div className="col-span-full text-center mt-6">
+                        <button 
+                          onClick={() => setGalleryVisibleCount(prev => prev + 15)} 
+                          className="bg-brand-green-600 hover:bg-brand-green-700 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition-all shadow-md shadow-brand-green-500/10"
+                        >
+                          Load More Archive Captures
+                        </button>
+                     </div>
+                  )}
                </div>
             </motion.div>
           )}
