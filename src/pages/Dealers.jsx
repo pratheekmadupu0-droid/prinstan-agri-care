@@ -385,7 +385,7 @@ const Dealers = () => {
           >
             <motion.div 
               initial={{ scale: 0.95, y: 15 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 15 }}
-              className="bg-white rounded-[2.5rem] shadow-2xl max-w-lg w-full overflow-hidden relative border border-gray-100"
+              className="bg-white rounded-[2.5rem] shadow-2xl max-w-lg w-full overflow-y-auto max-h-[90vh] relative border border-gray-100"
               onClick={e => e.stopPropagation()}
             >
               <button 

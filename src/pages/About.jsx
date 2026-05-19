@@ -178,7 +178,7 @@ const About = () => {
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className={`bg-white rounded-[2.5rem] shadow-2xl ${selectedMember.name === 'C. Viswanth Reddy' ? 'max-w-3xl' : 'max-w-2xl'} w-full overflow-hidden flex flex-col relative`}
+              className={`bg-white rounded-[2.5rem] shadow-2xl ${selectedMember.name === 'C. Viswanth Reddy' ? 'max-w-3xl' : 'max-w-2xl'} w-full overflow-y-auto max-h-[90vh] flex flex-col relative`}
             >
               <button 
                 onClick={() => setSelectedMember(null)}

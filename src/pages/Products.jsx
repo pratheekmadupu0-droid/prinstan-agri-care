@@ -183,18 +183,18 @@ const Products = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-[2rem] shadow-2xl max-w-5xl w-full flex flex-col md:flex-row relative overflow-hidden border-2 border-brand-green-50"
+              className="bg-white rounded-[2rem] shadow-2xl max-w-5xl w-full flex flex-col md:flex-row relative overflow-y-auto md:overflow-hidden max-h-[90vh] md:max-h-[85vh] border-2 border-brand-green-50"
             >
               <button
                 onClick={() => setSelectedProduct(null)}
-                className="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:bg-brand-green-600 hover:text-white transition-colors z-10"
+                className="absolute top-4 right-4 w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-600 hover:bg-brand-green-600 hover:text-white transition-colors z-20 shadow-md border border-gray-100"
               >
                 ✕
               </button>
               
-              <div className="md:w-1/2 p-6 md:p-10 flex items-center justify-center relative bg-brand-green-50/20">
+              <div className="w-full md:w-1/2 p-6 md:p-10 flex items-center justify-center relative bg-brand-green-50/20">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-brand-green-100 rounded-full blur-3xl -z-10 opacity-50"></div>
-                <div className="w-full h-full min-h-[300px] rounded-3xl flex items-center justify-center overflow-hidden">
+                <div className="w-full h-48 md:h-full md:min-h-[350px] rounded-3xl flex items-center justify-center overflow-hidden">
                    <img
                      src={selectedProduct.image}
                      alt={selectedProduct.name}
@@ -203,34 +203,45 @@ const Products = () => {
                 </div>
               </div>
               
-              <div className="p-8 md:p-10 md:w-1/2 flex flex-col justify-center">
-                <h2 className="text-3xl font-extrabold text-gray-900 mb-4">{selectedProduct.name}</h2>
-                <p className="text-gray-600 mb-8 leading-relaxed text-sm whitespace-pre-wrap overflow-y-auto max-h-40 pr-2">
+              <div className="p-6 md:p-10 w-full md:w-1/2 flex flex-col justify-center">
+                <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-4">{selectedProduct.name}</h2>
+                <p className="text-gray-600 mb-6 leading-relaxed text-sm whitespace-pre-wrap md:overflow-y-auto md:max-h-40 pr-2">
                   {selectedProduct.description || selectedProduct.desc}
                 </p>
                 
-                <div className="grid grid-cols-2 gap-4 mb-8">
-                  <div className="border border-brand-green-100 rounded-xl p-4 bg-brand-green-50/30">
-                    <h4 className="text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Crop</h4>
-                    <p className="text-sm font-bold text-gray-900">{selectedProduct.crop || "Cotton, Chilli, Vegetables & Other Field Crops"}</p>
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="border border-brand-green-100 rounded-xl p-3 md:p-4 bg-brand-green-50/30">
+                    <h4 className="text-[10px] font-bold text-gray-500 mb-1 uppercase tracking-wider">Crop</h4>
+                    <p className="text-xs md:text-sm font-bold text-gray-900 leading-tight">{selectedProduct.crop || "Cotton, Chilli, Vegetables & Other Field Crops"}</p>
                   </div>
-                  <div className="border border-brand-green-100 rounded-xl p-4 bg-brand-green-50/30">
-                    <h4 className="text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Dosage</h4>
-                    <p className="text-sm font-bold text-gray-900">{selectedProduct.dosage || "1 - 1.5 ml per Liter of water"}</p>
+                  <div className="border border-brand-green-100 rounded-xl p-3 md:p-4 bg-brand-green-50/30">
+                    <h4 className="text-[10px] font-bold text-gray-500 mb-1 uppercase tracking-wider">Dosage</h4>
+                    <p className="text-xs md:text-sm font-bold text-gray-900 leading-tight">{selectedProduct.dosage || "1 - 1.5 ml per Liter of water"}</p>
                   </div>
-                  <div className="border border-brand-green-100 rounded-xl p-4 bg-brand-green-50/30">
-                    <h4 className="text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Packing</h4>
-                    <p className="text-sm font-bold text-gray-900">{selectedProduct.packing || "100 ml | 250 ml | 500 ml | 1 L"}</p>
+                  <div className="border border-brand-green-100 rounded-xl p-3 md:p-4 bg-brand-green-50/30">
+                    <h4 className="text-[10px] font-bold text-gray-500 mb-1 uppercase tracking-wider">Packing</h4>
+                    <p className="text-xs md:text-sm font-bold text-gray-900 leading-tight">{selectedProduct.packing || "100 ml | 250 ml | 500 ml | 1 L"}</p>
                   </div>
-                  <div className="border border-brand-green-100 rounded-xl p-4 bg-brand-green-50/30">
-                    <h4 className="text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Category</h4>
-                    <p className="text-sm font-bold text-gray-900">{t(`products.categories.${selectedProduct.category}`) || selectedProduct.category}</p>
+                  <div className="border border-brand-green-100 rounded-xl p-3 md:p-4 bg-brand-green-50/30">
+                    <h4 className="text-[10px] font-bold text-gray-500 mb-1 uppercase tracking-wider">Category</h4>
+                    <p className="text-xs md:text-sm font-bold text-gray-900 leading-tight">{t(`products.categories.${selectedProduct.category}`) || selectedProduct.category}</p>
                   </div>
                 </div>
 
-                <div className="flex">
-                  <button className="flex items-center justify-center gap-2 bg-[#25D366] text-white hover:bg-[#128C7E] px-6 py-3 rounded-lg font-bold transition-all shadow-lg shadow-green-500/30">
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <a 
+                    href={`https://wa.me/919999999999?text=Hello,%20I%20am%20interested%20in%20inquiring%20about%20the%20product:%20${encodeURIComponent(selectedProduct.name)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-2 bg-[#25D366] text-white hover:bg-[#128C7E] px-6 py-3.5 rounded-xl font-bold transition-all shadow-lg shadow-green-500/30 text-sm md:text-base cursor-pointer"
+                  >
                     <FaWhatsapp className="text-xl" /> Product Enquiry
+                  </a>
+                  <button 
+                    onClick={() => setSelectedProduct(null)}
+                    className="flex-1 bg-gray-100 text-gray-700 hover:bg-gray-200 px-6 py-3.5 rounded-xl font-bold transition-all text-sm md:text-base"
+                  >
+                    Cancel
                   </button>
                 </div>
               </div>
