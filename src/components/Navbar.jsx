@@ -46,7 +46,7 @@ const Navbar = () => {
               <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
             </div>
             <div className="flex flex-col">
-              <span className="font-black text-xl tracking-tighter text-brand-green-900 leading-none uppercase">Prinstan Agri Care</span>
+              <span className="font-black text-xl tracking-tighter text-brand-green-900 leading-none uppercase whitespace-nowrap">Prinstan Agri Care</span>
               <span className="logi-label text-[10px] text-brand-green-600 leading-none mt-1">Pvt. Ltd.</span>
             </div>
           </Link>
