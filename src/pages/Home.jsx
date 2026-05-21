@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FaLeaf, FaTractor, FaSeedling, FaWater, FaTimes } from 'react-icons/fa';
+import { FaLeaf, FaTractor, FaSeedling, FaWater, FaTimes, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 import organicImg from '../assets/services/organic.png';
 import smartImg from '../assets/services/smart.png';
@@ -27,6 +27,70 @@ const Home = () => {
   const { t } = useTranslation();
   const [selectedService, setSelectedService] = useState(null);
 
+  const scrollContainerRef = useRef(null);
+  const [activeStoryIndex, setActiveStoryIndex] = useState(0);
+
+  const farmerStories = [
+    {
+      id: 1,
+      image: "https://images.unsplash.com/photo-1595841696677-6489ff3f8cd1?auto=format&fit=crop&w=500&q=80",
+      name: "Lauro Clark",
+      role: "Agronomist",
+    },
+    {
+      id: 2,
+      image: "https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=500&q=80",
+      name: "Devid Rian",
+      role: "Soil Conservationist",
+    },
+    {
+      id: 3,
+      image: "https://images.unsplash.com/photo-1505471768190-275e2ad7b3f9?auto=format&fit=crop&w=500&q=80",
+      name: "Sohel Tanvir",
+      role: "Senior Farmer",
+    },
+    {
+      id: 4,
+      image: "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=500&q=80",
+      name: "Rajesh Kumar",
+      role: "Organic Farmer",
+    },
+    {
+      id: 5,
+      image: "https://images.unsplash.com/photo-1592982537447-6f2a6a0c5c82?auto=format&fit=crop&w=500&q=80",
+      name: "Venkat Rao",
+      role: "Crop Consultant",
+    }
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (scrollContainerRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+        if (scrollLeft + clientWidth >= scrollWidth - 10) {
+          scrollContainerRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          const cardWidth = scrollContainerRef.current.children[0]?.clientWidth || 300;
+          scrollContainerRef.current.scrollBy({ left: cardWidth + 24, behavior: 'smooth' });
+        }
+      }
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handleScroll = (e) => {
+    const scrollLeft = e.target.scrollLeft;
+    const cardWidth = e.target.children[0]?.clientWidth || 300;
+    const index = Math.round(scrollLeft / (cardWidth + 24));
+    setActiveStoryIndex(Math.min(index, farmerStories.length - 1));
+  };
+
+  const scrollToStory = (index) => {
+    if (scrollContainerRef.current) {
+      const cardWidth = scrollContainerRef.current.children[0]?.clientWidth || 300;
+      scrollContainerRef.current.scrollTo({ left: index * (cardWidth + 24), behavior: 'smooth' });
+    }
+  };
   const stats = [
     { number: '10+', label: t('home.stats.exp') },
     { number: '10k+', label: t('home.stats.farmers') },
@@ -359,6 +423,78 @@ const Home = () => {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* Real Stories from Farmers Carousel */}
+      <section className="py-24 bg-[#F5F7F2] relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16">
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <div className="h-px w-16 bg-[#78A84B]"></div>
+            <h2 className="text-[#78A84B] font-bold tracking-widest uppercase text-sm">REAL STORIES FROM FARMERS</h2>
+            <div className="h-px w-16 bg-[#78A84B]"></div>
+          </div>
+          <h3 className="text-5xl md:text-6xl font-black text-[#1A2639] mb-4 tracking-tight">Real Stories from Farmers</h3>
+          <p className="text-[#78A84B] font-bold mb-2">Trusted By Farmers Across Telangana</p>
+          <p className="text-gray-500 max-w-3xl mx-auto text-sm md:text-base">
+            Farmers Across Telangana Share Their Real Stories Of Success Using Prinstan Crop Care Solutions To Achieve Healthier, Higher-Yielding Crops.
+          </p>
+        </div>
+
+        <div className="max-w-[1400px] mx-auto px-4 relative group">
+          <button 
+            onClick={() => scrollToStory(Math.max(0, activeStoryIndex - 1))}
+            className="absolute left-2 md:left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 md:w-14 md:h-14 bg-white rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.08)] flex items-center justify-center text-[#78A84B] hover:bg-[#78A84B] hover:text-white transition-colors"
+          >
+            <FaChevronLeft size={20} />
+          </button>
+          
+          <div 
+            ref={scrollContainerRef}
+            onScroll={handleScroll}
+            className="flex gap-6 overflow-x-auto snap-x snap-mandatory hide-scrollbar pb-8 px-4"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {farmerStories.map((story) => (
+              <div 
+                key={story.id} 
+                className="min-w-[85vw] md:min-w-[calc(50%-12px)] lg:min-w-[calc(33.333%-16px)] snap-center bg-white rounded-[32px] p-5 shadow-sm border border-gray-100 flex flex-col items-center hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300"
+              >
+                <div className="w-full aspect-square md:h-72 rounded-[24px] overflow-hidden mb-6 bg-gray-100">
+                  <img src={story.image} alt={story.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                </div>
+                <h4 className="text-2xl font-black text-[#1A2639] mb-1">{story.name}</h4>
+                <p className="text-gray-500 text-sm font-medium mb-6">{story.role}</p>
+                <button className="bg-[#78A84B] hover:bg-[#65913D] text-white px-8 py-3.5 rounded-2xl font-bold transition-colors w-full sm:w-auto flex items-center justify-center gap-2">
+                  View Story <FaChevronRight size={14} />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <button 
+            onClick={() => scrollToStory(Math.min(farmerStories.length - 1, activeStoryIndex + 1))}
+            className="absolute right-2 md:right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 md:w-14 md:h-14 bg-white rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.08)] flex items-center justify-center text-[#78A84B] hover:bg-[#78A84B] hover:text-white transition-colors"
+          >
+            <FaChevronRight size={20} />
+          </button>
+        </div>
+
+        {/* Pagination Dots */}
+        <div className="flex justify-center gap-2 mt-4">
+          {farmerStories.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => scrollToStory(index)}
+              className={`h-2.5 rounded-full transition-all duration-300 ${activeStoryIndex === index ? 'w-8 bg-[#78A84B]' : 'w-2.5 bg-gray-300 hover:bg-gray-400'}`}
+            />
+          ))}
+        </div>
+        
+        <style dangerouslySetInnerHTML={{__html: `
+          .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+          }
+        `}} />
       </section>
     </motion.div>
   );
