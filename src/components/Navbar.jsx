@@ -39,20 +39,20 @@ const Navbar = () => {
 
   return (
     <div className="fixed w-full z-50 px-4 pt-4 pointer-events-none">
-      <nav className={`max-w-7xl mx-auto transition-all duration-500 pointer-events-auto ${scrolled ? 'glass rounded-full py-2 px-6 shadow-2xl scale-95 md:scale-100' : 'bg-white/50 backdrop-blur-sm rounded-[30px] md:rounded-full py-4 px-8 md:px-12'}`}>
-        <div className="flex justify-between items-center">
-          <Link to="/" className="flex items-center gap-4 group">
-            <div className="bg-white p-1.5 rounded-xl group-hover:rotate-12 transition-transform shadow-lg border border-brand-green-50">
+      <nav className={`w-full max-w-[98vw] xl:max-w-[1400px] mx-auto transition-all duration-500 pointer-events-auto ${scrolled ? 'glass rounded-full py-2 px-4 xl:px-6 shadow-2xl scale-95 md:scale-100' : 'bg-white/50 backdrop-blur-sm rounded-[30px] md:rounded-full py-4 px-4 xl:px-12'}`}>
+        <div className="flex justify-between items-center gap-4">
+          <Link to="/" className="flex items-center gap-3 group shrink-0">
+            <div className="bg-white p-1.5 rounded-xl group-hover:rotate-12 transition-transform shadow-lg border border-brand-green-50 shrink-0">
               <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
             </div>
-            <div className="flex flex-col">
-              <span className="font-black text-xl tracking-tighter text-brand-green-900 leading-none uppercase whitespace-nowrap">Prinstan Agri Care</span>
+            <div className="flex flex-col shrink-0">
+              <span className="font-black text-lg xl:text-xl tracking-tighter text-brand-green-900 leading-none uppercase whitespace-nowrap">Prinstan Agri Care</span>
               <span className="logi-label text-[10px] text-brand-green-600 leading-none mt-1">Pvt. Ltd.</span>
             </div>
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center space-x-10">
+          <div className="hidden lg:flex items-center space-x-6 xl:space-x-8">
             {navLinks.map((link) => (
               <Link
                 key={link.key}
@@ -65,7 +65,7 @@ const Navbar = () => {
               </Link>
             ))}
             
-            <div className="flex items-center gap-4 border-l border-gray-200 pl-8">
+            <div className="flex items-center gap-3 xl:gap-4 border-l border-gray-200 pl-4 xl:pl-8">
               <button
                 onClick={toggleLanguage}
                 className="logi-label text-brand-green-900 hover:text-brand-green-600 transition-colors flex items-center gap-2"
@@ -86,7 +86,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Nav Toggle */}
-          <div className="md:hidden flex items-center">
+          <div className="lg:hidden flex items-center shrink-0">
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-gray-700 hover:text-brand-green-600 focus:outline-none"
@@ -102,7 +102,7 @@ const Navbar = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="md:hidden absolute top-full left-0 w-full bg-white shadow-xl py-4 px-4 flex flex-col space-y-4 rounded-3xl mt-2"
+            className="lg:hidden absolute top-full left-0 w-full bg-white shadow-xl py-4 px-4 flex flex-col space-y-4 rounded-3xl mt-2"
           >
             {navLinks.map((link) => (
               <Link
