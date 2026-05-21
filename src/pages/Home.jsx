@@ -70,7 +70,7 @@ const Home = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="bg-white"
+      className="bg-white -mt-20"
     >
       <SEO 
         title="Prinstan Agri Care Pvt Ltd | Agricultural Solutions & Crop Care in India"
