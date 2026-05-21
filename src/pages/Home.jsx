@@ -87,7 +87,7 @@ const Home = () => {
           playsInline 
           className="w-full h-full object-cover"
         >
-          <source src="/intro.mp4" type="video/mp4" />
+          <source src="/pac.mp4" type="video/mp4" />
         </video>
       </section>
 
