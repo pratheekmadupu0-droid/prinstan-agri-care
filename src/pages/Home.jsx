@@ -33,31 +33,31 @@ const Home = () => {
   const farmerStories = [
     {
       id: 1,
-      image: "https://images.unsplash.com/photo-1595841696677-6489ff3f8cd1?auto=format&fit=crop&w=500&q=80",
+      image: "/farmers/1.jpeg",
       name: "Lauro Clark",
       role: "Agronomist",
     },
     {
       id: 2,
-      image: "https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=500&q=80",
+      image: "/farmers/2.jpeg",
       name: "Devid Rian",
       role: "Soil Conservationist",
     },
     {
       id: 3,
-      image: "https://images.unsplash.com/photo-1505471768190-275e2ad7b3f9?auto=format&fit=crop&w=500&q=80",
+      image: "/farmers/3.jpeg",
       name: "Sohel Tanvir",
       role: "Senior Farmer",
     },
     {
       id: 4,
-      image: "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=500&q=80",
+      image: "/farmers/4.jpeg",
       name: "Rajesh Kumar",
       role: "Organic Farmer",
     },
     {
       id: 5,
-      image: "https://images.unsplash.com/photo-1592982537447-6f2a6a0c5c82?auto=format&fit=crop&w=500&q=80",
+      image: "/farmers/5.jpeg",
       name: "Venkat Rao",
       role: "Crop Consultant",
     }
