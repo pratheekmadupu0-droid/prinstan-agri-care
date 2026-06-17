@@ -10,7 +10,7 @@ const fadeIn = {
 };
 
 const About = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [selectedMember, setSelectedMember] = useState(null);
 
