@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FaBox, FaImages, FaUsers, FaChartLine, 
@@ -49,9 +49,10 @@ const Admin = () => {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
+  const [localPreviewUrl, setLocalPreviewUrl] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadDone, setUploadDone] = useState(false);
+  const pendingUploadRef = useRef(null); // resolves to Firebase URL when done
 
   // Gallery Form State
   const [galleryTitle, setGalleryTitle] = useState('');
@@ -181,40 +182,55 @@ const Admin = () => {
   const handleProductImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    // 1. Show preview INSTANTLY via blob URL — no waiting
+    const preview = URL.createObjectURL(file);
+    setLocalPreviewUrl(preview);
     setUploadingImage(true);
     setUploadProgress(0);
-    setUploadDone(false);
-    try {
-      const compressed = await compressImage(file);
-      const fileName = file.name.replace(/\.[^.]+$/, '') + '.webp';
-      const storageRef = sRef(storage, `products/${Date.now()}_${fileName}`);
-      const task = uploadBytesResumable(storageRef, compressed);
-      task.on('state_changed',
-        (snap) => setUploadProgress(Math.round((snap.bytesTransferred / snap.totalBytes) * 100)),
-        () => { setUploadingImage(false); setUploadProgress(0); },
-        async () => {
-          const url = await getDownloadURL(task.snapshot.ref);
-          setNewProduct(prev => ({ ...prev, image: url }));
-          setUploadDone(true);
-          setUploadingImage(false);
-          setTimeout(() => setUploadDone(false), 3000);
-        }
-      );
-    } catch {
-      setUploadingImage(false);
-      setUploadProgress(0);
-    }
+
+    // 2. Compress + upload silently in background
+    pendingUploadRef.current = (async () => {
+      try {
+        const compressed = await compressImage(file);
+        const fileName = file.name.replace(/\.[^.]+$/, '') + '.webp';
+        const storageRef = sRef(storage, `products/${Date.now()}_${fileName}`);
+        return await new Promise((resolve, reject) => {
+          const task = uploadBytesResumable(storageRef, compressed);
+          task.on('state_changed',
+            (snap) => setUploadProgress(Math.round((snap.bytesTransferred / snap.totalBytes) * 100)),
+            reject,
+            async () => {
+              const url = await getDownloadURL(task.snapshot.ref);
+              setUploadingImage(false);
+              resolve(url);
+            }
+          );
+        });
+      } catch {
+        setUploadingImage(false);
+        setUploadProgress(0);
+        return null;
+      }
+    })();
   };
 
   const saveProduct = async (e) => {
     e.preventDefault();
     try {
+      let productToSave = { ...newProduct };
+
+      // If image upload is still in progress, wait for it now
+      if (pendingUploadRef.current) {
+        const firebaseUrl = await pendingUploadRef.current;
+        if (firebaseUrl) productToSave.image = firebaseUrl;
+        pendingUploadRef.current = null;
+      }
+
       if (isEditing && editId) {
-        await set(ref(db, `products/${editId}`), newProduct);
-        alert("Product updated!");
+        await set(ref(db, `products/${editId}`), productToSave);
       } else {
-        await push(ref(db, 'products'), newProduct);
-        alert("Product added!");
+        await push(ref(db, 'products'), productToSave);
       }
       resetProductForm();
     } catch (err) {
@@ -224,6 +240,10 @@ const Admin = () => {
 
   const resetProductForm = () => {
     setNewProduct({ name: '', category: 'Bio', description: '', crop: '', dosage: '', packing: '', prices: { '100ml': '', '250ml': '', '500ml': '', '1L': '' }, image: '' });
+    setLocalPreviewUrl('');
+    setUploadProgress(0);
+    setUploadingImage(false);
+    pendingUploadRef.current = null;
     setIsEditing(false);
     setEditId(null);
   };
@@ -869,20 +889,21 @@ const Admin = () => {
                        </div>
 
                        <div className="border-2 border-dashed border-gray-100 p-4 rounded-xl text-center">
-                          {newProduct.image ? (
+                          {localPreviewUrl ? (
                              <div className="relative group">
-                                <img src={newProduct.image} className="w-full h-32 object-cover rounded-lg" />
-                                <button onClick={() => setNewProduct({...newProduct, image: ''})} className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"><FaTimes /></button>
+                                <img src={localPreviewUrl} className="w-full h-32 object-cover rounded-lg" />
+                                {/* Background upload progress bar */}
+                                {uploadingImage && (
+                                  <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-black/10 rounded-b-lg overflow-hidden">
+                                    <div className="bg-brand-green-500 h-full transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
+                                  </div>
+                                )}
+                                <label className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer rounded-lg">
+                                  <span className="text-white text-[10px] font-bold">Change Image</span>
+                                  <input type="file" className="hidden" onChange={handleProductImageUpload} />
+                                </label>
+                                <button type="button" onClick={() => { setLocalPreviewUrl(''); setNewProduct({...newProduct, image: ''}); pendingUploadRef.current = null; }} className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"><FaTimes /></button>
                              </div>
-                          ) : uploadingImage ? (
-                             <div className="py-4 space-y-2">
-                                <p className="text-xs font-bold text-brand-green-600">Uploading… {uploadProgress}%</p>
-                                <div className="w-full bg-gray-100 rounded-full h-2">
-                                  <div className="bg-brand-green-500 h-2 rounded-full transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
-                                </div>
-                             </div>
-                          ) : uploadDone ? (
-                             <p className="text-xs font-bold text-emerald-600 py-4">✓ Image uploaded!</p>
                           ) : (
                              <label className="cursor-pointer text-xs font-bold text-gray-400 py-4 block">
                                 <FaUpload className="mx-auto mb-2 text-xl" /> Click to Upload Image
@@ -890,7 +911,10 @@ const Admin = () => {
                              </label>
                           )}
                        </div>
-                       <button type="submit" className="w-full bg-brand-green-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-brand-green-500/20">{isEditing ? 'Update' : 'Add'} Product</button>
+                       <button type="submit" disabled={false} className="w-full bg-brand-green-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-brand-green-500/20 flex items-center justify-center gap-2">
+                         {uploadingImage && <span className="text-[10px] opacity-70">({uploadProgress}%)</span>}
+                         {isEditing ? 'Update' : 'Add'} Product
+                       </button>
                        {isEditing && <button onClick={resetProductForm} className="w-full py-2 text-gray-400 font-bold text-sm">Cancel Edit</button>}
                     </form>
                   </div>
