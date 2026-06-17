@@ -65,7 +65,7 @@ const About = () => {
     },
     { 
       title: i18n.language === 'en' ? 'Production' : 'ఉత్పత్తి', 
-      video: '/creating.mp4', 
+      video: '/factory.mp4', 
       desc: i18n.language === 'en'
         ? 'Advanced production and research into innovative crop protection solutions tailored for Indian farmers.' 
         : 'భారతీయ రైతులకు తగిన వినూత్న పంట రక్షణ పరిష్కారాలపై అధునాతన ఉత్పత్తి మరియు పరిశోధన.'
