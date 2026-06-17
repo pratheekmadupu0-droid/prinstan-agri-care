@@ -240,9 +240,9 @@ const Home = () => {
   // Success Stories (carousel)
   const successStories = [
     {
-      farmerName: i18n.language === 'en' ? 'Rajesh Kumar' : 'రాజేష్ కుమార్',
+      farmerName: i18n.language === 'en' ? 'Ramesh Babu' : 'రమేష్ బాబు',
       location: i18n.language === 'en' ? 'Warangal, Telangana' : 'వరంగల్, తెలంగాణ',
-      cropType: i18n.language === 'en' ? 'Chilli & Cotton' : 'మిర్చి & పత్తి',
+      cropType: i18n.language === 'en' ? 'Paddy & Cotton' : 'వరి & పత్తి',
       results: i18n.language === 'en' ? '35% Yield Boost' : '35% దిగుబడి పెరుగుదల',
       testimonial: i18n.language === 'en' 
         ? "Prinstan's Super Cobra and Hunter resolved severe leaf curl issues. Crop health improved dramatically, allowing me to secure premium prices at the local market."
@@ -251,15 +251,48 @@ const Home = () => {
       cropImage: "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
     },
     {
-      farmerName: i18n.language === 'en' ? 'Lauro Clark' : 'లారో క్లార్క్',
+      farmerName: i18n.language === 'en' ? 'Suresh Babu' : 'సురేష్ బాబు',
       location: i18n.language === 'en' ? 'Guntur, Andhra Pradesh' : 'గుంటూరు, ఆంధ్రప్రదేశ్',
       cropType: i18n.language === 'en' ? 'Red Chilli' : 'ఎర్ర మిర్చి',
       results: i18n.language === 'en' ? '40% Yield Boost' : '40% దిగుబడి పెరుగుదల',
       testimonial: i18n.language === 'en'
         ? "Severe flower drop due to dry spells threatened my output. Feeding the field with Mantra vitalizers strengthened crop roots, securing my harvest completely."
         : "పొడి వాతావరణం వల్ల తీవ్రమైన పూత రాలడం నా దిగుబడిని ముప్పు తెచ్చింది. మంత్ర వైటలైజర్‌తో పంట వేర్లను బలోపేతం చేయడం నా పంటను పూర్తిగా రక్షించింది.",
-      image: "/farmers/4.jpeg",
+      image: "/farmers/2.jpeg",
       cropImage: "https://images.unsplash.com/photo-1592417817098-8f3d6eb19675?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      farmerName: i18n.language === 'en' ? 'Veeriah' : 'వీరయ్య',
+      location: i18n.language === 'en' ? 'Khammam, Telangana' : 'ఖమ్మం, తెలంగాణ',
+      cropType: i18n.language === 'en' ? 'Maize' : 'మొక్కజొన్న',
+      results: i18n.language === 'en' ? '30% Yield Boost' : '30% దిగుబడి పెరుగుదల',
+      testimonial: i18n.language === 'en'
+        ? "Using Prinstan formulations, my maize fields showed incredible greening and strong cob development. The pest resistance has been remarkable this season."
+        : "ప్రిన్స్టాన్ ఫార్ములేషన్లను ఉపయోగించడం ద్వారా, నా మొక్కజొన్న పొలాలు అద్భుతమైన పచ్చదనం మరియు బలమైన కంకి అభివృద్ధిని చూపించాయి. ఈ సీజన్లో తెగుళ్ల నిరోధకత అద్భుతంగా ఉంది.",
+      image: "/farmers/3.jpeg",
+      cropImage: "https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      farmerName: i18n.language === 'en' ? 'Somaiah' : 'సోమయ్య',
+      location: i18n.language === 'en' ? 'Nalgonda, Telangana' : 'నల్గొండ, తెలంగాణ',
+      cropType: i18n.language === 'en' ? 'Sweet Lime' : 'బత్తాయి',
+      results: i18n.language === 'en' ? '45% Yield Boost' : '45% దిగుబడి పెరుగుదల',
+      testimonial: i18n.language === 'en'
+        ? "The bio-products from Prinstan revived my sweet lime orchard. Soil moisture retention and leaf health have improved beyond my expectations."
+        : "ప్రిన్స్టాన్ బయో-ఉత్పత్తులు నా బత్తాయి తోటను పునరుద్ధరించాయి. నేల తేమ నిలుపుదల మరియు ఆకు ఆరోగ్యం నా అంచనాలకు మించి మెరుగుపడ్డాయి.",
+      image: "/farmers/4.jpeg",
+      cropImage: "https://images.unsplash.com/photo-1595855759920-86582396756a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      farmerName: i18n.language === 'en' ? 'Subarao' : 'సుబ్బారావు',
+      location: i18n.language === 'en' ? 'Krishna, Andhra Pradesh' : 'కృష్ణా, ఆంధ్రప్రదేశ్',
+      cropType: i18n.language === 'en' ? 'Paddy' : 'వరి',
+      results: i18n.language === 'en' ? '28% Yield Boost' : '28% దిగుబడి పెరుగుదల',
+      testimonial: i18n.language === 'en'
+        ? "The high-quality fertilizers helped my paddy fields overcome nutrient deficiency quickly. We harvested early with excellent grain quality and weight."
+        : "అధిక నాణ్యత గల ఎరువులు నా వరి పొలాల్లో పోషకాల లోపాన్ని త్వరగా అధిగమించడానికి సహాయపడ్డాయి. మేము అద్భుతమైన ధాన్యం నాణ్యత మరియు బరువుతో ప్రారంభంలోనే కోత కోశాము.",
+      image: "/farmers/5.jpeg",
+      cropImage: "https://images.unsplash.com/photo-1535254973040-607b474cb50d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
     }
   ];
 
@@ -549,53 +582,53 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Insecticides */}
-            <div className="bg-[#05160E] border border-emerald-500/15 hover:border-emerald-500/30 rounded-[32px] p-8 flex flex-col items-center text-center justify-between group hover:-translate-y-2 transition-all duration-300 shadow-2xl">
-              <div className="flex flex-col items-center">
-                <div className="w-16 h-16 bg-emerald-950/50 rounded-2xl flex items-center justify-center text-primary text-2xl border border-emerald-500/20 mb-6 group-hover:scale-110 transition-transform">
-                  <FaShieldAlt className="text-cyan-400" />
-                </div>
-                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">{i18n.language === 'en' ? 'Insecticides' : 'పురుగుమందులు'}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed mb-6 font-medium">
-                  {i18n.language === 'en' ? 'High-efficacy targeting against chewing and sucking crop pests.' : 'నమిలే మరియు పీల్చే పంట తెగుళ్ళకు వ్యతిరేకంగా అధిక ప్రభావవంతమైన నివారణ.'}
-                </p>
-              </div>
-              <Link 
-                to="/products?category=Pesticides" 
-                className="text-cyan-400 font-extrabold text-xs uppercase tracking-widest hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
-              >
-                {i18n.language === 'en' ? 'VIEW PRODUCTS' : 'ఉత్పత్తులను వీక్షించండి'} <FaArrowRight className="text-[10px]" />
-              </Link>
-            </div>
-
-            {/* Herbicides */}
+            {/* Bios */}
             <div className="bg-[#05160E] border border-emerald-500/15 hover:border-emerald-500/30 rounded-[32px] p-8 flex flex-col items-center text-center justify-between group hover:-translate-y-2 transition-all duration-300 shadow-2xl">
               <div className="flex flex-col items-center">
                 <div className="w-16 h-16 bg-emerald-950/50 rounded-2xl flex items-center justify-center text-primary text-2xl border border-emerald-500/20 mb-6 group-hover:scale-110 transition-transform">
                   <FaLeaf className="text-emerald-400" />
                 </div>
-                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">{i18n.language === 'en' ? 'Herbicides' : 'కలుపు నివారణిలు'}</h3>
+                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">{i18n.language === 'en' ? 'Bios' : 'బయోస్'}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed mb-6 font-medium">
-                  {i18n.language === 'en' ? 'Selective weed blockades tailored for rich crop yields.' : 'సమృద్ధిగా పంట దిగుబడి కోసం ప్రత్యేకంగా రూపొందించిన కలుపు నిరోధకాలు.'}
+                  {i18n.language === 'en' ? 'Natural biological stimulants and organic plant activators designed for sustainable farming.' : 'స్థిరమైన వ్యవసాయం కోసం రూపొందించబడిన సహజ జీవ ఉద్దీపనలు మరియు సేంద్రీయ మొక్కల యాక్టివేటర్లు.'}
                 </p>
               </div>
               <Link 
-                to="/products?category=Fertilizers" 
+                to="/products?category=Bios" 
                 className="text-emerald-400 font-extrabold text-xs uppercase tracking-widest hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
               >
                 {i18n.language === 'en' ? 'VIEW PRODUCTS' : 'ఉత్పత్తులను వీక్షించండి'} <FaArrowRight className="text-[10px]" />
               </Link>
             </div>
 
-            {/* Fungicides */}
+            {/* Fertilizers */}
             <div className="bg-[#05160E] border border-emerald-500/15 hover:border-emerald-500/30 rounded-[32px] p-8 flex flex-col items-center text-center justify-between group hover:-translate-y-2 transition-all duration-300 shadow-2xl">
               <div className="flex flex-col items-center">
                 <div className="w-16 h-16 bg-emerald-950/50 rounded-2xl flex items-center justify-center text-primary text-2xl border border-emerald-500/20 mb-6 group-hover:scale-110 transition-transform">
-                  <FaAward className="text-blue-400" />
+                  <FaFlask className="text-cyan-400" />
                 </div>
-                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">{i18n.language === 'en' ? 'Fungicides' : 'శిలీంద్ర సంహారిణులు'}</h3>
+                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">{i18n.language === 'en' ? 'Fertilizers' : 'ఎరువులు'}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed mb-6 font-medium">
-                  {i18n.language === 'en' ? 'Advanced defense systems preventing severe fungal spreads.' : 'తీవ్రమైన శిలీంధ్ర వ్యాప్తిని నిరోధించే అధునాతన రక్షణ వ్యవస్థలు.'}
+                  {i18n.language === 'en' ? 'High-grade crop nutrition and vital soil formulations to boost yields.' : 'దిగుబడిని పెంచడానికి అధిక-నాణ్యత పంట పోషణ మరియు కీలకమైన నేల సూత్రీకరణలు.'}
+                </p>
+              </div>
+              <Link 
+                to="/products?category=Fertilizers" 
+                className="text-cyan-400 font-extrabold text-xs uppercase tracking-widest hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
+              >
+                {i18n.language === 'en' ? 'VIEW PRODUCTS' : 'ఉత్పత్తులను వీక్షించండి'} <FaArrowRight className="text-[10px]" />
+              </Link>
+            </div>
+
+            {/* Pesticides */}
+            <div className="bg-[#05160E] border border-emerald-500/15 hover:border-emerald-500/30 rounded-[32px] p-8 flex flex-col items-center text-center justify-between group hover:-translate-y-2 transition-all duration-300 shadow-2xl">
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 bg-emerald-950/50 rounded-2xl flex items-center justify-center text-primary text-2xl border border-emerald-500/20 mb-6 group-hover:scale-110 transition-transform">
+                  <FaShieldAlt className="text-blue-400" />
+                </div>
+                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">{i18n.language === 'en' ? 'Pesticides' : 'పురుగుమందులు'}</h3>
+                <p className="text-gray-400 text-sm leading-relaxed mb-6 font-medium">
+                  {i18n.language === 'en' ? 'Advanced protective solutions against severe pest infestations and crop diseases.' : 'తీవ్రమైన తెగుళ్ల నివారణ మరియు పంట వ్యాధుల నుండి రక్షణ కోసం అధునాతన నివారణలు.'}
                 </p>
               </div>
               <Link 
