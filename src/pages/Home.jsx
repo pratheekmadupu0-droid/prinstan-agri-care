@@ -404,82 +404,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 3. SCIENTIFIC PRODUCT CATALOG */}
-      <section className="py-28 bg-[#030E08] text-white relative">
-        <div className="absolute inset-0 opacity-5 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary via-transparent to-transparent pointer-events-none" />
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight uppercase leading-none text-white italic">
-              SCIENTIFIC PRODUCT CATALOG
-            </h2>
-            <div className="h-1 w-24 bg-[#0F6B3A] mx-auto rounded-full mt-4 mb-6" />
-            <p className="text-gray-400 text-sm md:text-base font-semibold">
-              Explore our highly targeted protective systems designed to safeguard cash crop networks.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Insecticides */}
-            <div className="bg-[#05160E] border border-emerald-500/15 hover:border-emerald-500/30 rounded-[32px] p-8 flex flex-col items-center text-center justify-between group hover:-translate-y-2 transition-all duration-300 shadow-2xl">
-              <div className="flex flex-col items-center">
-                <div className="w-16 h-16 bg-emerald-950/50 rounded-2xl flex items-center justify-center text-primary text-2xl border border-emerald-500/20 mb-6 group-hover:scale-110 transition-transform">
-                  <FaShieldAlt className="text-cyan-400" />
-                </div>
-                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">Insecticides</h3>
-                <p className="text-gray-400 text-sm leading-relaxed mb-6 font-medium">
-                  High-efficacy targeting against chewing and sucking crop pests.
-                </p>
-              </div>
-              <Link 
-                to="/products?category=Pesticides" 
-                className="text-cyan-400 font-extrabold text-xs uppercase tracking-widest hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
-              >
-                VIEW PRODUCTS <FaArrowRight className="text-[10px]" />
-              </Link>
-            </div>
-
-            {/* Herbicides */}
-            <div className="bg-[#05160E] border border-emerald-500/15 hover:border-emerald-500/30 rounded-[32px] p-8 flex flex-col items-center text-center justify-between group hover:-translate-y-2 transition-all duration-300 shadow-2xl">
-              <div className="flex flex-col items-center">
-                <div className="w-16 h-16 bg-emerald-950/50 rounded-2xl flex items-center justify-center text-primary text-2xl border border-emerald-500/20 mb-6 group-hover:scale-110 transition-transform">
-                  <FaLeaf className="text-emerald-400" />
-                </div>
-                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">Herbicides</h3>
-                <p className="text-gray-400 text-sm leading-relaxed mb-6 font-medium">
-                  Selective weed blockades tailored for rich crop yields.
-                </p>
-              </div>
-              <Link 
-                to="/products?category=Fertilizers" 
-                className="text-emerald-400 font-extrabold text-xs uppercase tracking-widest hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
-              >
-                VIEW PRODUCTS <FaArrowRight className="text-[10px]" />
-              </Link>
-            </div>
-
-            {/* Fungicides */}
-            <div className="bg-[#05160E] border border-emerald-500/15 hover:border-emerald-500/30 rounded-[32px] p-8 flex flex-col items-center text-center justify-between group hover:-translate-y-2 transition-all duration-300 shadow-2xl">
-              <div className="flex flex-col items-center">
-                <div className="w-16 h-16 bg-emerald-950/50 rounded-2xl flex items-center justify-center text-primary text-2xl border border-emerald-500/20 mb-6 group-hover:scale-110 transition-transform">
-                  <FaAward className="text-blue-400" />
-                </div>
-                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">Fungicides</h3>
-                <p className="text-gray-400 text-sm leading-relaxed mb-6 font-medium">
-                  Advanced defense systems preventing severe fungal spreads.
-                </p>
-              </div>
-              <Link 
-                to="/products?category=Pesticides" 
-                className="text-blue-400 font-extrabold text-xs uppercase tracking-widest hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
-              >
-                VIEW PRODUCTS <FaArrowRight className="text-[10px]" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. WHY CHOOSE PRINSTAN SECTION (Orbital Visual Interface) */}
+      {/* 3. WHY CHOOSE PRINSTAN SECTION (Orbital Visual Interface) */}
       <section className="py-28 bg-[#020A05] text-white relative overflow-hidden">
         {/* Style block for orbiting animation */}
         <style dangerouslySetInnerHTML={{__html: `
@@ -578,6 +503,81 @@ const Home = () => {
                 </div>
 
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. SCIENTIFIC PRODUCT CATALOG */}
+      <section className="py-28 bg-[#030E08] text-white relative">
+        <div className="absolute inset-0 opacity-5 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary via-transparent to-transparent pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight uppercase leading-none text-white italic">
+              SCIENTIFIC PRODUCT CATALOG
+            </h2>
+            <div className="h-1 w-24 bg-[#0F6B3A] mx-auto rounded-full mt-4 mb-6" />
+            <p className="text-gray-400 text-sm md:text-base font-semibold">
+              Explore our highly targeted protective systems designed to safeguard cash crop networks.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Insecticides */}
+            <div className="bg-[#05160E] border border-emerald-500/15 hover:border-emerald-500/30 rounded-[32px] p-8 flex flex-col items-center text-center justify-between group hover:-translate-y-2 transition-all duration-300 shadow-2xl">
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 bg-emerald-950/50 rounded-2xl flex items-center justify-center text-primary text-2xl border border-emerald-500/20 mb-6 group-hover:scale-110 transition-transform">
+                  <FaShieldAlt className="text-cyan-400" />
+                </div>
+                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">Insecticides</h3>
+                <p className="text-gray-400 text-sm leading-relaxed mb-6 font-medium">
+                  High-efficacy targeting against chewing and sucking crop pests.
+                </p>
+              </div>
+              <Link 
+                to="/products?category=Pesticides" 
+                className="text-cyan-400 font-extrabold text-xs uppercase tracking-widest hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
+              >
+                VIEW PRODUCTS <FaArrowRight className="text-[10px]" />
+              </Link>
+            </div>
+
+            {/* Herbicides */}
+            <div className="bg-[#05160E] border border-emerald-500/15 hover:border-emerald-500/30 rounded-[32px] p-8 flex flex-col items-center text-center justify-between group hover:-translate-y-2 transition-all duration-300 shadow-2xl">
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 bg-emerald-950/50 rounded-2xl flex items-center justify-center text-primary text-2xl border border-emerald-500/20 mb-6 group-hover:scale-110 transition-transform">
+                  <FaLeaf className="text-emerald-400" />
+                </div>
+                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">Herbicides</h3>
+                <p className="text-gray-400 text-sm leading-relaxed mb-6 font-medium">
+                  Selective weed blockades tailored for rich crop yields.
+                </p>
+              </div>
+              <Link 
+                to="/products?category=Fertilizers" 
+                className="text-emerald-400 font-extrabold text-xs uppercase tracking-widest hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
+              >
+                VIEW PRODUCTS <FaArrowRight className="text-[10px]" />
+              </Link>
+            </div>
+
+            {/* Fungicides */}
+            <div className="bg-[#05160E] border border-emerald-500/15 hover:border-emerald-500/30 rounded-[32px] p-8 flex flex-col items-center text-center justify-between group hover:-translate-y-2 transition-all duration-300 shadow-2xl">
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 bg-emerald-950/50 rounded-2xl flex items-center justify-center text-primary text-2xl border border-emerald-500/20 mb-6 group-hover:scale-110 transition-transform">
+                  <FaAward className="text-blue-400" />
+                </div>
+                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">Fungicides</h3>
+                <p className="text-gray-400 text-sm leading-relaxed mb-6 font-medium">
+                  Advanced defense systems preventing severe fungal spreads.
+                </p>
+              </div>
+              <Link 
+                to="/products?category=Pesticides" 
+                className="text-blue-400 font-extrabold text-xs uppercase tracking-widest hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
+              >
+                VIEW PRODUCTS <FaArrowRight className="text-[10px]" />
+              </Link>
             </div>
           </div>
         </div>
