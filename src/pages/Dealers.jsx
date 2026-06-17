@@ -533,13 +533,14 @@ const Dealers = () => {
               initial={{ y: 55, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 55, opacity: 0 }}
               className="bg-white rounded-[2.5rem] shadow-2xl max-w-md w-full overflow-hidden border border-gray-100"
             >
-              <div className="bg-brand-green-950 p-6 flex justify-between items-center text-white border-b border-brand-green-900">
+              <div className="bg-brand-green-900 p-6 flex justify-between items-center text-white border-b border-brand-green-800">
                 <h2 className="text-lg font-black uppercase tracking-wider">{showLogin ? "Dealer Sign In" : "Register Storefront"}</h2>
                 <button 
                   onClick={() => { setShowLogin(false); setShowRegister(false); }} 
-                  className="bg-white/10 hover:bg-red-500 hover:text-white p-2 rounded-full transition-colors"
+                  className="bg-white/10 hover:bg-red-500 hover:text-white p-2.5 rounded-full transition-colors text-white flex items-center justify-center"
+                  aria-label="Close modal"
                 >
-                  <FaTimes />
+                  <FaTimes size={14} />
                 </button>
               </div>
               
