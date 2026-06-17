@@ -13,7 +13,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { auth, db, storage } from '../firebase';
 import { onAuthStateChanged, signOut, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { ref, onValue, set, push, remove, update } from 'firebase/database';
-import { ref as sRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref as sRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import productsData from '../data/products.json';
 import preloadedImages from '../data/gallery.json';
 
@@ -50,6 +50,8 @@ const Admin = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadDone, setUploadDone] = useState(false);
 
   // Gallery Form State
   const [galleryTitle, setGalleryTitle] = useState('');
@@ -65,6 +67,8 @@ const Admin = () => {
   const [isEditingDealer, setIsEditingDealer] = useState(false);
   const [editDealerId, setEditDealerId] = useState(null);
   const [uploadingDealerImage, setUploadingDealerImage] = useState(false);
+  const [dealerUploadProgress, setDealerUploadProgress] = useState(0);
+  const [dealerUploadDone, setDealerUploadDone] = useState(false);
   const [dealersVisibleCount, setDealersVisibleCount] = useState(10);
 
   // Order List Filters
@@ -153,21 +157,52 @@ const Admin = () => {
 
   const handleLogout = () => signOut(auth);
 
+  // --- Image Compression Helper ---
+  const compressImage = (file, maxWidth = 800, quality = 0.78) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (evt) => {
+        const img = new Image();
+        img.src = evt.target.result;
+        img.onload = () => {
+          const scale = Math.min(1, maxWidth / img.width);
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob((blob) => resolve(blob), 'image/webp', quality);
+        };
+      };
+    });
+  };
+
   // --- Product Functions ---
   const handleProductImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     setUploadingImage(true);
-    const storageRef = sRef(storage, `products/${Date.now()}_${file.name}`);
+    setUploadProgress(0);
+    setUploadDone(false);
     try {
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
-      setNewProduct({ ...newProduct, image: url });
-      alert("Image uploaded!");
-    } catch (err) {
-      alert("Upload failed");
-    } finally {
+      const compressed = await compressImage(file);
+      const fileName = file.name.replace(/\.[^.]+$/, '') + '.webp';
+      const storageRef = sRef(storage, `products/${Date.now()}_${fileName}`);
+      const task = uploadBytesResumable(storageRef, compressed);
+      task.on('state_changed',
+        (snap) => setUploadProgress(Math.round((snap.bytesTransferred / snap.totalBytes) * 100)),
+        () => { setUploadingImage(false); setUploadProgress(0); },
+        async () => {
+          const url = await getDownloadURL(task.snapshot.ref);
+          setNewProduct(prev => ({ ...prev, image: url }));
+          setUploadDone(true);
+          setUploadingImage(false);
+          setTimeout(() => setUploadDone(false), 3000);
+        }
+      );
+    } catch {
       setUploadingImage(false);
+      setUploadProgress(0);
     }
   };
 
@@ -343,16 +378,27 @@ const Admin = () => {
     const file = e.target.files[0];
     if (!file) return;
     setUploadingDealerImage(true);
-    const storageRef = sRef(storage, `dealers/${Date.now()}_${file.name}`);
+    setDealerUploadProgress(0);
+    setDealerUploadDone(false);
     try {
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
-      setNewDealer(prev => ({ ...prev, image: url }));
-      alert("Dealer storefront photo uploaded!");
-    } catch (err) {
-      alert("Storefront photo upload failed!");
-    } finally {
+      const compressed = await compressImage(file);
+      const fileName = file.name.replace(/\.[^.]+$/, '') + '.webp';
+      const storageRef = sRef(storage, `dealers/${Date.now()}_${fileName}`);
+      const task = uploadBytesResumable(storageRef, compressed);
+      task.on('state_changed',
+        (snap) => setDealerUploadProgress(Math.round((snap.bytesTransferred / snap.totalBytes) * 100)),
+        () => { setUploadingDealerImage(false); setDealerUploadProgress(0); },
+        async () => {
+          const url = await getDownloadURL(task.snapshot.ref);
+          setNewDealer(prev => ({ ...prev, image: url }));
+          setDealerUploadDone(true);
+          setUploadingDealerImage(false);
+          setTimeout(() => setDealerUploadDone(false), 3000);
+        }
+      );
+    } catch {
       setUploadingDealerImage(false);
+      setDealerUploadProgress(0);
     }
   };
 
@@ -828,10 +874,19 @@ const Admin = () => {
                                 <img src={newProduct.image} className="w-full h-32 object-cover rounded-lg" />
                                 <button onClick={() => setNewProduct({...newProduct, image: ''})} className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"><FaTimes /></button>
                              </div>
+                          ) : uploadingImage ? (
+                             <div className="py-4 space-y-2">
+                                <p className="text-xs font-bold text-brand-green-600">Uploading… {uploadProgress}%</p>
+                                <div className="w-full bg-gray-100 rounded-full h-2">
+                                  <div className="bg-brand-green-500 h-2 rounded-full transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
+                                </div>
+                             </div>
+                          ) : uploadDone ? (
+                             <p className="text-xs font-bold text-emerald-600 py-4">✓ Image uploaded!</p>
                           ) : (
                              <label className="cursor-pointer text-xs font-bold text-gray-400 py-4 block">
-                                {uploadingImage ? 'Uploading...' : <><FaUpload className="mx-auto mb-2 text-xl" /> Click to Upload Image</>}
-                                <input type="file" className="hidden" onChange={handleProductImageUpload} disabled={uploadingImage} />
+                                <FaUpload className="mx-auto mb-2 text-xl" /> Click to Upload Image
+                                <input type="file" className="hidden" onChange={handleProductImageUpload} />
                              </label>
                           )}
                        </div>
@@ -989,10 +1044,19 @@ const Admin = () => {
                                     <img src={newDealer.image} className="w-full h-24 object-cover rounded-lg" alt="" />
                                     <button type="button" onClick={() => setNewDealer({...newDealer, image: ''})} className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-lg hover:bg-red-600 transition-colors text-[9px]"><FaTimes /></button>
                                  </div>
+                              ) : uploadingDealerImage ? (
+                                 <div className="py-3 space-y-2">
+                                    <p className="text-[10px] font-bold text-brand-green-600">Uploading… {dealerUploadProgress}%</p>
+                                    <div className="w-full bg-gray-200 rounded-full h-2">
+                                      <div className="bg-brand-green-500 h-2 rounded-full transition-all duration-300" style={{ width: `${dealerUploadProgress}%` }} />
+                                    </div>
+                                 </div>
+                              ) : dealerUploadDone ? (
+                                 <p className="text-[10px] font-bold text-emerald-600 py-3">✓ Photo uploaded!</p>
                               ) : (
                                  <label className="cursor-pointer text-[10px] font-bold text-gray-400 py-3 block hover:text-brand-green-600 transition-colors">
-                                    {uploadingDealerImage ? 'Uploading storefront...' : <><FaUpload className="mx-auto mb-1.5 text-base text-gray-400" /> Upload Storefront Photo</>}
-                                    <input type="file" accept="image/*" className="hidden" onChange={handleDealerImageUpload} disabled={uploadingDealerImage} />
+                                    <FaUpload className="mx-auto mb-1.5 text-base text-gray-400" /> Upload Storefront Photo
+                                    <input type="file" accept="image/*" className="hidden" onChange={handleDealerImageUpload} />
                                  </label>
                               )}
                            </div>
