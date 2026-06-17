@@ -6,7 +6,8 @@ import {
   FaSignOutAlt, FaLock, FaUpload, FaCheckCircle,
   FaArrowLeft, FaEye, FaSync, FaTimes, FaPlayCircle,
   FaBars, FaMapMarkerAlt, FaBoxOpen, FaAward, FaBuilding,
-  FaClock, FaPhoneAlt
+  FaClock, FaPhoneAlt, FaShoppingCart, FaWhatsapp, FaCalendarAlt,
+  FaRupeeSign, FaCheck, FaTimesCircle, FaExclamationCircle
 } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, db, storage } from '../firebase';
@@ -36,6 +37,7 @@ const Admin = () => {
   const [products, setProducts] = useState([]);
   const [dealers, setDealers] = useState([]);
   const [gallery, setGallery] = useState([]);
+  const [orders, setOrders] = useState([]);
   
   // Product Form State
   const [newProduct, setNewProduct] = useState({
@@ -62,6 +64,10 @@ const Admin = () => {
   const [uploadingDealerImage, setUploadingDealerImage] = useState(false);
   const [dealersVisibleCount, setDealersVisibleCount] = useState(10);
 
+  // Order List Filters
+  const [orderTypeFilter, setOrderTypeFilter] = useState('All');
+  const [orderStatusFilter, setOrderStatusFilter] = useState('All');
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       if (u) {
@@ -77,7 +83,7 @@ const Admin = () => {
 
     // Fetch Products
     const prodRef = ref(db, 'products');
-    onValue(prodRef, (snapshot) => {
+    const unsubscribeProd = onValue(prodRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
         const list = Object.keys(data).map(key => ({ id: key, ...data[key] }));
@@ -89,7 +95,7 @@ const Admin = () => {
 
     // Fetch Dealers
     const dealRef = ref(db, 'dealers');
-    onValue(dealRef, (snapshot) => {
+    const unsubscribeDeal = onValue(dealRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
         const list = Object.keys(data).map(key => ({ id: key, ...data[key] }));
@@ -101,7 +107,7 @@ const Admin = () => {
 
     // Fetch Gallery
     const gallRef = ref(db, 'gallery');
-    onValue(gallRef, (snapshot) => {
+    const unsubscribeGall = onValue(gallRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
         const list = Object.keys(data).map(key => ({ id: key, ...data[key] }));
@@ -111,7 +117,25 @@ const Admin = () => {
       }
     });
 
-    return () => unsubscribe();
+    // Fetch Orders
+    const ordRef = ref(db, 'orders');
+    const unsubscribeOrd = onValue(ordRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const list = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+        setOrders(list);
+      } else {
+        setOrders([]);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+      unsubscribeProd();
+      unsubscribeDeal();
+      unsubscribeGall();
+      unsubscribeOrd();
+    };
   }, []);
 
   const handleLogin = async () => {
@@ -257,7 +281,6 @@ const Admin = () => {
         }
       });
       
-      // Sync default video if missing
       const videoExists = gallery.find(existing => existing.url === '/main.mp4');
       if (!videoExists) {
         const newKey = push(gallRef).key;
@@ -371,6 +394,34 @@ const Admin = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // --- Order Functions ---
+  const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+      await update(ref(db, `orders/${orderId}`), { status: newStatus });
+      alert(`Order status updated to ${newStatus}!`);
+    } catch (err) {
+      alert("Failed to update status: " + err.message);
+    }
+  };
+
+  const deleteOrder = async (orderId) => {
+    if (window.confirm("Are you sure you want to permanently delete this order log?")) {
+      try {
+        await remove(ref(db, `orders/${orderId}`));
+        alert("Order deleted successfully.");
+      } catch (err) {
+        alert("Failed to delete order: " + err.message);
+      }
+    }
+  };
+
+  // Filtered Orders calculation
+  const filteredOrders = orders.filter(order => {
+    const matchesType = orderTypeFilter === 'All' || order.type === orderTypeFilter;
+    const matchesStatus = orderStatusFilter === 'All' || order.status === orderStatusFilter;
+    return matchesType && matchesStatus;
+  });
+
   if (loading) return <div className="h-screen flex items-center justify-center">Loading Admin...</div>;
 
   if (!user || !isAuthorized) {
@@ -420,6 +471,7 @@ const Admin = () => {
           <nav className="space-y-2">
             {[
               { id: 'dashboard', icon: <FaChartLine />, label: 'Dashboard' },
+              { id: 'orders', icon: <FaShoppingCart />, label: 'Inquiries & Orders' },
               { id: 'products', icon: <FaBox />, label: 'Products' },
               { id: 'gallery', icon: <FaImages />, label: 'Gallery' },
               { id: 'dealers', icon: <FaUsers />, label: 'Dealers' },
@@ -446,6 +498,8 @@ const Admin = () => {
       {/* Main Content */}
       <div className="flex-1 md:ml-64 p-4 md:p-10 min-w-0">
         <AnimatePresence mode="wait">
+          
+          {/* DASHBOARD TAB */}
           {activeTab === 'dashboard' && (
             <motion.div key="dash" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
@@ -455,7 +509,11 @@ const Admin = () => {
                   <button onClick={syncGallery} className="bg-white px-3 py-1.5 rounded-lg border font-bold text-[10px] md:text-xs flex items-center gap-2 hover:bg-gray-50"><FaSync /> Sync Gallery</button>
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                 <div className="bg-white p-6 md:p-8 rounded-3xl border shadow-sm">
+                    <p className="text-gray-400 text-[10px] font-bold uppercase mb-1">Total Orders</p>
+                    <p className="text-3xl md:text-4xl font-black text-brand-green-600">{orders.length}</p>
+                 </div>
                  <div className="bg-white p-6 md:p-8 rounded-3xl border shadow-sm">
                     <p className="text-gray-400 text-[10px] font-bold uppercase mb-1">Products</p>
                     <p className="text-3xl md:text-4xl font-black text-brand-green-600">{products.length}</p>
@@ -469,9 +527,235 @@ const Admin = () => {
                     <p className="text-3xl md:text-4xl font-black text-brand-green-600">{dealers.length}</p>
                  </div>
               </div>
+
+              {/* Quick overview of latest orders */}
+              <div className="bg-white rounded-3xl border shadow-sm p-6 md:p-8 mt-10">
+                <h3 className="text-lg font-black text-gray-900 mb-6 uppercase tracking-tight">Recent Orders Logging</h3>
+                {orders.length === 0 ? (
+                  <p className="text-gray-500 text-sm">No orders recorded in database yet.</p>
+                ) : (
+                  <div className="divide-y divide-gray-100">
+                    {orders.slice().reverse().slice(0, 5).map(o => (
+                      <div key={o.id} className="py-4 flex justify-between items-center text-sm">
+                        <div>
+                          <span className={`inline-block text-[8px] font-black uppercase px-2 py-0.5 rounded border mr-2.5 ${o.type === 'Dealer' ? 'bg-purple-50 text-purple-600 border-purple-100' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>
+                            {o.type}
+                          </span>
+                          <span className="font-bold text-gray-800">{o.type === 'Dealer' ? o.storeName : o.name}</span>
+                          <span className="text-xs text-gray-400 ml-2 font-medium">({o.branchArea || o.area})</span>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <span className="font-extrabold text-gray-900 flex items-center gap-0.5"><FaRupeeSign className="text-[10px] mt-0.5" />{o.totalAmount.toLocaleString('en-IN')}</span>
+                          <span className={`text-[9px] font-black uppercase px-2.5 py-1 rounded-full ${o.status === 'Completed' ? 'bg-emerald-50 text-emerald-600' : o.status === 'Contacted' ? 'bg-brand-gold-50 text-brand-gold-600' : 'bg-red-50 text-red-500'}`}>{o.status || 'Pending'}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </motion.div>
           )}
 
+          {/* ORDERS TAB */}
+          {activeTab === 'orders' && (
+            <motion.div key="ord" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                <div>
+                  <h2 className="text-2xl md:text-3xl font-black">Customer & Dealer Orders</h2>
+                  <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">Review, update fulfillment status, and follow up directly on WhatsApp</p>
+                </div>
+                
+                {/* Filters */}
+                <div className="flex flex-wrap gap-3">
+                  {/* Type filter selector */}
+                  <select 
+                    value={orderTypeFilter} 
+                    onChange={e => setOrderTypeFilter(e.target.value)} 
+                    className="p-2.5 border rounded-xl bg-white text-xs font-bold outline-none cursor-pointer"
+                  >
+                    <option value="All">All Types</option>
+                    <option value="Customer">Customers</option>
+                    <option value="Dealer">Dealers</option>
+                  </select>
+
+                  {/* Status filter selector */}
+                  <select 
+                    value={orderStatusFilter} 
+                    onChange={e => setOrderStatusFilter(e.target.value)} 
+                    className="p-2.5 border rounded-xl bg-white text-xs font-bold outline-none cursor-pointer"
+                  >
+                    <option value="All">All Statuses</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Contacted">Contacted</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+                </div>
+              </div>
+
+              {filteredOrders.length === 0 ? (
+                <div className="bg-white rounded-3xl border p-12 text-center text-gray-500 shadow-sm">
+                  <FaShoppingCart className="mx-auto text-gray-300 mb-4 text-4xl" />
+                  <p className="font-bold text-lg">No Orders Found</p>
+                  <p className="text-sm mt-1 text-gray-400">Try adjusting your filters or wait for customer entries.</p>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {filteredOrders.slice().reverse().map((order) => (
+                    <div key={order.id} className="bg-white rounded-3xl border border-gray-150 shadow-sm overflow-hidden transition-all hover:shadow-md">
+                      
+                      {/* Top Header Row */}
+                      <div className="bg-gray-50/50 border-b p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div className="flex flex-wrap items-center gap-3">
+                          <span className={`text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full border ${
+                            order.type === 'Dealer' 
+                              ? 'bg-purple-50 text-purple-600 border-purple-100' 
+                              : 'bg-blue-50 text-blue-600 border-blue-100'
+                          }`}>
+                            {order.type === 'Dealer' ? 'Dealer Order' : 'Customer Inquiry'}
+                          </span>
+                          <span className="text-gray-400 text-xs font-bold flex items-center gap-1.5">
+                            <FaCalendarAlt /> {new Date(order.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        </div>
+
+                        {/* Status controls */}
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-[10px] font-bold text-gray-400 uppercase mr-1">Status:</span>
+                          <button 
+                            onClick={() => updateOrderStatus(order.id, 'Pending')}
+                            className={`px-3 py-1 rounded-lg text-[10px] font-extrabold uppercase transition-all ${
+                              (order.status || 'Pending') === 'Pending' 
+                                ? 'bg-red-500 text-white shadow-sm shadow-red-500/10' 
+                                : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
+                            }`}
+                          >
+                            Pending
+                          </button>
+                          <button 
+                            onClick={() => updateOrderStatus(order.id, 'Contacted')}
+                            className={`px-3 py-1 rounded-lg text-[10px] font-extrabold uppercase transition-all ${
+                              order.status === 'Contacted' 
+                                ? 'bg-brand-gold-500 text-dark shadow-sm' 
+                                : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
+                            }`}
+                          >
+                            Contacted
+                          </button>
+                          <button 
+                            onClick={() => updateOrderStatus(order.id, 'Completed')}
+                            className={`px-3 py-1 rounded-lg text-[10px] font-extrabold uppercase transition-all ${
+                              order.status === 'Completed' 
+                                ? 'bg-emerald-600 text-white shadow-sm' 
+                                : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
+                            }`}
+                          >
+                            Completed
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Details Content Columns */}
+                      <div className="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        
+                        {/* Left Side: Client Info (5 cols) */}
+                        <div className="lg:col-span-5 space-y-4">
+                          <div>
+                            <h3 className="text-xs font-bold text-gray-450 uppercase tracking-widest mb-1.5">Contact coordinates</h3>
+                            <p className="font-extrabold text-lg text-gray-900 leading-snug">
+                              {order.type === 'Dealer' ? order.storeName : order.name}
+                            </p>
+                            {order.type === 'Dealer' && (
+                              <p className="text-xs text-primary font-bold mt-1">Contact Person: {order.contactPerson}</p>
+                            )}
+                          </div>
+
+                          <div className="space-y-2.5 text-xs text-gray-700 font-semibold pt-2 border-t">
+                            <div className="flex items-center gap-2">
+                              <FaPhoneAlt className="text-gray-400" />
+                              <span>{order.phone}</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <FaMapMarkerAlt className="text-gray-400 mt-0.5 shrink-0" />
+                              <div>
+                                <span className="block text-gray-900 font-extrabold">{order.type === 'Dealer' ? order.branchArea : order.area}</span>
+                                <span className="block text-gray-400 text-[11px] font-medium leading-relaxed mt-1">{order.address}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Order Actions */}
+                          <div className="flex gap-2 pt-4">
+                            <a 
+                              href={`https://wa.me/${order.phone.replace(/[^0-9]/g, '')}`} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-2 shadow-md"
+                            >
+                              <FaWhatsapp size={14} /> WhatsApp Chat
+                            </a>
+                            <button 
+                              onClick={() => deleteOrder(order.id)}
+                              className="bg-red-50 hover:bg-red-100 text-red-500 p-3 rounded-xl transition-colors border border-red-100 flex items-center justify-center"
+                              title="Delete Order Log"
+                            >
+                              <FaTrash size={14} />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Right Side: Order Items Breakdown (7 cols) */}
+                        <div className="lg:col-span-7 space-y-4 border-t lg:border-t-0 lg:border-l border-gray-100 pt-6 lg:pt-0 lg:pl-8">
+                          <h3 className="text-xs font-bold text-gray-455 uppercase tracking-widest mb-1.5">Order Items & packing math</h3>
+                          
+                          <div className="divide-y divide-gray-100 max-h-60 overflow-y-auto pr-2">
+                            {order.items.map((item, idx) => (
+                              <div key={idx} className="py-3 flex justify-between items-center text-xs">
+                                <div>
+                                  <p className="font-extrabold text-gray-800 uppercase tracking-tight">{item.name} ({item.size})</p>
+                                  <p className="text-[10px] text-gray-400 font-semibold mt-1">
+                                    {order.type === 'Dealer' 
+                                      ? `${item.cases} cases (${item.totalUnits} bottles @ ₹${item.unitPrice}/bottle)`
+                                      : `${item.quantity} bottles @ ₹${item.price} each`
+                                    }
+                                  </p>
+                                </div>
+                                <span className="font-black text-gray-900 flex items-center gap-0.5">
+                                  <FaRupeeSign className="text-[10px]" /> {item.total.toLocaleString('en-IN')}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Grand summary row */}
+                          <div className="border-t pt-4 mt-2 flex justify-between items-center bg-brand-green-50/20 p-4 rounded-2xl border border-brand-green-100">
+                            <div>
+                              <span className="block text-[8px] font-black uppercase text-gray-400 tracking-wider">Total Quantity Ordered</span>
+                              <span className="font-extrabold text-xs text-dark mt-0.5 block">
+                                {order.type === 'Dealer' 
+                                  ? `${order.totalCases} Cases (${order.totalQuantity} bottles)`
+                                  : `${order.totalQuantity} bottles`
+                                }
+                              </span>
+                            </div>
+                            <div className="text-right">
+                              <span className="block text-[8px] font-black uppercase text-secondary tracking-wider">Calculated Grand Total</span>
+                              <span className="font-black text-lg text-primary flex items-center justify-end gap-0.5 mt-0.5">
+                                <FaRupeeSign className="text-sm mt-0.5 text-secondary" /> {order.totalAmount.toLocaleString('en-IN')}
+                              </span>
+                            </div>
+                          </div>
+
+                        </div>
+
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          )}
+
+          {/* PRODUCTS TAB */}
           {activeTab === 'products' && (
             <motion.div key="prod" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                <h2 className="text-2xl md:text-3xl font-black mb-10">Manage Catalog</h2>
@@ -524,6 +808,7 @@ const Admin = () => {
             </motion.div>
           )}
 
+          {/* GALLERY TAB */}
           {activeTab === 'gallery' && (
             <motion.div key="gall" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                <h2 className="text-2xl md:text-3xl font-black mb-10">Manage Gallery</h2>
@@ -557,7 +842,7 @@ const Admin = () => {
                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all flex flex-col justify-between p-3 md:p-4">
                            <div className="flex justify-end gap-1 md:gap-2">
                               <button onClick={() => updateGalleryTitle(item.id, item.title)} className="bg-white p-1.5 md:p-2 rounded-lg text-brand-green-600"><FaEdit size={12} /></button>
-                              <button onClick={() => deleteGalleryItem(item.id)} className="bg-red-500 p-1.5 md:p-2 rounded-lg text-white"><FaTrash size={12} /></button>
+                              <button onClick={() => deleteGalleryItem(item.id)} className="bg-red-505 p-1.5 md:p-2 rounded-lg text-white"><FaTrash size={12} /></button>
                            </div>
                            <p className="text-white text-[10px] md:text-xs font-bold truncate">{item.title}</p>
                         </div>
@@ -567,10 +852,10 @@ const Admin = () => {
                   {gallery.length > galleryVisibleCount && (
                      <div className="col-span-full text-center mt-6">
                         <button 
-                          onClick={() => setGalleryVisibleCount(prev => prev + 15)} 
-                          className="bg-brand-green-600 hover:bg-brand-green-700 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition-all shadow-md shadow-brand-green-500/10"
+                           onClick={() => setGalleryVisibleCount(prev => prev + 15)} 
+                           className="bg-brand-green-600 hover:bg-brand-green-700 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition-all shadow-md shadow-brand-green-500/10"
                         >
-                          Load More Archive Captures
+                           Load More Archive Captures
                         </button>
                      </div>
                   )}
@@ -578,6 +863,7 @@ const Admin = () => {
             </motion.div>
           )}
 
+          {/* DEALERS TAB */}
           {activeTab === 'dealers' && (
             <motion.div key="deal" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                <div className="flex justify-between items-center mb-10">
@@ -593,7 +879,6 @@ const Admin = () => {
                </div>
 
                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                  {/* Left Column - Add / Edit Form */}
                   <div className="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-150 shadow-sm h-fit">
                      <h3 className="text-lg font-black text-gray-900 mb-6 flex items-center gap-2">
                         {isEditingDealer ? 'Edit Partner Profile' : 'Register New Partner'}
@@ -635,7 +920,6 @@ const Admin = () => {
                            </div>
                         </div>
 
-                        {/* Storefront Image Uploader */}
                         <div>
                            <label className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-1">Dealership Photo</label>
                            <div className="border border-dashed border-gray-200 p-4 rounded-xl text-center bg-gray-50">
@@ -653,7 +937,6 @@ const Admin = () => {
                            </div>
                         </div>
 
-                        {/* Stock Controls */}
                         <div className="bg-gray-50 p-4 rounded-xl space-y-3 border border-gray-150/70">
                            <span className="block text-[9px] font-black text-gray-500 uppercase tracking-wider border-b border-gray-200 pb-1.5 flex items-center gap-1.5"><FaBoxOpen /> Stock Quantities</span>
                            <div className="grid grid-cols-3 gap-2">
@@ -678,7 +961,6 @@ const Admin = () => {
                      </form>
                   </div>
 
-                  {/* Right Column - Catalog Listings */}
                   <div className="lg:col-span-2 space-y-6">
                      <div className="bg-white rounded-[2rem] border overflow-hidden shadow-sm overflow-x-auto">
                         <table className="w-full text-left min-w-[700px]">
@@ -706,7 +988,7 @@ const Admin = () => {
                                              <span className={`inline-block text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full mt-1.5 shadow-sm border ${
                                                 d.category === 'Platinum Partner' 
                                                    ? 'bg-amber-50 text-amber-600 border-amber-205' 
-                                                   : d.category === 'Gold Distributor'
+                                                    : d.category === 'Gold Distributor'
                                                    ? 'bg-slate-50 text-slate-600 border-slate-205'
                                                    : 'bg-emerald-50 text-emerald-600 border-emerald-250'
                                              }`}>
@@ -751,7 +1033,6 @@ const Admin = () => {
                         </table>
                      </div>
 
-                     {/* Dealer Load More Button */}
                      {dealers.length > dealersVisibleCount && (
                         <div className="text-center mt-4">
                            <button 
@@ -766,6 +1047,7 @@ const Admin = () => {
                </div>
             </motion.div>
           )}
+
         </AnimatePresence>
       </div>
     </div>

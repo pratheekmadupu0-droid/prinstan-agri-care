@@ -63,7 +63,7 @@ const Contact = () => {
                 <div>
                   <h4 className="font-bold text-gray-900">{t('contact.phone')}</h4>
                   <p className="text-gray-600 mt-1">
-                    <a href="tel:+919550758929" className="hover:text-brand-green-600 transition-colors">+91 95507 58929</a>
+                    <a href="tel:+917569598929" className="hover:text-brand-green-600 transition-colors">+91 75695 98929</a>
                   </p>
                 </div>
               </div>
@@ -110,7 +110,7 @@ const Contact = () => {
             <div className="space-y-6">
               <p className="text-gray-600 text-lg">Prefer instant messaging? Connect with us directly on WhatsApp for quick assistance.</p>
               <a 
-                href="https://wa.me/919550758929" 
+                href="https://wa.me/917569598929" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-3 w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-black uppercase tracking-widest text-xs py-5 rounded-xl transition-all shadow-xl shadow-green-500/20"

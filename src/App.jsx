@@ -11,6 +11,8 @@ import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
 import Dealers from './pages/Dealers';
 import Admin from './pages/Admin';
+import Cart from './pages/Cart';
+import { CartProvider } from './context/CartContext';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -35,6 +37,7 @@ function AnimatedRoutes() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/dealers" element={<Dealers />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/cart" element={<Cart />} />
       </Routes>
     </AnimatePresence>
   );
@@ -42,17 +45,19 @@ function AnimatedRoutes() {
 
 function App() {
   return (
-    <Router>
-      <ScrollToTop />
-      <div className="flex flex-col min-h-screen bg-gray-50">
-        <Navbar />
-        <main className="flex-grow pt-20">
-          <AnimatedRoutes />
-        </main>
-        <Footer />
-      </div>
-      <Chatbot />
-    </Router>
+    <CartProvider>
+      <Router>
+        <ScrollToTop />
+        <div className="flex flex-col min-h-screen bg-gray-50">
+          <Navbar />
+          <main className="flex-grow pt-20">
+            <AnimatedRoutes />
+          </main>
+          <Footer />
+        </div>
+        <Chatbot />
+      </Router>
+    </CartProvider>
   );
 }
 
