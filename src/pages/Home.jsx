@@ -316,7 +316,7 @@ const Home = () => {
       </AnimatePresence>
 
       {/* 1. CINEMATIC HERO SECTION */}
-      <section className="relative min-h-[95vh] flex items-center justify-center pt-24 pb-16 px-4 md:px-8 bg-brand-green-950 overflow-hidden">
+      <section className="relative min-h-[95vh] flex items-center justify-center pt-24 pb-16 px-4 md:px-8 bg-brand-green-900 overflow-hidden">
         {/* Soft Background Drone Video backdrop */}
         <div className="absolute inset-0 z-0">
           <video 
@@ -324,13 +324,13 @@ const Home = () => {
             loop 
             muted 
             playsInline 
-            className="w-full h-full object-cover opacity-30"
+            className="w-full h-full object-cover opacity-85"
           >
             <source src="/pac.mp4" type="video/mp4" />
           </video>
           {/* Savaxa styled radial overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-green-950 via-brand-green-950/80 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-green-950 via-transparent to-brand-green-950/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-green-900 via-brand-green-900/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-green-900 via-transparent to-brand-green-900/20" />
         </div>
 
         <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
