@@ -101,7 +101,7 @@ const About = () => {
           playsInline
           className="absolute inset-0 w-full h-full object-cover opacity-20"
         >
-          <source src="/factory.mp4" type="video/mp4" />
+          <source src="/pac.mp4" type="video/mp4" />
         </video>
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
