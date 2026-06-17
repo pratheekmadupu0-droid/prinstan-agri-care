@@ -42,7 +42,7 @@ const Admin = () => {
   // Product Form State
   const [newProduct, setNewProduct] = useState({
     name: '', category: 'Bio', description: '', 
-    crop: '', dosage: '', packing: '', image: ''
+    crop: '', dosage: '', packing: '', price: '', image: ''
   });
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
@@ -185,7 +185,7 @@ const Admin = () => {
   };
 
   const resetProductForm = () => {
-    setNewProduct({ name: '', category: 'Bio', description: '', crop: '', dosage: '', packing: '', image: '' });
+    setNewProduct({ name: '', category: 'Bio', description: '', crop: '', dosage: '', packing: '', price: '', image: '' });
     setIsEditing(false);
     setEditId(null);
   };
@@ -198,6 +198,7 @@ const Admin = () => {
       crop: p.crop || '',
       dosage: p.dosage || '',
       packing: p.packing || '',
+      price: p.price !== undefined ? String(p.price) : '',
       image: p.image || ''
     });
     setIsEditing(true);
@@ -789,6 +790,20 @@ const Admin = () => {
                        <input placeholder="Dosage" value={newProduct.dosage} onChange={e => setNewProduct({...newProduct, dosage: e.target.value})} className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-sm" />
                        <input placeholder="Packing" value={newProduct.packing} onChange={e => setNewProduct({...newProduct, packing: e.target.value})} className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-sm" />
                        
+                       {/* Price Field */}
+                       <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-sm pointer-events-none">₹</span>
+                          <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            placeholder="Price (e.g. 499)"
+                            value={newProduct.price}
+                            onChange={e => setNewProduct({...newProduct, price: e.target.value})}
+                            className="w-full pl-7 pr-3 py-3 rounded-xl border bg-gray-50 outline-none text-sm focus:ring-2 focus:ring-brand-green-400"
+                          />
+                       </div>
+
                        <div className="border-2 border-dashed border-gray-100 p-4 rounded-xl text-center">
                           {newProduct.image ? (
                              <div className="relative group">
@@ -812,7 +827,14 @@ const Admin = () => {
                            <img src={p.image} className="w-12 h-12 md:w-16 md:h-16 rounded-xl object-cover" />
                            <div className="flex-1 min-w-0">
                               <p className="font-bold text-sm md:text-base truncate">{p.name}</p>
-                              <p className="text-[10px] text-brand-green-600 font-bold uppercase tracking-wider">{p.category}</p>
+                              <div className="flex items-center gap-3 mt-0.5">
+                                <p className="text-[10px] text-brand-green-600 font-bold uppercase tracking-wider">{p.category}</p>
+                                {p.price !== undefined && p.price !== '' && (
+                                  <p className="text-[10px] font-extrabold text-gray-700 flex items-center gap-0.5">
+                                    <FaRupeeSign className="text-[8px]" />{Number(p.price).toLocaleString('en-IN')}
+                                  </p>
+                                )}
+                              </div>
                            </div>
                            <div className="flex gap-1 md:gap-2">
                               <button onClick={() => handleEditClick(p)} className="p-2 md:p-3 text-gray-400 hover:text-brand-green-600 hover:bg-brand-green-50 rounded-lg transition-all"><FaEdit /></button>
