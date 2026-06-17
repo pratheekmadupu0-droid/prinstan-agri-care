@@ -13,7 +13,15 @@ const Contact = () => {
     >
       {/* Page Header */}
       <div className="bg-brand-green-900 text-white py-24 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center"></div>
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-20"
+        >
+          <source src="/factory.mp4" type="video/mp4" />
+        </video>
         <div className="max-w-7xl mx-auto relative z-10 text-center">
           <motion.h1
             initial={{ y: 20, opacity: 0 }}

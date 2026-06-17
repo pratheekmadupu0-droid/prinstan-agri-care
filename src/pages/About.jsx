@@ -93,25 +93,32 @@ const About = () => {
       />
       
       {/* Page Header - Logi Style */}
-      <div className="bg-white py-32 px-4 relative overflow-hidden">
+      <div className="bg-brand-green-900 py-32 px-4 relative overflow-hidden">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-20"
+        >
+          <source src="/factory.mp4" type="video/mp4" />
+        </video>
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             className="text-left"
           >
-            <h2 className="logi-label text-brand-green-600 mb-6">Our Legacy Since 2017</h2>
-            <h1 className="text-[10vw] logi-heading text-brand-green-900 mb-8">
+            <h2 className="logi-label text-brand-green-400 mb-6">Our Legacy Since 2017</h2>
+            <h1 className="text-[10vw] logi-heading text-white mb-8">
               ABOUT<br />
-              <span className="text-brand-green-500">PRINSTAN.</span>
+              <span className="text-brand-green-400">PRINSTAN.</span>
             </h1>
-            <p className="text-xl text-gray-600 max-w-2xl leading-relaxed font-medium">
+            <p className="text-xl text-gray-300 max-w-2xl leading-relaxed font-medium">
               {t('about.subtitle')}
             </p>
           </motion.div>
         </div>
-        {/* Background Decorative */}
-        <div className="absolute top-0 right-0 w-1/4 h-full bg-brand-green-50/50 -z-10 rounded-l-[100px]"></div>
       </div>
 
       {/* Story Section */}
