@@ -232,6 +232,19 @@ const Admin = () => {
     }
   };
 
+  const fixCategories = async () => {
+    if (window.confirm("This will rename all 'Fertilizers' → 'Nutrients', 'Bios' → 'Bio', and 'Bio Nutrious' → 'Bio' in Firebase. Continue?")) {
+      const categoryMap = { 'Fertilizers': 'Nutrients', 'Bios': 'Bio', 'Bio Nutrious': 'Bio' };
+      const toFix = products.filter(p => categoryMap[p.category]);
+      if (toFix.length === 0) { alert('All categories are already up to date!'); return; }
+      const updates = {};
+      toFix.forEach(p => { updates[`products/${p.id}/category`] = categoryMap[p.category]; });
+      await update(ref(db), updates);
+      alert(`Fixed ${toFix.length} product(s) successfully!`);
+    }
+  };
+
+
   // --- Gallery Functions ---
   const handleGalleryUpload = async (e, type) => {
     const file = e.target.files[0];
@@ -757,7 +770,12 @@ const Admin = () => {
           {/* PRODUCTS TAB */}
           {activeTab === 'products' && (
             <motion.div key="prod" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-               <h2 className="text-2xl md:text-3xl font-black mb-10">Manage Catalog</h2>
+               <div className="flex flex-wrap items-center justify-between gap-4 mb-10">
+                 <h2 className="text-2xl md:text-3xl font-black">Manage Catalog</h2>
+                 <button onClick={fixCategories} className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold px-5 py-2.5 rounded-xl text-xs uppercase tracking-widest shadow-md shadow-amber-500/20 transition-all">
+                   <FaCheckCircle /> Fix Categories in DB
+                 </button>
+               </div>
                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   <div className="lg:col-span-1 bg-white p-6 rounded-3xl border h-fit lg:sticky lg:top-24">
                     <h3 className="font-bold mb-6 flex items-center gap-2">{isEditing ? <FaEdit /> : <FaPlus />} {isEditing ? 'Edit' : 'New'} Product</h3>

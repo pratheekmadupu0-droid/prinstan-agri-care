@@ -39,11 +39,13 @@ const Products = () => {
     const prodRef = ref(db, 'products');
     const unsubscribe = onValue(prodRef, (snapshot) => {
       const data = snapshot.val();
+      const categoryMap = { 'Fertilizers': 'Nutrients', 'Bios': 'Bio', 'Bio Nutrious': 'Bio' };
+      const normalize = (p) => ({ ...p, category: categoryMap[p.category] || p.category });
       if (data) {
-        const list = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+        const list = Object.keys(data).map(key => normalize({ id: key, ...data[key] }));
         setProducts(list);
       } else {
-        setProducts(productsData);
+        setProducts(productsData.map(normalize));
       }
       setLoading(false);
     });
