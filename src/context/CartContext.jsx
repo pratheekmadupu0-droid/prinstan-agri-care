@@ -34,6 +34,7 @@ export const CartProvider = ({ children }) => {
         name: product.name,
         category: product.category,
         image: product.image,
+        prices: product.prices || null, // store per-size pricing from admin
         size: size, // Store the exact display string (e.g. "100ml", "1 L")
         quantity: quantity
       }];

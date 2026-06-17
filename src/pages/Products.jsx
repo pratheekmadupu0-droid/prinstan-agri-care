@@ -25,14 +25,29 @@ const Products = () => {
 
   const categories = ['All', 'Bio', 'Nutrients', 'Pesticides'];
 
-  const getUnitPrice = (size) => {
-    if (!size) return 150;
+  // Default fallback prices (used when admin hasn't set per-product prices)
+  const DEFAULT_PRICES = { '100ml': 150, '250ml': 350, '500ml': 650, '1L': 1200 };
+
+  const getUnitPrice = (size, product = null) => {
+    if (!size) return DEFAULT_PRICES['100ml'];
     const cleanSize = size.trim().toLowerCase().replace(/\s+/g, '');
-    if (cleanSize.includes('100ml')) return 150;
-    if (cleanSize.includes('250ml')) return 350;
-    if (cleanSize.includes('500ml')) return 650;
-    if (cleanSize.includes('1l') || cleanSize.includes('1 L')) return 1200;
-    return 150; // default fallback
+    // If this product has custom per-size prices set by admin, use them
+    if (product?.prices) {
+      const key = cleanSize.includes('100ml') ? '100ml'
+        : cleanSize.includes('250ml') ? '250ml'
+        : cleanSize.includes('500ml') ? '500ml'
+        : (cleanSize.includes('1l') || cleanSize.includes('1l')) ? '1L'
+        : null;
+      if (key && product.prices[key] !== '' && product.prices[key] !== undefined) {
+        return Number(product.prices[key]);
+      }
+    }
+    // Fallback to hardcoded defaults
+    if (cleanSize.includes('100ml')) return DEFAULT_PRICES['100ml'];
+    if (cleanSize.includes('250ml')) return DEFAULT_PRICES['250ml'];
+    if (cleanSize.includes('500ml')) return DEFAULT_PRICES['500ml'];
+    if (cleanSize.includes('1l')) return DEFAULT_PRICES['1L'];
+    return DEFAULT_PRICES['100ml'];
   };
 
   useEffect(() => {
@@ -214,7 +229,15 @@ const Products = () => {
                       </div>
                       <div className="flex items-center justify-between text-xs font-bold text-gray-400">
                         <span>{t('products.priceRange', 'Price Range:')}</span>
-                        <span className="text-brand-green-900 font-extrabold">₹150 - ₹1,200</span>
+                        <span className="text-brand-green-900 font-extrabold">
+                          {(() => {
+                            const sizes = ['100ml','250ml','500ml','1L'];
+                            const pxs = sizes.map(k => product.prices?.[k]).filter(v => v !== '' && v !== undefined && !isNaN(Number(v))).map(Number);
+                            return pxs.length >= 2
+                              ? `₹${Math.min(...pxs).toLocaleString('en-IN')} – ₹${Math.max(...pxs).toLocaleString('en-IN')}`
+                              : `₹${getUnitPrice('100ml', product)} – ₹${getUnitPrice('1L', product).toLocaleString('en-IN')}`;
+                          })()}
+                        </span>
                       </div>
                       <div className="flex gap-2">
                         <button
@@ -297,20 +320,20 @@ const Products = () => {
                   <div>
                     <h4 className="text-[10px] font-black text-gray-400 mb-2 uppercase tracking-wider">{t('products.selectPacking', 'Select Packing Category:')}</h4>
                     <div className="flex flex-wrap gap-2">
-                      {(selectedProduct.packing ? selectedProduct.packing.split('|').map(s => s.trim()) : ['100 ml', '250 ml', '500 ml', '1 L']).map((size) => (
-                        <button
-                          key={size}
-                          type="button"
-                          onClick={() => setSelectedSize(size)}
-                          className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all ${
-                            selectedSize === size
-                              ? 'bg-primary text-white border-primary shadow-md shadow-primary/10'
-                              : 'bg-light text-gray-600 border-gray-250 hover:bg-gray-150'
-                          }`}
-                        >
-                          {size} (₹{getUnitPrice(size)})
-                        </button>
-                      ))}
+                        {(selectedProduct.packing ? selectedProduct.packing.split('|').map(s => s.trim()) : ['100 ml', '250 ml', '500 ml', '1 L']).map((size) => (
+                         <button
+                           key={size}
+                           type="button"
+                           onClick={() => setSelectedSize(size)}
+                           className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all ${
+                             selectedSize === size
+                               ? 'bg-primary text-white border-primary shadow-md shadow-primary/10'
+                               : 'bg-light text-gray-600 border-gray-250 hover:bg-gray-150'
+                           }`}
+                         >
+                           {size} (₹{getUnitPrice(size, selectedProduct)})
+                         </button>
+                        ))}
                     </div>
                   </div>
 
@@ -345,14 +368,14 @@ const Products = () => {
 
                 {/* Cost Display box */}
                 <div className="bg-brand-green-50/20 border border-brand-green-100 rounded-2xl p-4 flex justify-between items-center mb-6">
-                  <div>
-                    <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest block">{t('products.unitPrice', 'Unit Price')}</span>
-                    <span className="text-sm font-black text-brand-green-950">₹{getUnitPrice(selectedSize)} {t('products.perBottle', '/ bottle')}</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest block">{t('products.totalEstimation', 'Total Estimation')}</span>
-                    <span className="text-base font-black text-brand-green-900">₹{getUnitPrice(selectedSize) * quantity}</span>
-                  </div>
+                   <div>
+                     <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest block">{t('products.unitPrice', 'Unit Price')}</span>
+                     <span className="text-sm font-black text-brand-green-950">₹{getUnitPrice(selectedSize, selectedProduct)} {t('products.perBottle', '/ bottle')}</span>
+                   </div>
+                   <div className="text-right">
+                     <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest block">{t('products.totalEstimation', 'Total Estimation')}</span>
+                     <span className="text-base font-black text-brand-green-900">₹{getUnitPrice(selectedSize, selectedProduct) * quantity}</span>
+                   </div>
                 </div>
 
                 {/* Action Row */}

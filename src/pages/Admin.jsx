@@ -39,10 +39,13 @@ const Admin = () => {
   const [gallery, setGallery] = useState([]);
   const [orders, setOrders] = useState([]);
   
+  // Default per-size prices
+  const DEFAULT_PRICES = { '100ml': '', '250ml': '', '500ml': '', '1L': '' };
+
   // Product Form State
   const [newProduct, setNewProduct] = useState({
     name: '', category: 'Bio', description: '', 
-    crop: '', dosage: '', packing: '', price: '', image: ''
+    crop: '', dosage: '', packing: '', prices: { ...DEFAULT_PRICES }, image: ''
   });
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
@@ -185,7 +188,7 @@ const Admin = () => {
   };
 
   const resetProductForm = () => {
-    setNewProduct({ name: '', category: 'Bio', description: '', crop: '', dosage: '', packing: '', price: '', image: '' });
+    setNewProduct({ name: '', category: 'Bio', description: '', crop: '', dosage: '', packing: '', prices: { '100ml': '', '250ml': '', '500ml': '', '1L': '' }, image: '' });
     setIsEditing(false);
     setEditId(null);
   };
@@ -198,7 +201,12 @@ const Admin = () => {
       crop: p.crop || '',
       dosage: p.dosage || '',
       packing: p.packing || '',
-      price: p.price !== undefined ? String(p.price) : '',
+      prices: {
+        '100ml': p.prices?.['100ml'] !== undefined ? String(p.prices['100ml']) : '',
+        '250ml': p.prices?.['250ml'] !== undefined ? String(p.prices['250ml']) : '',
+        '500ml': p.prices?.['500ml'] !== undefined ? String(p.prices['500ml']) : '',
+        '1L':    p.prices?.['1L']    !== undefined ? String(p.prices['1L'])    : '',
+      },
       image: p.image || ''
     });
     setIsEditing(true);
@@ -789,19 +797,29 @@ const Admin = () => {
                        <input placeholder="Crops" value={newProduct.crop} onChange={e => setNewProduct({...newProduct, crop: e.target.value})} className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-sm" />
                        <input placeholder="Dosage" value={newProduct.dosage} onChange={e => setNewProduct({...newProduct, dosage: e.target.value})} className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-sm" />
                        <input placeholder="Packing" value={newProduct.packing} onChange={e => setNewProduct({...newProduct, packing: e.target.value})} className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-sm" />
-                       
-                       {/* Price Field */}
-                       <div className="relative">
-                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-sm pointer-events-none">₹</span>
-                          <input
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            placeholder="Price (e.g. 499)"
-                            value={newProduct.price}
-                            onChange={e => setNewProduct({...newProduct, price: e.target.value})}
-                            className="w-full pl-7 pr-3 py-3 rounded-xl border bg-gray-50 outline-none text-sm focus:ring-2 focus:ring-brand-green-400"
-                          />
+
+                       {/* Per-Size Pricing Grid */}
+                       <div className="bg-brand-green-50/30 border border-brand-green-100 rounded-xl p-3">
+                          <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2.5 flex items-center gap-1.5"><FaRupeeSign /> Price Per Size (₹)</p>
+                          <div className="grid grid-cols-2 gap-2">
+                            {[['100ml', '100 ml'], ['250ml', '250 ml'], ['500ml', '500 ml'], ['1L', '1 L']].map(([key, label]) => (
+                              <div key={key} className="relative">
+                                <label className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">{label}</label>
+                                <div className="relative">
+                                  <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs pointer-events-none">₹</span>
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    step="1"
+                                    placeholder="0"
+                                    value={newProduct.prices?.[key] || ''}
+                                    onChange={e => setNewProduct({...newProduct, prices: {...(newProduct.prices || {}), [key]: e.target.value}})}
+                                    className="w-full pl-6 pr-2 py-2 rounded-lg border bg-white outline-none text-xs font-bold focus:ring-2 focus:ring-brand-green-400"
+                                  />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
                        </div>
 
                        <div className="border-2 border-dashed border-gray-100 p-4 rounded-xl text-center">
@@ -827,14 +845,18 @@ const Admin = () => {
                            <img src={p.image} className="w-12 h-12 md:w-16 md:h-16 rounded-xl object-cover" />
                            <div className="flex-1 min-w-0">
                               <p className="font-bold text-sm md:text-base truncate">{p.name}</p>
-                              <div className="flex items-center gap-3 mt-0.5">
-                                <p className="text-[10px] text-brand-green-600 font-bold uppercase tracking-wider">{p.category}</p>
-                                {p.price !== undefined && p.price !== '' && (
-                                  <p className="text-[10px] font-extrabold text-gray-700 flex items-center gap-0.5">
-                                    <FaRupeeSign className="text-[8px]" />{Number(p.price).toLocaleString('en-IN')}
-                                  </p>
-                                )}
-                              </div>
+                              <p className="text-[10px] text-brand-green-600 font-bold uppercase tracking-wider mt-0.5">{p.category}</p>
+                              {p.prices && Object.values(p.prices).some(v => v !== '' && v !== undefined) && (
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {[['100ml','100ml'],['250ml','250ml'],['500ml','500ml'],['1L','1L']].map(([key, label]) => (
+                                    p.prices[key] ? (
+                                      <span key={key} className="text-[8px] font-bold bg-brand-green-50 text-brand-green-700 border border-brand-green-100 rounded px-1.5 py-0.5">
+                                        {label}: ₹{Number(p.prices[key]).toLocaleString('en-IN')}
+                                      </span>
+                                    ) : null
+                                  ))}
+                                </div>
+                              )}
                            </div>
                            <div className="flex gap-1 md:gap-2">
                               <button onClick={() => handleEditClick(p)} className="p-2 md:p-3 text-gray-400 hover:text-brand-green-600 hover:bg-brand-green-50 rounded-lg transition-all"><FaEdit /></button>

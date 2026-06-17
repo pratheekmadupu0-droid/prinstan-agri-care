@@ -39,15 +39,25 @@ const Cart = () => {
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Unit Pricing Table according to size categories:
-  // 100ml = ₹150, 250ml = ₹350, 500ml = ₹650, 1L = ₹1,200
-  const getUnitPrice = (size) => {
+  // Default fallback prices
+  const DEFAULT_PRICES = { '100ml': 150, '250ml': 350, '500ml': 650, '1L': 1200 };
+
+  // Get unit price for a cart item: uses item's per-size prices from Firebase, falls back to defaults
+  const getUnitPrice = (size, item = null) => {
     const cleanSize = size.trim().toLowerCase().replace(/\s+/g, '');
-    if (cleanSize.includes('100ml')) return 150;
-    if (cleanSize.includes('250ml')) return 350;
-    if (cleanSize.includes('500ml')) return 650;
-    if (cleanSize.includes('1l') || cleanSize.includes('1 L')) return 1200;
-    return 150; // default fallback
+    // Look up size key
+    const key = cleanSize.includes('100ml') ? '100ml'
+      : cleanSize.includes('250ml') ? '250ml'
+      : cleanSize.includes('500ml') ? '500ml'
+      : cleanSize.includes('1l') ? '1L'
+      : null;
+    // If the cart item carries per-size prices (passed through at addToCart time), use them
+    if (key && item?.prices?.[key] !== '' && item?.prices?.[key] !== undefined) {
+      return Number(item.prices[key]);
+    }
+    // Fallback to global defaults
+    if (key) return DEFAULT_PRICES[key];
+    return DEFAULT_PRICES['100ml'];
   };
 
   // Packing Case Multipliers
@@ -129,7 +139,7 @@ const Cart = () => {
 
   // Calculate customer cart total
   const getCustomerTotal = () => {
-    return cartItems.reduce((acc, item) => acc + (getUnitPrice(item.size) * item.quantity), 0);
+    return cartItems.reduce((acc, item) => acc + (getUnitPrice(item.size, item) * item.quantity), 0);
   };
 
   // Calculate dealer cart total
@@ -138,7 +148,7 @@ const Cart = () => {
       const key = `${item.id}-${item.size}`;
       const cases = dealerCases[key] || 1;
       const multiplier = getCaseMultiplier(item.size);
-      const casePrice = getUnitPrice(item.size) * multiplier;
+      const casePrice = getUnitPrice(item.size, item) * multiplier;
       return acc + (casePrice * cases);
     }, 0);
   };
@@ -154,8 +164,8 @@ const Cart = () => {
       name: item.name,
       size: item.size,
       quantity: item.quantity,
-      price: getUnitPrice(item.size),
-      total: getUnitPrice(item.size) * item.quantity
+      price: getUnitPrice(item.size, item),
+      total: getUnitPrice(item.size, item) * item.quantity
     }));
 
     // Payload to save in Admin panel database
@@ -223,7 +233,7 @@ const Cart = () => {
       const key = `${item.id}-${item.size}`;
       const cases = dealerCases[key] || 1;
       const multiplier = getCaseMultiplier(item.size);
-      const unitPrice = getUnitPrice(item.size);
+      const unitPrice = getUnitPrice(item.size, item);
       const casePrice = unitPrice * multiplier;
       const unitsCount = cases * multiplier;
       const subtotal = casePrice * cases;
@@ -376,7 +386,7 @@ const Cart = () => {
                   const multiplier = getCaseMultiplier(item.size);
                   const key = `${item.id}-${item.size}`;
                   const cases = dealerCases[key] || 1;
-                  const unitPrice = getUnitPrice(item.size);
+                  const unitPrice = getUnitPrice(item.size, item);
                   const casePrice = unitPrice * multiplier;
 
                   return (
