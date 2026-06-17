@@ -43,8 +43,7 @@ const Dealers = () => {
     category: 'Authorized Dealer',
     image: '',
     stock: {
-      bios: 10,
-      fertilizers: 10,
+      bioNutrious: 10,
       pesticides: 10
     }
   });
@@ -109,8 +108,7 @@ const Dealers = () => {
           category: existing.category || 'Authorized Dealer',
           image: existing.image || '',
           stock: {
-            bios: existing.stock?.bios ?? 10,
-            fertilizers: existing.stock?.fertilizers ?? 10,
+            bioNutrious: existing.stock?.bioNutrious ?? existing.stock?.bios ?? 10,
             pesticides: existing.stock?.pesticides ?? 10
           }
         });
@@ -159,7 +157,7 @@ const Dealers = () => {
 
   const handleRegisterChange = (e) => {
     const { name, value } = e.target;
-    if (['bios', 'fertilizers', 'pesticides'].includes(name)) {
+    if (['bioNutrious', 'pesticides'].includes(name)) {
       setFormData(prev => ({
         ...prev,
         stock: { ...prev.stock, [name]: parseInt(value) || 0 }
@@ -449,34 +447,18 @@ const Dealers = () => {
                   </h4>
                   
                   <div className="space-y-3">
-                    {/* Bio stock */}
+                    {/* Bio Nutrious stock */}
                     <div>
                       <div className="flex justify-between items-center text-xs font-bold mb-1">
-                        <span className="text-gray-700">Bio-Stimulants</span>
-                        <span className="text-gray-400">{selectedDealer.stock?.bios || 0} Units</span>
+                        <span className="text-gray-700">Bio Nutrious</span>
+                        <span className="text-gray-400">{(selectedDealer.stock?.bioNutrious ?? selectedDealer.stock?.bios) || 0} Units</span>
                       </div>
                       <div className="flex items-center gap-3">
                         <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden border border-gray-200/50">
-                          <div className={`h-full ${getStockStatus(selectedDealer.stock?.bios || 0).bar}`} style={{ width: `${Math.min(((selectedDealer.stock?.bios || 0) / 40) * 100, 100)}%` }}></div>
+                          <div className={`h-full ${getStockStatus((selectedDealer.stock?.bioNutrious ?? selectedDealer.stock?.bios) || 0).bar}`} style={{ width: `${Math.min((((selectedDealer.stock?.bioNutrious ?? selectedDealer.stock?.bios) || 0) / 40) * 100, 100)}%` }}></div>
                         </div>
-                        <span className={`text-[8px] font-extrabold uppercase px-2 py-0.5 rounded-full border ${getStockStatus(selectedDealer.stock?.bios || 0).color}`}>
-                          {getStockStatus(selectedDealer.stock?.bios || 0).text}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Fert stock */}
-                    <div>
-                      <div className="flex justify-between items-center text-xs font-bold mb-1">
-                        <span className="text-gray-700">Liquid Fertilizers</span>
-                        <span className="text-gray-400">{selectedDealer.stock?.fertilizers || 0} Units</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden border border-gray-200/50">
-                          <div className={`h-full ${getStockStatus(selectedDealer.stock?.fertilizers || 0).bar}`} style={{ width: `${Math.min(((selectedDealer.stock?.fertilizers || 0) / 40) * 100, 100)}%` }}></div>
-                        </div>
-                        <span className={`text-[8px] font-extrabold uppercase px-2 py-0.5 rounded-full border ${getStockStatus(selectedDealer.stock?.fertilizers || 0).color}`}>
-                          {getStockStatus(selectedDealer.stock?.fertilizers || 0).text}
+                        <span className={`text-[8px] font-extrabold uppercase px-2 py-0.5 rounded-full border ${getStockStatus((selectedDealer.stock?.bioNutrious ?? selectedDealer.stock?.bios) || 0).color}`}>
+                          {getStockStatus((selectedDealer.stock?.bioNutrious ?? selectedDealer.stock?.bios) || 0).text}
                         </span>
                       </div>
                     </div>
@@ -630,17 +612,13 @@ const Dealers = () => {
                         {/* Stock Slider Fields */}
                         <div className="bg-gray-50 p-4 rounded-xl space-y-3 border border-gray-150">
                           <label className="block text-[9px] font-black text-gray-500 uppercase tracking-wider border-b border-gray-200 pb-1.5"><FaBoxOpen /> Stock Quantities (Units)</label>
-                          <div className="grid grid-cols-3 gap-3">
+                          <div className="grid grid-cols-2 gap-3">
                             <div>
-                              <span className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-1">Bios</span>
-                              <input type="number" name="bios" value={formData.stock.bios} onChange={handleRegisterChange} className="w-full px-2 py-2 border border-gray-200 rounded-lg text-xs text-center font-bold" />
+                              <span className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-1">Bio Nutrious</span>
+                              <input type="number" name="bioNutrious" value={formData.stock.bioNutrious} onChange={handleRegisterChange} className="w-full px-2 py-2 border border-gray-200 rounded-lg text-xs text-center font-bold" />
                             </div>
                             <div>
-                              <span className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-1">Fert</span>
-                              <input type="number" name="fertilizers" value={formData.stock.fertilizers} onChange={handleRegisterChange} className="w-full px-2 py-2 border border-gray-200 rounded-lg text-xs text-center font-bold" />
-                            </div>
-                            <div>
-                              <span className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-1">Pest</span>
+                              <span className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-1">Pesticides</span>
                               <input type="number" name="pesticides" value={formData.stock.pesticides} onChange={handleRegisterChange} className="w-full px-2 py-2 border border-gray-200 rounded-lg text-xs text-center font-bold" />
                             </div>
                           </div>
