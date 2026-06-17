@@ -41,7 +41,7 @@ const Admin = () => {
   
   // Product Form State
   const [newProduct, setNewProduct] = useState({
-    name: '', category: 'Bio Nutrious', description: '', 
+    name: '', category: 'Bio', description: '', 
     crop: '', dosage: '', packing: '', image: ''
   });
   const [isEditing, setIsEditing] = useState(false);
@@ -185,7 +185,7 @@ const Admin = () => {
   };
 
   const resetProductForm = () => {
-    setNewProduct({ name: '', category: 'Bio Nutrious', description: '', crop: '', dosage: '', packing: '', image: '' });
+    setNewProduct({ name: '', category: 'Bio', description: '', crop: '', dosage: '', packing: '', image: '' });
     setIsEditing(false);
     setEditId(null);
   };
@@ -193,7 +193,7 @@ const Admin = () => {
   const handleEditClick = (p) => {
     setNewProduct({
       name: p.name || '',
-      category: p.category || 'Bio Nutrious',
+      category: p.category || 'Bio',
       description: p.description || p.desc || '',
       crop: p.crop || '',
       dosage: p.dosage || '',
@@ -764,7 +764,7 @@ const Admin = () => {
                     <form onSubmit={saveProduct} className="space-y-3">
                        <input required placeholder="Name" value={newProduct.name} onChange={e => setNewProduct({...newProduct, name: e.target.value})} className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-sm" />
                        <select value={newProduct.category} onChange={e => setNewProduct({...newProduct, category: e.target.value})} className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-sm">
-                          <option>Bio Nutrious</option><option>Pesticides</option>
+                          <option>Bio</option><option>Nutrients</option><option>Pesticides</option>
                        </select>
                        <textarea required placeholder="Description" rows={3} value={newProduct.description} onChange={e => setNewProduct({...newProduct, description: e.target.value})} className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-sm" />
                        <input placeholder="Crops" value={newProduct.crop} onChange={e => setNewProduct({...newProduct, crop: e.target.value})} className="w-full p-3 rounded-xl border bg-gray-50 outline-none text-sm" />
@@ -938,10 +938,14 @@ const Admin = () => {
 
                         <div className="bg-gray-50 p-4 rounded-xl space-y-3 border border-gray-150/70">
                            <span className="block text-[9px] font-black text-gray-500 uppercase tracking-wider border-b border-gray-200 pb-1.5 flex items-center gap-1.5"><FaBoxOpen /> Stock Quantities</span>
-                           <div className="grid grid-cols-2 gap-2">
+                           <div className="grid grid-cols-3 gap-2">
                               <div>
-                                 <label className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-0.5 text-center">Bio Nutrious</label>
+                                 <label className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-0.5 text-center">Bio</label>
                                  <input type="number" value={newDealer.stock.bioNutrious} onChange={e => setNewDealer({...newDealer, stock: {...newDealer.stock, bioNutrious: parseInt(e.target.value) || 0}})} className="w-full p-2 border border-gray-250 rounded-lg text-center text-xs font-bold" />
+                              </div>
+                              <div>
+                                 <label className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-0.5 text-center">Nutrients</label>
+                                 <input type="number" value={newDealer.stock.nutrients || 0} onChange={e => setNewDealer({...newDealer, stock: {...newDealer.stock, nutrients: parseInt(e.target.value) || 0}})} className="w-full p-2 border border-gray-250 rounded-lg text-center text-xs font-bold" />
                               </div>
                               <div>
                                  <label className="block text-[8px] font-bold text-gray-400 uppercase tracking-wider mb-0.5 text-center">Pest</label>
@@ -1002,9 +1006,13 @@ const Admin = () => {
                                     </td>
                                     <td className="p-5">
                                        <div className="flex justify-center gap-1.5">
-                                          <span className="w-8 h-8 flex flex-col items-center justify-center bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl text-[9px] font-black" title="Bio Nutrious">
+                                          <span className="w-8 h-8 flex flex-col items-center justify-center bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl text-[9px] font-black" title="Bio">
                                              <span className="text-[7px] text-emerald-400 font-bold leading-none mb-0.5">B</span>
                                              {d.stock?.bioNutrious || d.stock?.bios || 0}
+                                          </span>
+                                          <span className="w-8 h-8 flex flex-col items-center justify-center bg-blue-50 text-blue-600 border border-blue-100 rounded-xl text-[9px] font-black" title="Nutrients">
+                                             <span className="text-[7px] text-blue-400 font-bold leading-none mb-0.5">N</span>
+                                             {d.stock?.nutrients || d.stock?.fertilizers || 0}
                                           </span>
                                           <span className="w-8 h-8 flex flex-col items-center justify-center bg-orange-50 text-orange-600 border border-orange-100 rounded-xl text-[9px] font-black" title="Pesticides">
                                              <span className="text-[7px] text-orange-400 font-bold leading-none mb-0.5">P</span>

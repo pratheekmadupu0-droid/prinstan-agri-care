@@ -23,7 +23,7 @@ const Products = () => {
   const [quantity, setQuantity] = useState(1);
   const [addedToast, setAddedToast] = useState(null);
 
-  const categories = ['All', 'Bio Nutrious', 'Pesticides'];
+  const categories = ['All', 'Bio', 'Nutrients', 'Pesticides'];
 
   const getUnitPrice = (size) => {
     if (!size) return 150;

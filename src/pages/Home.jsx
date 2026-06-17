@@ -581,21 +581,40 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Bio Nutrious */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Bio */}
             <div className="bg-[#05160E] border border-emerald-500/15 hover:border-emerald-500/30 rounded-[32px] p-8 flex flex-col items-center text-center justify-between group hover:-translate-y-2 transition-all duration-300 shadow-2xl">
               <div className="flex flex-col items-center">
                 <div className="w-16 h-16 bg-emerald-950/50 rounded-2xl flex items-center justify-center text-primary text-2xl border border-emerald-500/20 mb-6 group-hover:scale-110 transition-transform">
                   <FaLeaf className="text-emerald-400" />
                 </div>
-                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">{i18n.language === 'en' ? 'Bio Nutrious' : 'బయో న్యూట్రిషన్'}</h3>
+                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">{i18n.language === 'en' ? 'Bio' : 'బయో'}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed mb-6 font-medium">
-                  {i18n.language === 'en' ? 'Natural biological stimulants, organic nutrients, and plant activators for sustainable crop yields.' : 'స్థిరమైన పంట దిగుబడి కోసం సహజ జీవ ఉద్దీపనలు, సేంద్రీయ పోషకాలు మరియు మొక్కల యాక్టివేటర్లు.'}
+                  {i18n.language === 'en' ? 'Natural biological stimulants and organic plant activators designed for sustainable farming.' : 'స్థిరమైన వ్యవసాయం కోసం రూపొందించబడిన సహజ జీవ ఉద్దీపనలు మరియు సేంద్రీయ మొక్కల యాక్టివేటర్లు.'}
                 </p>
               </div>
               <Link 
-                to="/products?category=Bio Nutrious" 
+                to="/products?category=Bio" 
                 className="text-emerald-400 font-extrabold text-xs uppercase tracking-widest hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
+              >
+                {i18n.language === 'en' ? 'VIEW PRODUCTS' : 'ఉత్పత్తులను వీక్షించండి'} <FaArrowRight className="text-[10px]" />
+              </Link>
+            </div>
+
+            {/* Nutrients */}
+            <div className="bg-[#05160E] border border-emerald-500/15 hover:border-emerald-500/30 rounded-[32px] p-8 flex flex-col items-center text-center justify-between group hover:-translate-y-2 transition-all duration-300 shadow-2xl">
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 bg-emerald-950/50 rounded-2xl flex items-center justify-center text-primary text-2xl border border-emerald-500/20 mb-6 group-hover:scale-110 transition-transform">
+                  <FaFlask className="text-cyan-400" />
+                </div>
+                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">{i18n.language === 'en' ? 'Nutrients' : 'పోషకాలు'}</h3>
+                <p className="text-gray-400 text-sm leading-relaxed mb-6 font-medium">
+                  {i18n.language === 'en' ? 'High-grade crop nutrition and vital soil formulations to boost yields and strengthen plant health.' : 'దిగుబడిని పెంచడానికి మరియు మొక్కల ఆరోగ్యాన్ని బలోపేతం చేయడానికి అధిక-నాణ్యత పంట పోషణ మరియు నేల సూత్రీకరణలు.'}
+                </p>
+              </div>
+              <Link 
+                to="/products?category=Nutrients" 
+                className="text-cyan-400 font-extrabold text-xs uppercase tracking-widest hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
               >
                 {i18n.language === 'en' ? 'VIEW PRODUCTS' : 'ఉత్పత్తులను వీక్షించండి'} <FaArrowRight className="text-[10px]" />
               </Link>

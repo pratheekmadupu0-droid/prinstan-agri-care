@@ -73,7 +73,8 @@
     "search": "Search products...",
     "categories": {
       "All": "All",
-      "Bio Nutrious": "Bio Nutritious",
+      "Bio": "Bio",
+      "Nutrients": "Nutrients",
       "Pesticides": "Pesticides"
     },
     "inquiry": "Send Inquiry",
