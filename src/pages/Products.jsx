@@ -9,7 +9,7 @@ import productsData from '../data/products.json';
 import { useCart } from '../context/CartContext';
 
 const Products = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { addToCart } = useCart();
 
   const [products, setProducts] = useState(productsData);
@@ -154,7 +154,7 @@ const Products = () => {
                       : 'bg-gray-100 text-gray-650 border border-transparent hover:bg-gray-200'
                   }`}
                 >
-                  {category}
+                  {t('products.categories.' + category, category)}
                 </button>
               ))}
             </div>
@@ -207,11 +207,11 @@ const Products = () => {
                     {/* Quick Select & Add */}
                     <div className="space-y-4 pt-2 border-t border-gray-100">
                       <div className="flex items-center justify-between text-xs font-bold text-gray-400">
-                        <span>Sizes Available:</span>
+                        <span>{t('products.sizesAvailable', 'Sizes Available:')}</span>
                         <span className="text-dark">{packSizes.join(', ')}</span>
                       </div>
                       <div className="flex items-center justify-between text-xs font-bold text-gray-400">
-                        <span>Price Range:</span>
+                        <span>{t('products.priceRange', 'Price Range:')}</span>
                         <span className="text-brand-green-900 font-extrabold">₹150 - ₹1,200</span>
                       </div>
                       <div className="flex gap-2">
@@ -219,7 +219,7 @@ const Products = () => {
                           onClick={() => handleOpenModal(product)}
                           className="flex-1 bg-light hover:bg-gray-200 text-dark py-3 rounded-xl font-bold uppercase tracking-wider text-[10px] border border-gray-200 transition-colors"
                         >
-                          View Details
+                          {t('products.viewDetails', 'View Details')}
                         </button>
                         <button
                           onClick={(e) => handleQuickAdd(e, product)}
@@ -293,7 +293,7 @@ const Products = () => {
                 <div className="space-y-4 mb-6">
                   {/* Category Size Picker */}
                   <div>
-                    <h4 className="text-[10px] font-black text-gray-400 mb-2 uppercase tracking-wider">Select Packing Category:</h4>
+                    <h4 className="text-[10px] font-black text-gray-400 mb-2 uppercase tracking-wider">{t('products.selectPacking', 'Select Packing Category:')}</h4>
                     <div className="flex flex-wrap gap-2">
                       {(selectedProduct.packing ? selectedProduct.packing.split('|').map(s => s.trim()) : ['100 ml', '250 ml', '500 ml', '1 L']).map((size) => (
                         <button
@@ -314,7 +314,7 @@ const Products = () => {
 
                   {/* Quantity selector */}
                   <div className="flex items-center gap-4">
-                    <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-wider">Quantity:</h4>
+                    <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-wider">{t('products.quantity', 'Quantity:')}</h4>
                     <div className="flex items-center border border-gray-250 rounded-xl overflow-hidden bg-light">
                       <button 
                         type="button" 
@@ -337,18 +337,18 @@ const Products = () => {
 
                 {/* Info row */}
                 <div className="grid grid-cols-2 gap-4 mb-5 text-xs border-t border-gray-100 pt-4 font-bold">
-                  <div className="text-gray-400">Dosage: <span className="text-dark block font-semibold text-xs mt-0.5">{selectedProduct.dosage || '1 - 1.5 ml/L'}</span></div>
-                  <div className="text-gray-400">Target Crops: <span className="text-dark block font-semibold text-xs mt-0.5 truncate">{selectedProduct.crop || 'All Crops'}</span></div>
+                  <div className="text-gray-400">{t('products.dosage', 'Dosage:')} <span className="text-dark block font-semibold text-xs mt-0.5">{selectedProduct.dosage || '1 - 1.5 ml/L'}</span></div>
+                  <div className="text-gray-400">{t('products.targetCrops', 'Target Crops:')} <span className="text-dark block font-semibold text-xs mt-0.5 truncate">{selectedProduct.crop || 'All Crops'}</span></div>
                 </div>
 
                 {/* Cost Display box */}
                 <div className="bg-brand-green-50/20 border border-brand-green-100 rounded-2xl p-4 flex justify-between items-center mb-6">
                   <div>
-                    <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest block">Unit Price</span>
-                    <span className="text-sm font-black text-brand-green-950">₹{getUnitPrice(selectedSize)} / bottle</span>
+                    <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest block">{t('products.unitPrice', 'Unit Price')}</span>
+                    <span className="text-sm font-black text-brand-green-950">₹{getUnitPrice(selectedSize)} {t('products.perBottle', '/ bottle')}</span>
                   </div>
                   <div className="text-right">
-                    <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest block">Total Estimation</span>
+                    <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest block">{t('products.totalEstimation', 'Total Estimation')}</span>
                     <span className="text-base font-black text-brand-green-900">₹{getUnitPrice(selectedSize) * quantity}</span>
                   </div>
                 </div>
@@ -363,7 +363,7 @@ const Products = () => {
                     }}
                     className="flex-1 bg-primary hover:bg-brand-green-600 text-white py-3.5 rounded-xl font-bold transition-all shadow-md shadow-primary/20 text-xs uppercase tracking-wider flex items-center justify-center gap-2"
                   >
-                    <FaShoppingCart /> Add to Cart
+                    <FaShoppingCart /> {t('products.addToCart', 'Add to Cart')}
                   </button>
                   <a 
                     href={`https://wa.me/917569598929?text=Hello,%20I%20am%20inquiring%20about%20Prinstan%20${selectedProduct.name}%20(${selectedSize}).`}
@@ -371,7 +371,7 @@ const Products = () => {
                     rel="noopener noreferrer"
                     className="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-white py-3.5 rounded-xl font-bold transition-all shadow-md text-xs uppercase tracking-wider flex items-center justify-center gap-2"
                   >
-                    <FaWhatsapp /> WhatsApp Inquiry
+                    <FaWhatsapp /> {t('products.whatsappInquiry', 'WhatsApp Inquiry')}
                   </a>
                 </div>
               </div>
@@ -393,7 +393,7 @@ const Products = () => {
               <FaShoppingBag size={20} />
             </div>
             <div>
-              <span className="block text-xs font-black uppercase text-secondary tracking-widest">Added to Cart!</span>
+              <span className="block text-xs font-black uppercase text-secondary tracking-widest">{t('products.addedToCart', 'Added to Cart!')}</span>
               <span className="block text-xs font-semibold text-emerald-100/80 mt-0.5">{addedToast.qty}x {addedToast.name} ({addedToast.size})</span>
             </div>
             <button 

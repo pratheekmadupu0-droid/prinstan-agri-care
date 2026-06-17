@@ -17,27 +17,35 @@ const About = () => {
   const team = [
     { 
       name: 'C. Viswanth Reddy', 
-      role: 'Managing Director', 
+      role: t('about.roles.ceo', 'Managing Director'), 
       image: '/md_image.jpeg',
-      bio: "A visionary leader with over a decade of expertise in the agricultural sector. C. Viswanth Reddy founded Prinstan Agri Care in 2017 with a singular mission: to empower Indian farmers with world-class crop solutions and sustainable farming practices."
+      bio: i18n.language === 'en' 
+        ? "A visionary leader with over a decade of expertise in the agricultural sector. C. Viswanth Reddy founded Prinstan Agri Care in 2017 with a singular mission: to empower Indian farmers with world-class crop solutions and sustainable farming practices."
+        : "వ్యవసాయ రంగంలో దశాబ్దానికి పైగా అనుభవం ఉన్న దూరదృష్టి గల నాయకుడు. భారతీయ రైతులకు ప్రపంచ స్థాయి పంట పరిష్కారాలు మరియు స్థిరమైన వ్యవసాయ పద్ధతులతో శక్తిని అందించాలనే ఏకైక లక్ష్యంతో సి. విశ్వనాథ్ రెడ్డి 2017లో ప్రిన్స్టాన్ అగ్రి కేర్‌ను స్థాపించారు."
     },
     { 
-      name: 'General Manager', 
-      role: 'GM', 
+      name: i18n.language === 'en' ? 'General Manager' : 'జనరల్ మేనేజర్', 
+      role: t('about.roles.gm', 'GM'), 
       image: '',
-      bio: "Overseeing day-to-day operations and ensuring the highest standards of quality across all Prinstan distribution channels."
+      bio: i18n.language === 'en'
+        ? "Overseeing day-to-day operations and ensuring the highest standards of quality across all Prinstan distribution channels."
+        : "రోజువారీ కార్యకలాపాలను పర్యవేక్షించడం మరియు అన్ని ప్రిన్స్టాన్ పంపిణీ ఛానెల్‌లలో అత్యున్నత నాణ్యతా ప్రమాణాలను నిర్ధారించడం."
     },
     { 
-      name: 'Asst. General Manager', 
-      role: 'AGM', 
+      name: i18n.language === 'en' ? 'Asst. General Manager' : 'అసిస్టెంట్ జనరల్ మేనేజర్', 
+      role: t('about.roles.agm', 'AGM'), 
       image: '',
-      bio: "Supporting strategic growth and managing regional dealer networks to empower local farmers."
+      bio: i18n.language === 'en'
+        ? "Supporting strategic growth and managing regional dealer networks to empower local farmers."
+        : "స్థానిక రైతులకు అధికారం కల్పించడానికి వ్యూహాత్మక వృద్ధికి తోడ్పడటం మరియు ప్రాంతీయ డీలర్ నెట్‌వర్క్‌లను నిర్వహించడం."
     },
     { 
-      name: 'Branch Manager', 
-      role: 'BM', 
+      name: i18n.language === 'en' ? 'Branch Manager' : 'బ్రాంచ్ మేనేజర్', 
+      role: t('about.roles.branchManager', 'Branch Manager'), 
       image: '',
-      bio: "Dedicated to local outreach and ensuring farmers have immediate access to our latest innovations."
+      bio: i18n.language === 'en'
+        ? "Dedicated to local outreach and ensuring farmers have immediate access to our latest innovations."
+        : "స్థానిక పరిచయాలకు కట్టుబడి ఉండటం మరియు రైతులు మా తాజా ఆవిష్కరణలను వెంటనే పొందేలా చూడటం."
     },
   ];
 
@@ -49,19 +57,25 @@ const About = () => {
 
   const processes = [
     { 
-      title: 'Testing', 
+      title: i18n.language === 'en' ? 'Testing' : 'పరీక్షలు', 
       video: '/testing.mp4', 
-      desc: 'Rigorous quality control and soil testing in our advanced laboratories to ensure the highest safety standards.' 
+      desc: i18n.language === 'en' 
+        ? 'Rigorous quality control and soil testing in our advanced laboratories to ensure the highest safety standards.' 
+        : 'అత్యున్నత భద్రతా ప్రమాణాలను నిర్ధారించడానికి మా అధునాతన ప్రయోగశాలలలో కఠినమైన నాణ్యత నియంత్రణ మరియు నేల పరీక్ష.'
     },
     { 
-      title: 'Production', 
+      title: i18n.language === 'en' ? 'Production' : 'ఉత్పత్తి', 
       video: '/creating.mp4', 
-      desc: 'Advanced production and research into innovative crop protection solutions tailored for Indian farmers.' 
+      desc: i18n.language === 'en'
+        ? 'Advanced production and research into innovative crop protection solutions tailored for Indian farmers.' 
+        : 'భారతీయ రైతులకు తగిన వినూత్న పంట రక్షణ పరిష్కారాలపై అధునాతన ఉత్పత్తి మరియు పరిశోధన.'
     },
     { 
-      title: 'Manufacturing', 
+      title: i18n.language === 'en' ? 'Manufacturing' : 'తయారీ', 
       video: '/manufacturing.mp4', 
-      desc: 'Precision engineering and sustainable manufacturing processes at our state-of-the-art facilities.' 
+      desc: i18n.language === 'en'
+        ? 'Precision engineering and sustainable manufacturing processes at our state-of-the-art facilities.' 
+        : 'మా అత్యాధునిక సౌకర్యాల వద్ద ఖచ్చితమైన ఇంజనీరింగ్ మరియు స్థిరమైన తయారీ ప్రక్రియలు.'
     },
   ];
 

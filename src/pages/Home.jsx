@@ -29,7 +29,7 @@ const AnimatedCounter = ({ value, suffix = "" }) => {
 };
 
 const Home = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { addToCart } = useCart();
   
@@ -52,11 +52,11 @@ const Home = () => {
 
   // Stats Data
   const stats = [
-    { number: 10, suffix: '+', label: 'Years of Experience' },
-    { number: 50000, suffix: '+', label: 'Farmers Served' },
-    { number: 100, suffix: '+', label: 'Products Available' },
-    { number: 500, suffix: '+', label: 'Dealer Network' },
-    { number: 15, suffix: '+', label: 'States Covered' },
+    { number: 10, suffix: '+', label: t('home.stats.exp', 'Years of Experience') },
+    { number: 50000, suffix: '+', label: t('home.stats.farmers', 'Farmers Served') },
+    { number: 100, suffix: '+', label: t('home.stats.products', 'Products Available') },
+    { number: 500, suffix: '+', label: t('nav.dealers', 'Dealer Network') },
+    { number: 15, suffix: '+', label: i18n.language === 'en' ? 'States Covered' : 'కవర్ చేయబడిన రాష్ట్రాలు' },
   ];
 
   // Product Categories
@@ -210,30 +210,54 @@ const Home = () => {
 
   // Timeline process steps
   const timelineSteps = [
-    { title: 'Laboratory Research', desc: 'Synthesizing novel bio-organic molecules and testing physical compatibility.', icon: <FaFlask /> },
-    { title: 'Product Testing', desc: 'In-vitro screening of formulations against pests and pathogens.', icon: <FaAward /> },
-    { title: 'Field Trials', desc: 'Rigorous multi-location testing across Indian farms to verify dosage rules.', icon: <FaTractor /> },
-    { title: 'Farmer Feedback', desc: 'Collecting real-world efficacy reports and optimizing packaging sizes.', icon: <FaSeedling /> },
-    { title: 'Product Launch', desc: 'Deploying commercial batches with regional dealer networks.', icon: <FaCheckCircle /> }
+    { 
+      title: i18n.language === 'en' ? 'Laboratory Research' : 'ప్రయోగశాల పరిశోధన', 
+      desc: i18n.language === 'en' ? 'Synthesizing novel bio-organic molecules and testing physical compatibility.' : 'నవల బయో-ఆర్గానిక్ అణువులను సంశ్లేషణ చేయడం మరియు భౌతిక అనుకూలతను పరీక్షించడం.', 
+      icon: <FaFlask /> 
+    },
+    { 
+      title: i18n.language === 'en' ? 'Product Testing' : 'ఉత్పత్తి పరీక్ష', 
+      desc: i18n.language === 'en' ? 'In-vitro screening of formulations against pests and pathogens.' : 'తెగుళ్లు మరియు వ్యాధికారక క్రిములకు వ్యతిరేకంగా సూత్రీకరణల ఇన్-విట్రో స్క్రీనింగ్.', 
+      icon: <FaAward /> 
+    },
+    { 
+      title: i18n.language === 'en' ? 'Field Trials' : 'క్షేత్ర పరీక్షలు', 
+      desc: i18n.language === 'en' ? 'Rigorous multi-location testing across Indian farms to verify dosage rules.' : 'మోతాదు నియమాలను ధృవీకరించడానికి భారతీయ పొలాలలో కఠినమైన బహుళ-స్థాన పరీక్ష.', 
+      icon: <FaTractor /> 
+    },
+    { 
+      title: i18n.language === 'en' ? 'Farmer Feedback' : 'రైతుల అభిప్రాయం', 
+      desc: i18n.language === 'en' ? 'Collecting real-world efficacy reports and optimizing packaging sizes.' : 'నిజ-ప్రపంచ ప్రభావ నివేదికలను సేకరించడం మరియు ప్యాకేజింగ్ పరిమాణాలను ఆప్టిమైజ్ చేయడం.', 
+      icon: <FaSeedling /> 
+    },
+    { 
+      title: i18n.language === 'en' ? 'Product Launch' : 'ఉత్పత్తి ప్రారంభం', 
+      desc: i18n.language === 'en' ? 'Deploying commercial batches with regional dealer networks.' : 'ప్రాంతీయ డీలర్ నెట్‌వర్క్‌లతో వాణిజ్య బ్యాచ్‌లను ప్రారంభించడం.', 
+      icon: <FaCheckCircle /> 
+    }
   ];
 
   // Success Stories (carousel)
   const successStories = [
     {
-      farmerName: "Rajesh Kumar",
-      location: "Warangal, Telangana",
-      cropType: "Chilli & Cotton",
-      results: "35% Yield Boost",
-      testimonial: "Prinstan's Super Cobra and Hunter resolved severe leaf curl issues. Crop health improved dramatically, allowing me to secure premium prices at the local market.",
+      farmerName: i18n.language === 'en' ? 'Rajesh Kumar' : 'రాజేష్ కుమార్',
+      location: i18n.language === 'en' ? 'Warangal, Telangana' : 'వరంగల్, తెలంగాణ',
+      cropType: i18n.language === 'en' ? 'Chilli & Cotton' : 'మిర్చి & పత్తి',
+      results: i18n.language === 'en' ? '35% Yield Boost' : '35% దిగుబడి పెరుగుదల',
+      testimonial: i18n.language === 'en' 
+        ? "Prinstan's Super Cobra and Hunter resolved severe leaf curl issues. Crop health improved dramatically, allowing me to secure premium prices at the local market."
+        : "ప్రిన్స్టాన్ యొక్క సూపర్ కోబ్రా మరియు హంటర్ తీవ్రమైన ఆకు ముడత సమస్యలను పరిష్కరించాయి. పంట ఆరోగ్యం నాటకీయంగా మెరుగుపడింది, స్థానిక మార్కెట్లో మంచి ధరను పొందగలిగాను.",
       image: "/farmers/1.jpeg",
       cropImage: "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
     },
     {
-      farmerName: "Lauro Clark",
-      location: "Guntur, Andhra Pradesh",
-      cropType: "Red Chilli",
-      results: "40% Yield Boost",
-      testimonial: "Severe flower drop due to dry spells threatened my output. Feeding the field with Mantra vitalizers strengthened crop roots, securing my harvest completely.",
+      farmerName: i18n.language === 'en' ? 'Lauro Clark' : 'లారో క్లార్క్',
+      location: i18n.language === 'en' ? 'Guntur, Andhra Pradesh' : 'గుంటూరు, ఆంధ్రప్రదేశ్',
+      cropType: i18n.language === 'en' ? 'Red Chilli' : 'ఎర్ర మిర్చి',
+      results: i18n.language === 'en' ? '40% Yield Boost' : '40% దిగుబడి పెరుగుదల',
+      testimonial: i18n.language === 'en'
+        ? "Severe flower drop due to dry spells threatened my output. Feeding the field with Mantra vitalizers strengthened crop roots, securing my harvest completely."
+        : "పొడి వాతావరణం వల్ల తీవ్రమైన పూత రాలడం నా దిగుబడిని ముప్పు తెచ్చింది. మంత్ర వైటలైజర్‌తో పంట వేర్లను బలోపేతం చేయడం నా పంటను పూర్తిగా రక్షించింది.",
       image: "/farmers/4.jpeg",
       cropImage: "https://images.unsplash.com/photo-1592417817098-8f3d6eb19675?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
     }
@@ -318,18 +342,18 @@ const Home = () => {
             className="lg:col-span-7 space-y-6"
           >
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-green-500/10 border border-brand-green-500/30 text-brand-green-500 text-[10px] font-black uppercase tracking-widest">
-              <FaLeaf /> Leading the Agritech Revolution
+              <FaLeaf /> {i18n.language === 'en' ? 'Leading the Agritech Revolution' : 'అగ్రిటెక్ విప్లవంలో అగ్రగామి'}
             </div>
             
             <h1 className="text-4xl md:text-6xl xl:text-7xl font-extrabold text-white tracking-tight uppercase leading-tight">
-              Empowering Agriculture <br />
+              {i18n.language === 'en' ? 'Empowering Agriculture' : 'వ్యవసాయానికి శక్తినివ్వడం'} <br />
               <span className="text-brand-green-500 bg-clip-text text-transparent bg-gradient-to-r from-brand-green-500 to-brand-green-600">
-                Through Innovation
+                {i18n.language === 'en' ? 'Through Innovation' : 'ఆవిష్కరణల ద్వారా'}
               </span>
             </h1>
 
             <p className="text-gray-300 text-sm md:text-lg max-w-2xl leading-relaxed font-semibold">
-              Advanced crop protection, plant nutrition, and growth solutions trusted by farmers and regional distributors across India.
+              {t('home.heroDesc', 'Advanced crop protection, plant nutrition, and growth solutions trusted by farmers and regional distributors across India.')}
             </p>
 
             <div className="flex flex-wrap gap-4 pt-4">
@@ -337,13 +361,13 @@ const Home = () => {
                 to="/products" 
                 className="bg-primary hover:bg-brand-green-600 text-white px-8 py-4 rounded-full font-black uppercase tracking-widest text-xs transition-all shadow-xl shadow-primary/25 flex items-center gap-2 group cursor-pointer"
               >
-                Explore Products <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
+                {t('home.explore', 'Explore Products')} <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link 
                 to="/dealers" 
                 className="bg-white/10 hover:bg-white/20 border border-white/25 text-white px-8 py-4 rounded-full font-black uppercase tracking-widest text-xs transition-all flex items-center gap-2 cursor-pointer"
               >
-                Become a Dealer
+                {t('nav.dealers', 'Become a Dealer')}
               </Link>
             </div>
           </motion.div>
@@ -430,21 +454,23 @@ const Home = () => {
             <div className="lg:col-span-7 space-y-8">
               <div>
                 <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight uppercase italic text-white">
-                  WHY CHOOSE <span className="text-brand-green-500 bg-clip-text text-transparent bg-gradient-to-r from-brand-green-400 to-brand-green-600">PRINSTAN?</span>
+                  {i18n.language === 'en' ? 'WHY CHOOSE' : 'ఎందుకు ఎంచుకోవాలి'} <span className="text-brand-green-500 bg-clip-text text-transparent bg-gradient-to-r from-brand-green-400 to-brand-green-600">{i18n.language === 'en' ? 'PRINSTAN?' : 'ప్రిన్స్టాన్?'}</span>
                 </h2>
                 <div className="h-1 w-20 bg-brand-green-500 rounded-full mt-3 mb-6" />
                 <p className="text-gray-300 text-sm md:text-base leading-relaxed font-semibold">
-                  We bridge the gap between advanced scientific research and practical farming. Our formulations undergo rigorous trials to ensure they deliver maximum efficacy while preserving soil health.
+                  {i18n.language === 'en' 
+                    ? 'We bridge the gap between advanced scientific research and practical farming. Our formulations undergo rigorous trials to ensure they deliver maximum efficacy while preserving soil health.' 
+                    : 'మేము అధునాతన శాస్త్రీయ పరిశోధన మరియు ఆచరణాత్మక వ్యవసాయం మధ్య అంతరాన్ని పూరిస్తాము. నేల ఆరోగ్యాన్ని కాపాడుతూ గరిష్ట ప్రభావాన్ని అందించేలా మా సూత్రీకరణలు కఠినమైన పరీక్షలకు లోనవుతాయి.'}
                 </p>
               </div>
 
               {/* Grid of four benefits */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {[
-                  { title: 'Scientifically Formulated', icon: <FaFlask className="text-brand-green-400" />, desc: 'Engineered at molecular levels with premium stabilizers.' },
-                  { title: 'Eco-Safe Profile', icon: <FaLeaf className="text-emerald-400" />, desc: 'Formulated to preserve vital soil flora and ecology.' },
-                  { title: 'Affordable Pricing', icon: <FaAward className="text-blue-400" />, desc: 'Premium molecules delivered at competitive rates.' },
-                  { title: 'Expert Support', icon: <FaHandshake className="text-cyan-400" />, desc: 'Comprehensive field training and customer coordinates.' }
+                  { title: i18n.language === 'en' ? 'Scientifically Formulated' : 'శాస్త్రీయంగా రూపొందించబడింది', icon: <FaFlask className="text-brand-green-400" />, desc: i18n.language === 'en' ? 'Engineered at molecular levels with premium stabilizers.' : 'ప్రీమియం స్టెబిలైజర్లతో పరమాణు స్థాయిలలో ఇంజనీరింగ్ చేయబడింది.' },
+                  { title: i18n.language === 'en' ? 'Eco-Safe Profile' : 'పర్యావరణ సురక్షిత ప్రొఫైల్', icon: <FaLeaf className="text-emerald-400" />, desc: i18n.language === 'en' ? 'Formulated to preserve vital soil flora and ecology.' : 'నేల జీవజాలం మరియు పర్యావరణాన్ని కాపాడటానికి రూపొందించబడింది.' },
+                  { title: i18n.language === 'en' ? 'Affordable Pricing' : 'సరసమైన ధరలు', icon: <FaAward className="text-blue-400" />, desc: i18n.language === 'en' ? 'Premium molecules delivered at competitive rates.' : 'పోటీ రేట్లలో అందించబడే ప్రీమియం ఉత్పత్తులు.' },
+                  { title: i18n.language === 'en' ? 'Expert Support' : 'నిపుణుల మద్దతు', icon: <FaHandshake className="text-cyan-400" />, desc: i18n.language === 'en' ? 'Comprehensive field training and customer coordinates.' : 'సమగ్ర క్షేత్ర శిక్షణ మరియు కస్టమర్ సేవలు.' }
                 ].map((item, idx) => (
                   <div key={idx} className="bg-white/5 border border-white/10 p-5 rounded-2xl flex items-start gap-4 hover:border-brand-green-500/35 transition-all">
                     <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-lg shrink-0">
@@ -514,11 +540,11 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="text-center max-w-3xl mx-auto mb-20">
             <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight uppercase leading-none text-white italic">
-              SCIENTIFIC PRODUCT CATALOG
+              {i18n.language === 'en' ? 'SCIENTIFIC PRODUCT CATALOG' : 'శాస్త్రీయ ఉత్పత్తి కేటలాగ్'}
             </h2>
             <div className="h-1 w-24 bg-[#0F6B3A] mx-auto rounded-full mt-4 mb-6" />
             <p className="text-gray-400 text-sm md:text-base font-semibold">
-              Explore our highly targeted protective systems designed to safeguard cash crop networks.
+              {i18n.language === 'en' ? 'Explore our highly targeted protective systems designed to safeguard cash crop networks.' : 'నగదు పంటల రక్షణ కోసం రూపొందించబడిన మా అత్యంత లక్ష్య రక్షణ వ్యవస్థలను అన్వేషించండి.'}
             </p>
           </div>
 
@@ -529,16 +555,16 @@ const Home = () => {
                 <div className="w-16 h-16 bg-emerald-950/50 rounded-2xl flex items-center justify-center text-primary text-2xl border border-emerald-500/20 mb-6 group-hover:scale-110 transition-transform">
                   <FaShieldAlt className="text-cyan-400" />
                 </div>
-                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">Insecticides</h3>
+                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">{i18n.language === 'en' ? 'Insecticides' : 'పురుగుమందులు'}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed mb-6 font-medium">
-                  High-efficacy targeting against chewing and sucking crop pests.
+                  {i18n.language === 'en' ? 'High-efficacy targeting against chewing and sucking crop pests.' : 'నమిలే మరియు పీల్చే పంట తెగుళ్ళకు వ్యతిరేకంగా అధిక ప్రభావవంతమైన నివారణ.'}
                 </p>
               </div>
               <Link 
                 to="/products?category=Pesticides" 
                 className="text-cyan-400 font-extrabold text-xs uppercase tracking-widest hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
               >
-                VIEW PRODUCTS <FaArrowRight className="text-[10px]" />
+                {i18n.language === 'en' ? 'VIEW PRODUCTS' : 'ఉత్పత్తులను వీక్షించండి'} <FaArrowRight className="text-[10px]" />
               </Link>
             </div>
 
@@ -548,16 +574,16 @@ const Home = () => {
                 <div className="w-16 h-16 bg-emerald-950/50 rounded-2xl flex items-center justify-center text-primary text-2xl border border-emerald-500/20 mb-6 group-hover:scale-110 transition-transform">
                   <FaLeaf className="text-emerald-400" />
                 </div>
-                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">Herbicides</h3>
+                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">{i18n.language === 'en' ? 'Herbicides' : 'కలుపు నివారణిలు'}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed mb-6 font-medium">
-                  Selective weed blockades tailored for rich crop yields.
+                  {i18n.language === 'en' ? 'Selective weed blockades tailored for rich crop yields.' : 'సమృద్ధిగా పంట దిగుబడి కోసం ప్రత్యేకంగా రూపొందించిన కలుపు నిరోధకాలు.'}
                 </p>
               </div>
               <Link 
                 to="/products?category=Fertilizers" 
                 className="text-emerald-400 font-extrabold text-xs uppercase tracking-widest hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
               >
-                VIEW PRODUCTS <FaArrowRight className="text-[10px]" />
+                {i18n.language === 'en' ? 'VIEW PRODUCTS' : 'ఉత్పత్తులను వీక్షించండి'} <FaArrowRight className="text-[10px]" />
               </Link>
             </div>
 
@@ -567,16 +593,16 @@ const Home = () => {
                 <div className="w-16 h-16 bg-emerald-950/50 rounded-2xl flex items-center justify-center text-primary text-2xl border border-emerald-500/20 mb-6 group-hover:scale-110 transition-transform">
                   <FaAward className="text-blue-400" />
                 </div>
-                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">Fungicides</h3>
+                <h3 className="text-2xl font-bold uppercase tracking-tight text-white mb-4 italic">{i18n.language === 'en' ? 'Fungicides' : 'శిలీంద్ర సంహారిణులు'}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed mb-6 font-medium">
-                  Advanced defense systems preventing severe fungal spreads.
+                  {i18n.language === 'en' ? 'Advanced defense systems preventing severe fungal spreads.' : 'తీవ్రమైన శిలీంధ్ర వ్యాప్తిని నిరోధించే అధునాతన రక్షణ వ్యవస్థలు.'}
                 </p>
               </div>
               <Link 
                 to="/products?category=Pesticides" 
                 className="text-blue-400 font-extrabold text-xs uppercase tracking-widest hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
               >
-                VIEW PRODUCTS <FaArrowRight className="text-[10px]" />
+                {i18n.language === 'en' ? 'VIEW PRODUCTS' : 'ఉత్పత్తులను వీక్షించండి'} <FaArrowRight className="text-[10px]" />
               </Link>
             </div>
           </div>
@@ -587,13 +613,17 @@ const Home = () => {
       <section id="research" className="py-28 bg-[#031309] text-white relative">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <span className="text-brand-green-400 text-[10px] font-black uppercase tracking-widest block mb-2">Scientific Pipeline</span>
+            <span className="text-brand-green-400 text-[10px] font-black uppercase tracking-widest block mb-2">
+              {i18n.language === 'en' ? 'Scientific Pipeline' : 'శాస్త్రీయ పైప్‌లైన్'}
+            </span>
             <h2 className="text-3xl md:text-5xl font-extrabold text-white uppercase tracking-tight leading-none">
-              Research & Innovation Process
+              {i18n.language === 'en' ? 'Research & Innovation Process' : 'పరిశోధన & ఆవిష్కరణ ప్రక్రియ'}
             </h2>
             <div className="h-1.5 w-16 bg-brand-green-500 mx-auto rounded-full mt-4 mb-6" />
             <p className="text-emerald-100/70 text-sm">
-              From organic synthesis to field testing and regional deployment - our rigorous scientific flow ensures batch efficacy.
+              {i18n.language === 'en' 
+                ? 'From organic synthesis to field testing and regional deployment - our rigorous scientific flow ensures batch efficacy.' 
+                : 'సేంద్రీయ సంశ్లేషణ నుండి క్షేత్ర పరీక్ష మరియు ప్రాంతీయ విస్తరణ వరకు - మా కఠినమైన శాస్త్రీయ ప్రవాహం నాణ్యతను నిర్ధారిస్తుంది.'}
             </p>
           </div>
 
@@ -633,9 +663,11 @@ const Home = () => {
       <section className="py-28 bg-[#020A05] text-white relative">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <span className="text-brand-green-400 text-[10px] font-black uppercase tracking-widest block mb-2">Voice of the Fields</span>
+            <span className="text-brand-green-400 text-[10px] font-black uppercase tracking-widest block mb-2">
+              {i18n.language === 'en' ? 'Voice of the Fields' : 'పొలాల గళం'}
+            </span>
             <h2 className="text-3xl md:text-5xl font-extrabold text-white uppercase tracking-tight leading-none">
-              Farmer Success Stories
+              {i18n.language === 'en' ? 'Farmer Success Stories' : 'రైతుల విజయ కథలు'}
             </h2>
             <div className="h-1.5 w-16 bg-brand-green-500 mx-auto rounded-full mt-4 mb-6" />
           </div>

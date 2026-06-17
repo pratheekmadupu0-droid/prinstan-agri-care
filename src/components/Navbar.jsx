@@ -10,7 +10,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { cartItems } = useCart();
   const cartCount = cartItems ? cartItems.reduce((acc, item) => acc + item.quantity, 0) : 0;
 
@@ -33,12 +33,12 @@ const Navbar = () => {
   }, [location]);
 
   const navLinks = [
-    { name: 'HOME', path: '/' },
-    { name: 'ABOUT', path: '/about' },
-    { name: 'PRODUCTS', path: '/products' },
-    { name: 'GALLERY', path: '/gallery' },
-    { name: 'DEALERS', path: '/dealers' },
-    { name: 'CONTACT US', path: '/contact' }
+    { name: t('nav.home', 'HOME'), path: '/' },
+    { name: t('nav.about', 'ABOUT'), path: '/about' },
+    { name: t('nav.products', 'PRODUCTS'), path: '/products' },
+    { name: t('nav.gallery', 'GALLERY'), path: '/gallery' },
+    { name: t('nav.dealers', 'DEALERS'), path: '/dealers' },
+    { name: t('nav.contact', 'CONTACT US'), path: '/contact' }
   ];
 
   return (
@@ -115,7 +115,7 @@ const Navbar = () => {
             to="/contact"
             className="bg-brand-green-900 hover:bg-brand-green-950 text-white font-extrabold uppercase tracking-widest px-6 py-2.5 rounded-full text-[10px] transition-colors shadow-md"
           >
-            GET A QUOTE
+            {t('nav.getQuote', 'GET A QUOTE')}
           </Link>
         </div>
 
